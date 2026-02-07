@@ -1,0 +1,164 @@
+/**
+ * Custom KaTeX styling for PharmCards
+ * Enhances readability and mobile responsiveness
+ */
+
+/* Make equations more readable */
+.katex {
+  font-size: 1.15em !important;
+  line-height: 1.8 !important;
+}
+
+/* Inline equations */
+.equation-inline .katex {
+  font-size: 1.1em !important;
+}
+
+/* Block equations - larger and centered */
+.equation-block .katex {
+  font-size: 1.25em !important;
+}
+
+/* Final formulas - even larger */
+.equation-final .katex {
+  font-size: 1.4em !important;
+  font-weight: 500 !important;
+}
+
+/* Square root symbol - make it more prominent */
+.katex .sqrt {
+  font-weight: 500;
+}
+
+.katex .sqrt > .vlist-t {
+  border-left-width: 0.06em !important;
+}
+
+/* Fractions - better spacing */
+.katex .frac-line {
+  border-bottom-width: 0.06em !important;
+}
+
+.katex .mfrac {
+  margin: 0.2em 0.4em !important;
+}
+
+/* Subscripts and superscripts - clearer */
+.katex .msupsub {
+  font-size: 0.75em !important;
+}
+
+/* Chemical arrows */
+.katex .mrel {
+  margin: 0 0.5em !important;
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .katex {
+    font-size: 1em !important;
+  }
+  
+  .equation-block .katex {
+    font-size: 1.1em !important;
+  }
+  
+  .equation-final .katex {
+    font-size: 1.25em !important;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .katex {
+    font-size: 1.1em !important;
+  }
+  
+  .equation-block .katex {
+    font-size: 1.2em !important;
+  }
+}
+
+/* Prevent overflow on small screens */
+.equation-renderer {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar for equations */
+.equation-renderer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.equation-renderer::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.equation-renderer::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+
+.equation-renderer::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Improve contrast for better readability */
+.katex .mord,
+.katex .mop,
+.katex .mbin,
+.katex .mrel,
+.katex .mopen,
+.katex .mclose,
+.katex .mpunct,
+.katex .minner {
+  color: #1e293b !important;
+}
+
+/* Highlight radicals (square roots, cube roots) */
+.katex .sqrt {
+  color: #1e40af !important;
+}
+
+/* Make multiplication signs more visible */
+.katex .mbin {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+/* Error state */
+.equation-error .katex {
+  color: #dc2626 !important;
+  background: #fee2e2;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+}
+
+/* Loading state */
+.equation-loading {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Print optimization */
+@media print {
+  .katex {
+    font-size: 12pt !important;
+  }
+  
+  .equation-renderer {
+    overflow: visible !important;
+  }
+}

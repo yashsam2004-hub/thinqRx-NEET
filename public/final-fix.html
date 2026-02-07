@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase RLS Diagnostic</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a202c; color: #e2e8f0; }
+        .box { background: #2d3748; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #f59e0b; }
+        button { background: #10b981; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px; }
+        button:hover { background: #059669; }
+        pre { background: #1a202c; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Complete RLS Fix - Final Solution</h1>
+    
+    <div class="box">
+        <h2>⚠️ CRITICAL: Run This SQL Now</h2>
+        <p>This SQL will:</p>
+        <ul>
+            <li>DROP ALL existing policies on profiles table</li>
+            <li>DISABLE RLS temporarily</li>
+            <li>Create ONE simple policy</li>
+            <li>RE-ENABLE RLS</li>
+        </ul>
+    </div>
+
+    <button onclick="copySQL()">📋 Copy Complete Fix SQL</button>
+    <button onclick="window.open('https://supabase.com/dashboard', '_blank')">🗄️ Open Supabase Dashboard</button>
+
+    <h2>SQL to Run:</h2>
+    <pre id="sqlContent">-- ============================================
+-- COMPLETE FIX - Final Solution
+-- ============================================
+
+-- Step 1: DISABLE RLS temporarily
+ALTER TABLE public.profiles DISABLE ROW LEVEL SECURITY;
+
+-- Step 2: DROP ALL existing policies (clean slate)
+DROP POLICY IF EXISTS profiles_select_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_select_admin ON public.profiles;
+DROP POLICY IF EXISTS profiles_select_all ON public.profiles;
+DROP POLICY IF EXISTS profiles_update_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_admin_all ON public.profiles;
+DROP POLICY IF EXISTS profiles_insert_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_insert_admin ON public.profiles;
+
+-- Step 3: Create ONE simple, non-recursive policy
+CREATE POLICY profiles_all_own
+ON public.profiles
+FOR ALL
+TO authenticated
+USING (id = auth.uid())
+WITH CHECK (id = auth.uid());
+
+-- Step 4: RE-ENABLE RLS
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Step 5: Grant permissions
+GRANT ALL ON public.profiles TO authenticated;
+
+-- Done!</pre>
+
+    <h2>After Running SQL:</h2>
+    <ol>
+        <li>Close ALL browser tabs for localhost:3000</li>
+        <li>Wait 5 seconds</li>
+        <li>Open NEW tab: http://localhost:3000/dashboard</li>
+        <li>Login if needed</li>
+        <li>Admin button should appear!</li>
+    </ol>
+
+    <script>
+        function copySQL() {
+            const sql = document.getElementById('sqlContent').textContent;
+            navigator.clipboard.writeText(sql).then(() => {
+                alert('✅ SQL copied! Now:\n1. Go to Supabase Dashboard\n2. SQL Editor\n3. Paste and RUN');
+            });
+        }
+    </script>
+</body>
+</html>

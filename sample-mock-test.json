@@ -1,0 +1,106 @@
+{
+  "exam_name": "GPAT",
+  "test_name": "GPAT Mock Test 2026 - Sample Test 1",
+  "description": "Full-length practice test covering all GPAT subjects",
+  "total_questions": 5,
+  "total_marks": 20,
+  "duration_minutes": 30,
+  "negative_marking": true,
+  "negative_marking_value": -1,
+  "instructions": [
+    "This test contains 5 multiple-choice questions (sample format).",
+    "Each correct answer carries 4 marks.",
+    "There is negative marking of 1 mark for each incorrect answer.",
+    "You can navigate between questions using the question palette.",
+    "Questions can be marked for review and revisited later.",
+    "The timer will show remaining time. Test will auto-submit when time expires.",
+    "Click 'Submit Test' when you are ready to finish."
+  ],
+  "questions": [
+    {
+      "question_id": "Q1",
+      "subject": "Pharmacology",
+      "topic": "Cardiovascular Drugs",
+      "difficulty": "Medium",
+      "question_text": "<p>Which of the following is a selective beta-1 adrenergic blocker?</p>",
+      "options": {
+        "A": "Atenolol",
+        "B": "Propranolol",
+        "C": "Labetalol",
+        "D": "Carvedilol"
+      },
+      "correct_option": "A",
+      "explanation": "Atenolol is a cardioselective (beta-1) adrenergic blocker. Propranolol is non-selective (blocks both beta-1 and beta-2). Labetalol and carvedilol are combined alpha and beta blockers.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q2",
+      "subject": "Pharmaceutical Chemistry",
+      "topic": "Medicinal Chemistry",
+      "difficulty": "Easy",
+      "question_text": "<p>The IUPAC name of aspirin is:</p>",
+      "options": {
+        "A": "Acetylsalicylic acid",
+        "B": "2-Acetoxybenzoic acid",
+        "C": "Salicylic acid",
+        "D": "Para-aminobenzoic acid"
+      },
+      "correct_option": "B",
+      "explanation": "The IUPAC systematic name of aspirin is 2-acetoxybenzoic acid. Acetylsalicylic acid is the chemical/common name, which is also widely used.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q3",
+      "subject": "Pharmaceutics",
+      "topic": "Dosage Forms",
+      "difficulty": "Medium",
+      "question_text": "<p>Which of the following is an advantage of sustained-release formulations?</p>",
+      "options": {
+        "A": "Reduced dosing frequency",
+        "B": "Improved patient compliance",
+        "C": "Decreased side effects",
+        "D": "All of the above"
+      },
+      "correct_option": "D",
+      "explanation": "Sustained-release formulations offer multiple advantages: reduced dosing frequency (once or twice daily), improved patient compliance due to convenience, and decreased side effects due to avoiding peak plasma concentrations.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q4",
+      "subject": "Pharmaceutical Analysis",
+      "topic": "Spectroscopy",
+      "difficulty": "Difficult",
+      "question_text": "<p>In UV-Visible spectroscopy, bathochromic shift refers to:</p>",
+      "options": {
+        "A": "Shift to shorter wavelength",
+        "B": "Shift to longer wavelength",
+        "C": "Increase in absorption intensity",
+        "D": "Decrease in absorption intensity"
+      },
+      "correct_option": "B",
+      "explanation": "Bathochromic shift (red shift) refers to a shift in absorption maximum to a longer wavelength (lower energy). Hypsochromic shift is the opposite. Hyperchromic and hypochromic refer to intensity changes.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q5",
+      "subject": "Pharmacognosy",
+      "topic": "Natural Products",
+      "difficulty": "Easy",
+      "question_text": "<p>Quinine, an antimalarial drug, is obtained from:</p>",
+      "options": {
+        "A": "Cinchona bark",
+        "B": "Digitalis leaves",
+        "C": "Opium poppy",
+        "D": "Rauwolfia root"
+      },
+      "correct_option": "A",
+      "explanation": "Quinine is obtained from the bark of Cinchona tree species (Cinchona officinalis). Digitalis yields cardiac glycosides, opium poppy yields morphine, and Rauwolfia yields reserpine.",
+      "marks": 4,
+      "negative_marks": -1
+    }
+  ]
+}

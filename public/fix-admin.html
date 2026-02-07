@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup & Diagnostics - ThinqRx</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        button.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .result.success {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+        
+        .result.error {
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+        
+        .result.info {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            color: #1e40af;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-badge.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .sql-box {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .sql-box code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Admin Setup & Diagnostics</h1>
+        <p class="subtitle">Fix admin access and RLS policy issues</p>
+        
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong style="color: #92400e;">⚠️ Stack Depth Error Detected</strong>
+            <p style="color: #78350f; margin-top: 8px; margin-bottom: 0;">
+                Your diagnostics show a "stack depth limit exceeded" error. This means the RLS policies need to be fixed in Supabase.
+                <strong>Skip to Step 3</strong> and run the SQL manually in your Supabase dashboard.
+            </p>
+        </div>
+        
+        <div class="section">
+            <h2>Step 1: Check Current Setup</h2>
+            <p style="margin-bottom: 15px; color: #4a5568;">Run diagnostics to see what's wrong.</p>
+            <button onclick="checkSetup()" id="checkBtn">
+                🔍 Run Diagnostics
+            </button>
+            <div id="checkResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Step 2: Fix Admin Role</h2>
+            <p style="margin-bottom: 15px; color: #4a5568;">Set your account as admin to access mock tests.</p>
+            <button onclick="fixAdminRole()" id="fixRoleBtn" class="success">
+                ✅ Set Admin Role
+            </button>
+            <div id="fixRoleResult"></div>
+        </div>
+        
+        <div class="section">
+            <h2>Step 3: Fix RLS Policies (REQUIRED - Run This in Supabase)</h2>
+            <div style="background: #fee2e2; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                <strong style="color: #991b1b;">🚨 This step is REQUIRED to fix the stack depth error!</strong>
+                <p style="color: #7f1d1d; margin-top: 8px; margin-bottom: 0; font-size: 14px;">
+                    The previous RLS policies were causing recursive checks. This new SQL uses simplified, 
+                    non-recursive policies that will fix the issue.
+                </p>
+            </div>
+            <p style="margin-bottom: 15px; color: #4a5568;">
+                You MUST run this SQL in your Supabase dashboard:
+            </p>
+            <ol style="margin-left: 20px; margin-bottom: 15px; color: #4a5568;">
+                <li>Go to your <a href="https://supabase.com/dashboard" target="_blank" style="color: #667eea;">Supabase Dashboard</a></li>
+                <li>Navigate to <strong>SQL Editor</strong></li>
+                <li>Copy and paste the SQL below</li>
+                <li>Click <strong>Run</strong></li>
+            </ol>
+            
+            <div class="sql-box">
+                <code>-- Fix is_admin function (simplified to avoid recursion)
+DROP FUNCTION IF EXISTS public.is_admin() CASCADE;
+
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT role = 'admin' 
+  FROM public.profiles 
+  WHERE id = auth.uid()
+  LIMIT 1;
+$$;
+
+-- Drop all existing mock_tests policies
+DROP POLICY IF EXISTS mock_tests_select_published ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_all ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_select ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_insert ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_update ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_delete ON public.mock_tests;
+
+-- Create simple policies for each operation
+-- Admin can SELECT
+CREATE POLICY mock_tests_admin_select
+ON public.mock_tests FOR SELECT
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+-- Admin can INSERT
+CREATE POLICY mock_tests_admin_insert
+ON public.mock_tests FOR INSERT
+TO authenticated
+WITH CHECK (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+-- Admin can UPDATE
+CREATE POLICY mock_tests_admin_update
+ON public.mock_tests FOR UPDATE
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+)
+WITH CHECK (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+-- Admin can DELETE
+CREATE POLICY mock_tests_admin_delete
+ON public.mock_tests FOR DELETE
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+-- Regular users can SELECT published tests
+CREATE POLICY mock_tests_select_published
+ON public.mock_tests FOR SELECT
+TO authenticated
+USING (
+  status = 'published' 
+  AND (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) != 'admin'
+);
+
+-- Ensure RLS is enabled
+ALTER TABLE public.mock_tests ENABLE ROW LEVEL SECURITY;
+
+-- Grant permissions
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.mock_tests TO authenticated;</code>
+            </div>
+            
+            <button onclick="copySQL()" style="margin-top: 15px;">
+                📋 Copy SQL
+            </button>
+        </div>
+        
+        <div class="section">
+            <h2>Step 4: Verify Fix</h2>
+            <p style="margin-bottom: 15px; color: #4a5568;">After running the SQL, check if everything works.</p>
+            <button onclick="window.location.href='/admin/mock-tests'">
+                🚀 Go to Mock Tests Admin
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        async function checkSetup() {
+            const btn = document.getElementById('checkBtn');
+            const resultDiv = document.getElementById('checkResult');
+            
+            btn.disabled = true;
+            btn.innerHTML = '🔍 Checking... <span class="loading"></span>';
+            
+            try {
+                const response = await fetch('/api/admin/check-setup');
+                const data = await response.json();
+                
+                let html = '<div class="result info">';
+                html += '<strong>Diagnostics Report:</strong>\n\n';
+                html += `Session: ${data.session ? '✅ Active' : '❌ No session'}\n`;
+                if (data.session) {
+                    html += `  User ID: ${data.session.userId}\n`;
+                    html += `  Email: ${data.session.email}\n`;
+                }
+                html += `\nProfile: ${data.profile ? '✅ Found' : '❌ Not found'}\n`;
+                if (data.profile) {
+                    html += `  Role: ${data.profile.role || 'none'}\n`;
+                    html += `  Is Admin: ${data.isAdmin ? '✅ YES' : '❌ NO'}\n`;
+                }
+                html += `\nMock Tests: ${data.mockTestsCount} found\n`;
+                
+                if (data.errors && data.errors.length > 0) {
+                    html += '\n❌ Errors:\n';
+                    data.errors.forEach(err => {
+                        html += `  • ${err}\n`;
+                    });
+                }
+                
+                if (data.mockTests && data.mockTests.length > 0) {
+                    html += '\n📋 Mock Tests:\n';
+                    data.mockTests.forEach(test => {
+                        html += `  • ${test.title} (${test.status})\n`;
+                    });
+                }
+                
+                html += '</div>';
+                resultDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">Error: ${error.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '🔍 Run Diagnostics';
+            }
+        }
+        
+        async function fixAdminRole() {
+            const btn = document.getElementById('fixRoleBtn');
+            const resultDiv = document.getElementById('fixRoleResult');
+            
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Fixing... <span class="loading"></span>';
+            
+            try {
+                const response = await fetch('/api/admin/check-setup', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `<div class="result success">✅ Success! Your role is now: ${data.profile.role}\n\nYou can now access the mock tests admin panel.</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="result error">❌ Failed: ${data.error}\n\n${data.hint || ''}</div>`;
+                }
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '✅ Set Admin Role';
+            }
+        }
+        
+        function copySQL() {
+            const sql = document.querySelector('.sql-box code').textContent;
+            navigator.clipboard.writeText(sql).then(() => {
+                alert('✅ SQL copied to clipboard!');
+            }).catch(err => {
+                alert('❌ Failed to copy. Please select and copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>

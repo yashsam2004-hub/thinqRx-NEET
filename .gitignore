@@ -1,0 +1,297 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ============================================
+# CRITICAL: SECURITY & CREDENTIALS
+# ============================================
+
+# Environment variables (ALL variants)
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.test
+.env.backup
+!.env.example
+
+# Supabase credentials & config
+.supabase/
+supabase-service-role-key.txt
+supabase-anon-key.txt
+
+# API Keys & Secrets
+**/api-keys.json
+**/credentials.json
+**/secrets.*
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+
+# Payment Gateway (Razorpay, etc.)
+razorpay-*.txt
+payment-keys.*
+merchant-*.json
+
+# Database dumps & backups
+*.sql.backup
+*.dump
+*.sqlite
+*.sqlite3
+*.db
+database-backup/
+db-exports/
+
+# ============================================
+# DEPENDENCIES
+# ============================================
+
+# Node modules
+node_modules/
+/.pnp
+.pnp.*
+.pnp.js
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+yarn-error.log*
+
+# npm
+npm-debug.log*
+.npm
+
+# pnpm
+.pnpm-debug.log*
+pnpm-lock.yaml
+
+# ============================================
+# NEXT.JS & BUILD
+# ============================================
+
+# Next.js
+/.next/
+/out/
+.next/
+
+# Build outputs
+/build
+/dist
+*.tsbuildinfo
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Production
+/production
+
+# ============================================
+# TESTING & COVERAGE
+# ============================================
+
+# Test coverage
+/coverage
+/coverage.*
+.nyc_output
+*.lcov
+
+# Test results
+/test-results/
+/playwright-report/
+/playwright/.cache/
+
+# Jest
+jest-results.json
+
+# ============================================
+# DEVELOPMENT & DEBUGGING
+# ============================================
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+debug.log
+*.log
+
+# Diagnostic files
+diagnostic-*.json
+/scripts/diagnostics/*.json
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# ============================================
+# IDE & EDITOR
+# ============================================
+
+# VSCode
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+*.code-workspace
+
+# Cursor
+.cursor/
+*.cursor
+
+# WebStorm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================
+# OPERATING SYSTEM
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# DEPLOYMENT & HOSTING
+# ============================================
+
+# Vercel
+.vercel
+.vercel.json
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# ============================================
+# USER DATA & UPLOADS
+# ============================================
+
+# User uploads (if any)
+/public/uploads/
+/uploads/
+/user-data/
+
+# Generated content
+/generated/
+/ai-cache/
+
+# ============================================
+# DOCUMENTATION SAFETY
+# ============================================
+
+# Backup & old files (keep .md docs, remove backups)
+*.backup
+*.bak
+*.old
+*-old.*
+*-backup.*
+page-old-backup.*
+
+# Personal notes (but keep official docs)
+PERSONAL_NOTES.md
+TODO_PRIVATE.md
+notes-private/
+
+# ============================================
+# PACKAGE MANAGER LOCKS
+# ============================================
+
+# Keep only one lock file (package-lock.json for npm)
+# Uncomment if using different package manager:
+# yarn.lock
+# pnpm-lock.yaml
+
+# ============================================
+# MISCELLANEOUS
+# ============================================
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Certificates
+*.cert
+
+# Local config overrides
+*local.config.js
+*local.config.ts
+
+# Session files
+.sessions/
+*.session
+
+# Error logs from tools
+*.err
+
+# ============================================
+# PROJECT-SPECIFIC (PharmCards)
+# ============================================
+
+# Mock test uploads (if sensitive)
+# /mock-tests-uploads/
+
+# Analytics data exports
+# /analytics-exports/
+
+# Payment transaction logs (sensitive)
+payment-logs/
+transaction-history/
+
+# Admin panel exports
+admin-exports/
+user-exports/
+
+# Email templates with credentials
+email-config-private.*
+
+# ============================================
+# END OF .gitignore
+# ============================================

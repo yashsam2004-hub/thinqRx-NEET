@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Admin Fix - ThinqRx</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 36px;
+        }
+        
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        
+        .alert {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .alert strong {
+            color: #92400e;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .alert p {
+            color: #78350f;
+            line-height: 1.6;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .sql-box {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow-x: auto;
+            max-height: 500px;
+        }
+        
+        .sql-box code {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+            color: #4a5568;
+            line-height: 1.8;
+        }
+        
+        ol li {
+            margin-bottom: 10px;
+        }
+        
+        a {
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .success-box {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Complete Admin Fix</h1>
+        <p class="subtitle">Fix all RLS policy and admin access issues</p>
+        
+        <div class="alert">
+            <strong>⚠️ Critical Issue Detected</strong>
+            <p>
+                Your database has multiple RLS policy issues that are preventing admin access:
+                <br><br>
+                <strong>1.</strong> Profiles table cannot be read (400 error)<br>
+                <strong>2.</strong> Mock tests table has stack depth issues<br>
+                <strong>3.</strong> Middleware is redirecting to /subjects instead of allowing admin access
+                <br><br>
+                <strong>Follow the steps below to fix everything at once.</strong>
+            </p>
+        </div>
+        
+        <div class="section">
+            <h2>Complete Fix SQL</h2>
+            <p style="margin-bottom: 20px; color: #4a5568; line-height: 1.6;">
+                Run this SQL script in your Supabase dashboard to fix ALL issues at once:
+            </p>
+            
+            <ol>
+                <li>Go to <a href="https://supabase.com/dashboard" target="_blank">Supabase Dashboard</a></li>
+                <li>Select your project</li>
+                <li>Navigate to <strong>SQL Editor</strong> (in left sidebar)</li>
+                <li>Click <strong>"New Query"</strong></li>
+                <li>Copy and paste the SQL below</li>
+                <li>Click <strong>"Run"</strong> or press Ctrl/Cmd + Enter</li>
+                <li>Wait for "Success. No rows returned"</li>
+            </ol>
+            
+            <div class="sql-box">
+                <code>-- ============================================
+-- COMPLETE FIX FOR ALL RLS ISSUES
+-- ============================================
+
+-- 1. Fix is_admin function (prevent recursion)
+DROP FUNCTION IF EXISTS public.is_admin() CASCADE;
+
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT role = 'admin' 
+  FROM public.profiles 
+  WHERE id = auth.uid()
+  LIMIT 1;
+$$;
+
+-- 2. Fix profiles table RLS (allow users to read their own profile)
+DROP POLICY IF EXISTS profiles_select_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_select_admin ON public.profiles;
+DROP POLICY IF EXISTS profiles_update_own ON public.profiles;
+DROP POLICY IF EXISTS profiles_admin_all ON public.profiles;
+
+CREATE POLICY profiles_select_own
+ON public.profiles FOR SELECT
+TO authenticated
+USING (id = auth.uid());
+
+CREATE POLICY profiles_select_admin
+ON public.profiles FOR SELECT
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+CREATE POLICY profiles_update_own
+ON public.profiles FOR UPDATE
+TO authenticated
+USING (id = auth.uid())
+WITH CHECK (id = auth.uid());
+
+CREATE POLICY profiles_admin_all
+ON public.profiles FOR ALL
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+)
+WITH CHECK (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+-- 3. Fix mock_tests table RLS (separate policies to avoid recursion)
+DROP POLICY IF EXISTS mock_tests_select_published ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_all ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_select ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_insert ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_update ON public.mock_tests;
+DROP POLICY IF EXISTS mock_tests_admin_delete ON public.mock_tests;
+
+CREATE POLICY mock_tests_admin_select
+ON public.mock_tests FOR SELECT
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+CREATE POLICY mock_tests_admin_insert
+ON public.mock_tests FOR INSERT
+TO authenticated
+WITH CHECK (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+CREATE POLICY mock_tests_admin_update
+ON public.mock_tests FOR UPDATE
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+)
+WITH CHECK (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+CREATE POLICY mock_tests_admin_delete
+ON public.mock_tests FOR DELETE
+TO authenticated
+USING (
+  (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) = 'admin'
+);
+
+CREATE POLICY mock_tests_select_published
+ON public.mock_tests FOR SELECT
+TO authenticated
+USING (
+  status = 'published' 
+  AND (SELECT role FROM public.profiles WHERE id = auth.uid() LIMIT 1) != 'admin'
+);
+
+-- 4. Ensure RLS is enabled
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.mock_tests ENABLE ROW LEVEL SECURITY;
+
+-- 5. Grant necessary permissions
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.mock_tests TO authenticated;
+
+-- 6. Set your account as admin (REPLACE THE EMAIL WITH YOURS)
+UPDATE public.profiles 
+SET role = 'admin' 
+WHERE email = 'pindiprolusskiran@gmail.com';
+
+-- Done! Your admin access should now work.</code>
+            </div>
+            
+            <button onclick="copySQL()">
+                📋 Copy Complete SQL
+            </button>
+        </div>
+        
+        <div class="section">
+            <h2>After Running the SQL</h2>
+            <p style="margin-bottom: 15px; color: #4a5568;">
+                Once you've successfully run the SQL in Supabase:
+            </p>
+            <ol>
+                <li>Clear your browser cache (Ctrl + Shift + Delete)</li>
+                <li>Close all browser tabs for localhost:3000</li>
+                <li>Open a fresh tab and go to: <strong>http://localhost:3000/dashboard</strong></li>
+                <li>You should see the purple <strong>"Admin Panel"</strong> button at top right</li>
+                <li>Click it to access the admin panel</li>
+            </ol>
+            
+            <div class="success-box">
+                ✅ After this fix, you'll be able to:<br>
+                • Access the admin panel from dashboard<br>
+                • View and manage mock tests<br>
+                • Grant/revoke admin access to other users<br>
+                • No more redirects to /subjects!
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Quick Links</h2>
+            <button onclick="window.location.href='/dashboard'">
+                🏠 Go to Dashboard
+            </button>
+            <button onclick="window.location.href='/admin'">
+                🛡️ Go to Admin Panel
+            </button>
+            <button onclick="window.location.href='https://supabase.com/dashboard'" style="background: #10b981;">
+                🗄️ Open Supabase Dashboard
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        function copySQL() {
+            const sql = document.querySelector('.sql-box code').textContent;
+            navigator.clipboard.writeText(sql).then(() => {
+                alert('✅ Complete SQL copied to clipboard!\n\nNow paste it into Supabase SQL Editor and click Run.');
+            }).catch(err => {
+                alert('❌ Failed to copy. Please select the SQL manually and copy it.');
+            });
+        }
+    </script>
+</body>
+</html>

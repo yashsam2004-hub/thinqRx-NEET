@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" width="200" height="220">
+  <!-- Nitrobenzene structure - handwritten style -->
+  <style>
+    .structure { stroke: #1e3a8a; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .bond-double { stroke-dasharray: 5, 5; }
+    .nitrogen { fill: #1e40af; font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; }
+    .oxygen { fill: #dc2626; font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; }
+  </style>
+  
+  <!-- Hexagon shape for benzene ring -->
+  <g transform="translate(100, 110)">
+    <!-- Outer ring -->
+    <path class="structure" d="
+      M 0,-50
+      L 43.3,-25
+      L 43.3,25
+      L 0,50
+      L -43.3,25
+      L -43.3,-25
+      Z
+    "/>
+    
+    <!-- Inner double bond circle -->
+    <circle class="structure bond-double" cx="0" cy="0" r="30" stroke-width="2"/>
+    
+    <!-- NO2 group at top -->
+    <line class="structure" x1="0" y1="-50" x2="0" y2="-70"/>
+    <text class="nitrogen" x="0" y="-72" text-anchor="middle">N</text>
+    
+    <!-- O atoms -->
+    <line class="structure" x1="5" y1="-78" x2="15" y2="-88"/>
+    <text class="oxygen" x="18" y="-82" text-anchor="middle">O</text>
+    
+    <line class="structure" x1="-5" y1="-78" x2="-15" y2="-88"/>
+    <text class="oxygen" x="-18" y="-82" text-anchor="middle">O</text>
+  </g>
+  
+  <!-- Label -->
+  <text x="100" y="210" text-anchor="middle" font-family="'Courier New', monospace" font-size="14" fill="#1e3a8a">
+    Nitrobenzene
+  </text>
+</svg>

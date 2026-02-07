@@ -1,0 +1,106 @@
+{
+  "exam_name": "GPAT",
+  "test_name": "GPAT Mock Test 2026 - Test 3",
+  "description": "Practice test emphasizing clinical pharmacy and pharmacotherapeutics",
+  "total_questions": 5,
+  "total_marks": 20,
+  "duration_minutes": 30,
+  "negative_marking": true,
+  "negative_marking_value": -1,
+  "instructions": [
+    "This test contains 5 multiple-choice questions (sample format).",
+    "Each correct answer carries 4 marks.",
+    "There is negative marking of 1 mark for each incorrect answer.",
+    "You can navigate between questions using the question palette.",
+    "Questions can be marked for review and revisited later.",
+    "The timer will show remaining time. Test will auto-submit when time expires.",
+    "Click 'Submit Test' when you are ready to finish."
+  ],
+  "questions": [
+    {
+      "question_id": "Q1",
+      "subject": "Pharmacology",
+      "topic": "Antidiabetic Drugs",
+      "difficulty": "Medium",
+      "question_text": "<p>Metformin primarily acts by:</p>",
+      "options": {
+        "A": "Increasing insulin secretion",
+        "B": "Decreasing hepatic glucose production",
+        "C": "Increasing glucose absorption",
+        "D": "Inhibiting alpha-glucosidase"
+      },
+      "correct_option": "B",
+      "explanation": "Metformin is a biguanide that primarily decreases hepatic glucose production and improves insulin sensitivity. It does not increase insulin secretion or glucose absorption.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q2",
+      "subject": "Pharmaceutical Chemistry",
+      "topic": "Steroids",
+      "difficulty": "Medium",
+      "question_text": "<p>Corticosteroids contain how many rings in their structure?</p>",
+      "options": {
+        "A": "3 rings",
+        "B": "4 rings",
+        "C": "5 rings",
+        "D": "6 rings"
+      },
+      "correct_option": "B",
+      "explanation": "Corticosteroids have a steroid nucleus consisting of four fused rings: three cyclohexane rings (A, B, C) and one cyclopentane ring (D), forming the characteristic cyclopentanoperhydrophenanthrene structure.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q3",
+      "subject": "Pharmaceutics",
+      "topic": "Parenteral Preparations",
+      "difficulty": "Difficult",
+      "question_text": "<p>For intravenous injections, the preparation must be:</p>",
+      "options": {
+        "A": "Isotonic and sterile",
+        "B": "Only sterile",
+        "C": "Only pyrogen-free",
+        "D": "Isotonic, sterile, and pyrogen-free"
+      },
+      "correct_option": "D",
+      "explanation": "Intravenous preparations must be isotonic to prevent hemolysis, sterile to prevent infection, and pyrogen-free to avoid fever reactions. All three conditions are essential.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q4",
+      "subject": "Pharmaceutical Analysis",
+      "topic": "Quality Control",
+      "difficulty": "Easy",
+      "question_text": "<p>The limit test for chloride uses which reagent?</p>",
+      "options": {
+        "A": "Barium chloride",
+        "B": "Silver nitrate",
+        "C": "Lead acetate",
+        "D": "Sodium hydroxide"
+      },
+      "correct_option": "B",
+      "explanation": "The limit test for chloride uses silver nitrate, which forms a white precipitate of silver chloride with chloride ions. The turbidity is compared with a standard.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q5",
+      "subject": "Pharmacognosy",
+      "topic": "Glycosides",
+      "difficulty": "Medium",
+      "question_text": "<p>Digitalis glycosides are primarily used as:</p>",
+      "options": {
+        "A": "Antihypertensives",
+        "B": "Cardiac stimulants",
+        "C": "Diuretics",
+        "D": "Bronchodilators"
+      },
+      "correct_option": "B",
+      "explanation": "Digitalis glycosides (like digoxin) are cardiac glycosides used as cardiac stimulants to increase the force of myocardial contraction, particularly in heart failure.",
+      "marks": 4,
+      "negative_marks": -1
+    }
+  ]
+}

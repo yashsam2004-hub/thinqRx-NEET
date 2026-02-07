@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Placeholder for chemical structure -->
+  <style>
+    .outline { stroke: #94a3b8; stroke-width: 2; fill: #f1f5f9; stroke-dasharray: 5, 5; }
+    .text { fill: #64748b; font-family: Arial, sans-serif; font-size: 12px; text-anchor: middle; }
+  </style>
+  
+  <rect class="outline" x="10" y="10" width="180" height="180" rx="8"/>
+  
+  <!-- Benzene ring icon -->
+  <g transform="translate(100, 80)">
+    <path style="stroke: #cbd5e1; stroke-width: 2; fill: none;" d="
+      M 0,-25
+      L 21.7,-12.5
+      L 21.7,12.5
+      L 0,25
+      L -21.7,12.5
+      L -21.7,-12.5
+      Z
+    "/>
+    <circle style="stroke: #cbd5e1; stroke-width: 1.5; fill: none;" cx="0" cy="0" r="15"/>
+  </g>
+  
+  <text class="text" x="100" y="130">Chemical Structure</text>
+  <text class="text" x="100" y="145">(Coming Soon)</text>
+</svg>

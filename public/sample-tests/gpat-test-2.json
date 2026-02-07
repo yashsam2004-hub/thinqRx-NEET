@@ -1,0 +1,106 @@
+{
+  "exam_name": "GPAT",
+  "test_name": "GPAT Mock Test 2026 - Test 2",
+  "description": "Comprehensive practice test with focus on advanced pharmacy concepts",
+  "total_questions": 5,
+  "total_marks": 20,
+  "duration_minutes": 30,
+  "negative_marking": true,
+  "negative_marking_value": -1,
+  "instructions": [
+    "This test contains 5 multiple-choice questions (sample format).",
+    "Each correct answer carries 4 marks.",
+    "There is negative marking of 1 mark for each incorrect answer.",
+    "You can navigate between questions using the question palette.",
+    "Questions can be marked for review and revisited later.",
+    "The timer will show remaining time. Test will auto-submit when time expires.",
+    "Click 'Submit Test' when you are ready to finish."
+  ],
+  "questions": [
+    {
+      "question_id": "Q1",
+      "subject": "Pharmacology",
+      "topic": "Antimicrobial Agents",
+      "difficulty": "Medium",
+      "question_text": "<p>Which of the following antibiotics inhibits bacterial cell wall synthesis?</p>",
+      "options": {
+        "A": "Tetracycline",
+        "B": "Penicillin",
+        "C": "Chloramphenicol",
+        "D": "Ciprofloxacin"
+      },
+      "correct_option": "B",
+      "explanation": "Penicillin inhibits bacterial cell wall synthesis by blocking peptidoglycan cross-linking. Tetracycline and chloramphenicol inhibit protein synthesis, while ciprofloxacin inhibits DNA gyrase.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q2",
+      "subject": "Pharmaceutical Chemistry",
+      "topic": "Drug Design",
+      "difficulty": "Difficult",
+      "question_text": "<p>Bioisosterism in drug design refers to:</p>",
+      "options": {
+        "A": "Replacement of atoms with similar properties",
+        "B": "Creation of mirror image molecules",
+        "C": "Synthesis of prodrugs",
+        "D": "Addition of polar groups"
+      },
+      "correct_option": "A",
+      "explanation": "Bioisosterism involves replacing atoms or groups with others having similar physicochemical or biological properties to modify drug characteristics while maintaining activity.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q3",
+      "subject": "Pharmaceutics",
+      "topic": "Biopharmaceutics",
+      "difficulty": "Medium",
+      "question_text": "<p>The bioavailability of a drug is defined as:</p>",
+      "options": {
+        "A": "Amount of drug reaching systemic circulation",
+        "B": "Rate of drug absorption",
+        "C": "Extent of drug distribution",
+        "D": "Rate of drug elimination"
+      },
+      "correct_option": "A",
+      "explanation": "Bioavailability refers to the fraction (extent) of administered drug that reaches the systemic circulation in unchanged form. It is typically expressed as a percentage.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q4",
+      "subject": "Pharmaceutical Analysis",
+      "topic": "Chromatography",
+      "difficulty": "Medium",
+      "question_text": "<p>In HPLC, retention time is primarily determined by:</p>",
+      "options": {
+        "A": "Column temperature",
+        "B": "Sample concentration",
+        "C": "Mobile phase composition",
+        "D": "Injection volume"
+      },
+      "correct_option": "C",
+      "explanation": "Retention time in HPLC is primarily determined by the mobile phase composition, which affects the interaction between analyte and stationary phase. Temperature also plays a role but is secondary.",
+      "marks": 4,
+      "negative_marks": -1
+    },
+    {
+      "question_id": "Q5",
+      "subject": "Pharmacognosy",
+      "topic": "Plant Alkaloids",
+      "difficulty": "Easy",
+      "question_text": "<p>Morphine belongs to which class of alkaloids?</p>",
+      "options": {
+        "A": "Tropane alkaloids",
+        "B": "Isoquinoline alkaloids",
+        "C": "Indole alkaloids",
+        "D": "Purine alkaloids"
+      },
+      "correct_option": "B",
+      "explanation": "Morphine is classified as an isoquinoline alkaloid derived from opium poppy. Tropane alkaloids include atropine, indole alkaloids include reserpine, and purine alkaloids include caffeine.",
+      "marks": 4,
+      "negative_marks": -1
+    }
+  ]
+}
