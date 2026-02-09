@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/admin/fix-rls
  * Fix RLS policies and ensure is_admin function exists

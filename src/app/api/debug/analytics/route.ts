@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/enrollments";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Debug endpoint to check analytics data
  * Only available in development

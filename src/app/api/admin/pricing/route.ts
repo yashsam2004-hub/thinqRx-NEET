@@ -4,6 +4,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
 const pricingSchema = z.object({
   courseId: z.string().uuid(),
   plan: z.enum(["free", "plus", "pro"]),
@@ -13,9 +15,6 @@ const pricingSchema = z.object({
   features: z.array(z.string()).optional(),
   limitations: z.array(z.string()).optional(),
 });
-
-// Cache pricing data for 5 minutes
-export const revalidate = 300;
 
 /**
  * GET /api/admin/pricing

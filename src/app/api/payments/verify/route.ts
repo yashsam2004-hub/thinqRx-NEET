@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = "force-dynamic";
+
 // Validation schema
 const VerifyPaymentSchema = z.object({
   razorpay_order_id: z.string(),

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserEnrollment } from "@/lib/enrollments";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/enrollments/:courseId
  * Get user's enrollment for a specific course

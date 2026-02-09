@@ -4,6 +4,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { syllabusImportSchema } from "@/lib/validation/syllabus";
 import { slugifyTopic } from "@/lib/syllabus/slug";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
   const { data: auth } = await supabase.auth.getUser();

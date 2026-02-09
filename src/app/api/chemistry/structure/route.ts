@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getChemicalStructureUrl } from "@/lib/chemistry/pubchem";
 
+export const dynamic = "force-dynamic";
+
 const reqSchema = z.object({
   name: z.string().min(1),
 });

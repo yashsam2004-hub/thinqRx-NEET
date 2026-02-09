@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getTopicImages } from "@/lib/images/searchImages";
 
+export const dynamic = "force-dynamic";
+
 const reqSchema = z.object({
   topicName: z.string().min(1),
   subjectName: z.string().default(""),

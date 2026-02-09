@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/enrollments";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/mock-tests/[testId]/start
  * Start a new test or resume existing attempt

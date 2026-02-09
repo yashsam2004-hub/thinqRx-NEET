@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { MockTestQuestion, QuestionResponse, SubjectPerformance } from "@/types/mock-test";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/mock-tests/[testId]/submit
  * Submit test and calculate scores

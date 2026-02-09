@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { MockTestData } from "@/types/mock-test";
 
+export const dynamic = "force-dynamic";
+
 /**
  * GET /api/admin/mock-tests
  * Fetch all mock tests for admin

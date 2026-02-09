@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
+export const dynamic = "force-dynamic";
+
 /**
  * CRITICAL: Verify Razorpay webhook signature
  */

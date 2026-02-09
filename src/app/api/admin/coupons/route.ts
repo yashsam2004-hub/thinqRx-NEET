@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
 const couponSchema = z.object({
   code: z.string().min(3).max(20).toUpperCase(),
   discountPercent: z.number().min(1).max(50),

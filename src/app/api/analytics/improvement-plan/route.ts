@@ -6,6 +6,8 @@ import { calculateOverallAnalytics, UserAttempt } from "@/lib/analytics/calculat
 import { generateImprovementPlan } from "@/lib/analytics/improvement-plan";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+
 const reqSchema = z.object({
   targetRank: z.number().int().positive().optional(),
 });

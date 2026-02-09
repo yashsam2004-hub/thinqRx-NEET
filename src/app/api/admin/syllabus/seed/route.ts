@@ -4,6 +4,8 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { seedSyllabus } from "@/lib/syllabus/seed";
 import { slugifyTopic } from "@/lib/syllabus/slug";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   // Require authenticated admin session (RLS check via user client).
   const supabase = await createSupabaseServerClient();

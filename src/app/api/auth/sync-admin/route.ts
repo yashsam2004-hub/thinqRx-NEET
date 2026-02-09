@@ -3,6 +3,8 @@ import { getAdminAllowlist } from "@/lib/env";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();

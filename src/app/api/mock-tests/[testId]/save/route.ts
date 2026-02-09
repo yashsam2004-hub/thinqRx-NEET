@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { QuestionResponse, TestSession } from "@/types/mock-test";
 
+export const dynamic = "force-dynamic";
+
 /**
  * PUT /api/mock-tests/[testId]/save
  * Save test progress (auto-save)

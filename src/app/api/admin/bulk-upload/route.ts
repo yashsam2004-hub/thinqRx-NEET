@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { parseCSV, parseJSON, type ParsedQuestion } from "@/lib/bulk-upload/csv-parser";
 
+export const dynamic = "force-dynamic";
+
 /**
  * POST /api/admin/bulk-upload
  * Bulk upload questions from CSV/JSON

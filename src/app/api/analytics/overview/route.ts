@@ -7,6 +7,8 @@ import {
 } from "@/lib/analytics/calculate";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const supabase = await createSupabaseServerClient();

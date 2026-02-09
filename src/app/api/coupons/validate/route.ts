@@ -3,6 +3,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { validateCoupon } from "@/lib/coupons/validate";
 import { z } from "zod";
 
+export const dynamic = "force-dynamic";
+
 const reqSchema = z.object({
   code: z.string().min(1),
   courseId: z.string().uuid(),

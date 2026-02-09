@@ -12,6 +12,8 @@ import { getOpenAIClient, getOpenAIModel } from "@/lib/ai/openai";
 import { buildStructureEnhancementPrompt, STRUCTURE_ENHANCEMENT_SYSTEM_PROMPT } from "@/lib/ai/structurePrompts";
 import { notesSchema } from "@/lib/ai/schemas";
 
+export const dynamic = "force-dynamic";
+
 const requestSchema = z.object({
   subjectName: z.string(),
   topicName: z.string(),

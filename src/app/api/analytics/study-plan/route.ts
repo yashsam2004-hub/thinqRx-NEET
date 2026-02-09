@@ -5,6 +5,8 @@ import { calculateOverallAnalytics, UserAttempt } from "@/lib/analytics/calculat
 import { generateStudyPlan } from "@/lib/analytics/study-plan";
 import { ApiError, handleApiError } from "@/lib/api-error";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const supabase = await createSupabaseServerClient();

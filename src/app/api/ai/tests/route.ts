@@ -7,6 +7,8 @@ import { checkPracticeTestLimit } from "@/lib/redis/rate-limit";
 import { getUserPlan, hasAccessToCourse, canAccessPremiumContent } from "@/lib/enrollments";
 import { trackTokenUsage, trackFeatureUsage } from "@/lib/redis/usage";
 
+export const dynamic = "force-dynamic";
+
 const reqSchema = z.object({
   topicId: z.string().uuid(),
   courseId: z.string().uuid().optional(), // Optional for backward compatibility

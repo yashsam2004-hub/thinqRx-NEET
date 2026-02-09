@@ -3,6 +3,8 @@ import Razorpay from 'razorpay';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
+export const dynamic = "force-dynamic";
+
 // Validation schema
 const CreateOrderSchema = z.object({
   planId: z.enum(['PLUS', 'PRO']),
