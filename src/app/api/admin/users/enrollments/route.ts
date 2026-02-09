@@ -80,14 +80,14 @@ export async function GET() {
         
         if (userData?.user) {
           userMap.set(userId, {
-            email: String(userData.user.email || profileEmail || "Unknown"),
+            email: String(userData.user.email || profileEmail?.email || "Unknown"),
             name: userData.user.user_metadata?.full_name || 
                   userData.user.user_metadata?.name || null,
           });
         } else {
           // Fallback to profile email
           userMap.set(userId, { 
-            email: String(profileEmail || "Unknown"), 
+            email: String(profileEmail?.email || "Unknown"), 
             name: null 
           });
         }
@@ -95,7 +95,7 @@ export async function GET() {
         console.error(`Error fetching user ${userId}:`, err);
         // Fallback to profile email
         userMap.set(userId, { 
-          email: profileEmail || "Unknown", 
+          email: String(profileEmail?.email || "Unknown"), 
           name: null 
         });
       }
