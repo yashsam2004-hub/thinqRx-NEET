@@ -144,7 +144,7 @@ export default function ResultsClient({
                 {metadata.incorrect_count}
               </p>
               <p className="text-sm text-red-600 font-semibold">
-                {metadata.incorrect_count * (mockTest.negative_marks || -1).toFixed(1)} marks
+                {(metadata.incorrect_count * (mockTest.negative_marking_value || -1)).toFixed(1)} marks
               </p>
             </div>
 
@@ -171,9 +171,9 @@ export default function ResultsClient({
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600">Incorrect Answers ({metadata.incorrect_count} × {mockTest.negative_marks || -1}):</span>
+                  <span className="text-slate-600">Incorrect Answers ({metadata.incorrect_count} × {mockTest.negative_marking_value || -1}):</span>
                   <span className="font-semibold text-red-700">
-                    {(metadata.incorrect_count * (mockTest.negative_marks || -1)).toFixed(1)}
+                    {(metadata.incorrect_count * (mockTest.negative_marking_value || -1)).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
@@ -310,7 +310,7 @@ export default function ResultsClient({
                 ? 0 
                 : isCorrect 
                 ? (mockTest.marks_per_question || 4)
-                : (mockTest.negative_marks || -1);
+                : (mockTest.negative_marking_value || -1);
 
               return (
                 <div
@@ -360,7 +360,7 @@ export default function ResultsClient({
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded border-2 border-red-500 bg-red-50 flex items-center justify-center text-red-700 font-bold">B</div>
-                <span className="text-slate-600">Incorrect ({mockTest.negative_marks || -1})</span>
+                <span className="text-slate-600">Incorrect ({mockTest.negative_marking_value || -1})</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded border-2 border-slate-300 bg-slate-50 flex items-center justify-center text-slate-700 font-bold">-</div>
@@ -462,7 +462,7 @@ export default function ResultsClient({
                         ) : (
                           <>
                             <XCircle className="h-3 w-3 mr-1" />
-                            Incorrect ({mockTest.negative_marks || -1})
+                            Incorrect ({mockTest.negative_marking_value || -1})
                           </>
                         )}
                       </Badge>
