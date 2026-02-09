@@ -23,11 +23,13 @@ import {
   TrendingDown,
   X
 } from "lucide-react";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 import { Navigation } from "@/components/Navigation";
+import { PricingCTA } from "@/components/PricingCTA";
 
-// Revalidate pricing data every 60 seconds (or on-demand)
-export const revalidate = 60;
+// Revalidate pricing data every 5 minutes
+export const revalidate = 300;
 
 interface PricingData {
   free: { monthlyPrice: number; annualPrice: number; validityDays: number | null; features: string[]; limitations: string[] };
@@ -44,29 +46,35 @@ interface PricingRow {
   limitations: string[];
 }
 
-async function getPricingData(): Promise<PricingData> {
-  try {
-    const supabase = await createSupabaseServerClient();
-    
-    // Fetch GPAT course pricing
-    const { data: course } = await supabase
-      .from("courses")
-      .select("id")
-      .eq("code", "gpat")
-      .single();
+// Anonymous Supabase client for public data (no cookies, fully cacheable)
+const supabaseAnon = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
-    if (!course) {
-      return getDefaultPricing();
-    }
+// Cached pricing data fetch (5 minutes)
+const getCachedPricingData = unstable_cache(
+  async (): Promise<PricingData> => {
+    try {
+      // Fetch GPAT course pricing
+      const { data: course } = await supabaseAnon
+        .from("courses")
+        .select("id")
+        .eq("code", "gpat")
+        .single();
 
-    const { data: pricing } = await supabase
-      .from("course_pricing")
-      .select("*")
-      .eq("course_id", course.id);
+      if (!course) {
+        return getDefaultPricing();
+      }
 
-    if (!pricing || pricing.length === 0) {
-      return getDefaultPricing();
-    }
+      const { data: pricing } = await supabaseAnon
+        .from("course_pricing")
+        .select("*")
+        .eq("course_id", course.id);
+
+      if (!pricing || pricing.length === 0) {
+        return getDefaultPricing();
+      }
 
     // Transform pricing data
     const pricingMap: PricingData = {
@@ -88,10 +96,17 @@ async function getPricingData(): Promise<PricingData> {
       }
     });
 
-    return pricingMap;
-  } catch (error) {
-    return getDefaultPricing();
-  }
+      return pricingMap;
+    } catch (error) {
+      return getDefaultPricing();
+    }
+  },
+  ["pricing-data"],
+  { revalidate: 300, tags: ["pricing"] }
+);
+
+async function getPricingData(): Promise<PricingData> {
+  return getCachedPricingData();
 }
 
 function getDefaultPricing(): PricingData {
@@ -356,17 +371,16 @@ export default async function PricingPage() {
                 )}
 
                 {/* CTA Button */}
-                <a
-                  href={plan.href}
+                <PricingCTA
+                  plan={plan.name.toLowerCase() as "free" | "plus" | "pro"}
+                  text={plan.cta}
+                  variant={plan.highlighted ? "default" : "outline"}
                   className={`group flex items-center justify-center gap-2 rounded-xl py-4 text-center text-sm font-bold transition-all ${
                     plan.highlighted
-                      ? `bg-gradient-to-r ${plan.gradient} text-white shadow-lg hover:shadow-xl hover:scale-105 animate-pulse`
+                      ? `bg-gradient-to-r ${plan.gradient} text-white shadow-lg hover:shadow-xl hover:scale-105`
                       : "border-2 border-slate-300 bg-white text-slate-900 hover:border-slate-400 hover:bg-slate-50"
                   }`}
-                >
-                  {plan.cta}
-                  <Rocket className="h-4 w-4 group-hover:scale-110 transition-transform" />
-                </a>
+                />
 
                 {/* Trust Signal */}
                 {plan.highlighted && (
@@ -442,20 +456,17 @@ export default async function PricingPage() {
               Join students preparing for pharmacy competitive exams with structured study materials and practice tests.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/signup"
+              <PricingCTA
+                plan="free"
+                text="Start Free Today"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-lg font-bold text-purple-600 shadow-xl hover:scale-105 transition-transform"
-              >
-                <Rocket className="h-5 w-5" />
-                Start Free Today
-              </Link>
-              <Link
-                href="/signup?plan=pro"
+              />
+              <PricingCTA
+                plan="pro"
+                text="Go Pro Now"
+                variant="outline"
                 className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white bg-transparent px-8 py-4 text-lg font-bold text-white hover:bg-white hover:text-purple-600 transition-all"
-              >
-                <Crown className="h-5 w-5" />
-                Go Pro Now
-              </Link>
+              />
             </div>
             <p className="text-white/80 text-sm mt-6">
               ✅ No credit card required • ✅ Start instantly • ✅ Cancel anytime

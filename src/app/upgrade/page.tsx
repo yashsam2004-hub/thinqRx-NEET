@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ interface PricingPlan {
 
 export default function UpgradePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { loading: razorpayLoading, initiatePayment } = useRazorpay();
   const [user, setUser] = React.useState<any>(null);
   const [currentPlan, setCurrentPlan] = React.useState<string>("free");
@@ -41,6 +42,14 @@ export default function UpgradePage() {
   const [selectedPlan, setSelectedPlan] = React.useState<"plus" | "pro">("pro");
   const [billingCycle, setBillingCycle] = React.useState<"monthly" | "annual">("monthly");
   const [pricing, setPricing] = React.useState<Record<string, PricingPlan>>({});
+
+  // Pre-select plan from URL query parameter
+  React.useEffect(() => {
+    const planParam = searchParams.get("plan");
+    if (planParam === "plus" || planParam === "pro") {
+      setSelectedPlan(planParam);
+    }
+  }, [searchParams]);
 
   // Fetch user and pricing data
   React.useEffect(() => {
