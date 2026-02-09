@@ -48,6 +48,11 @@ export default function ResultsClient({
   const timeSpentHours = Math.floor(timeSpentMinutes / 60);
   const timeSpentRemainingMinutes = timeSpentMinutes % 60;
 
+  // Calculate marks per question (derived from total_marks / total_questions)
+  const marksPerQuestion = mockTest.total_questions > 0 
+    ? mockTest.total_marks / mockTest.total_questions 
+    : 4;
+
   // Get percentage
   const percentage = (attempt.score / mockTest.total_marks) * 100;
 
@@ -134,7 +139,7 @@ export default function ResultsClient({
                 {metadata.correct_count}
               </p>
               <p className="text-sm text-emerald-600 font-semibold">
-                +{(metadata.correct_count * (mockTest.marks_per_question || 4)).toFixed(1)} marks
+                +{(metadata.correct_count * marksPerQuestion).toFixed(1)} marks
               </p>
             </div>
 
@@ -165,9 +170,9 @@ export default function ResultsClient({
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-600">Correct Answers ({metadata.correct_count} × {mockTest.marks_per_question || 4}):</span>
+                  <span className="text-slate-600">Correct Answers ({metadata.correct_count} × {marksPerQuestion}):</span>
                   <span className="font-semibold text-emerald-700">
-                    +{(metadata.correct_count * (mockTest.marks_per_question || 4)).toFixed(1)}
+                    +{(metadata.correct_count * marksPerQuestion).toFixed(1)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
@@ -309,7 +314,7 @@ export default function ResultsClient({
               const marks = isSkipped 
                 ? 0 
                 : isCorrect 
-                ? (mockTest.marks_per_question || 4)
+                ? marksPerQuestion
                 : (mockTest.negative_marking_value || -1);
 
               return (
@@ -356,7 +361,7 @@ export default function ResultsClient({
             <div className="flex flex-wrap gap-4 text-xs">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded border-2 border-emerald-500 bg-emerald-50 flex items-center justify-center text-emerald-700 font-bold">A</div>
-                <span className="text-slate-600">Correct (+{mockTest.marks_per_question || 4})</span>
+                <span className="text-slate-600">Correct (+{marksPerQuestion})</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded border-2 border-red-500 bg-red-50 flex items-center justify-center text-red-700 font-bold">B</div>
@@ -457,7 +462,7 @@ export default function ResultsClient({
                         ) : isCorrect ? (
                           <>
                             <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Correct (+{mockTest.marks_per_question || 4})
+                            Correct (+{marksPerQuestion})
                           </>
                         ) : (
                           <>

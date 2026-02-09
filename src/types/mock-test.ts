@@ -61,7 +61,6 @@ export interface MockTest {
   duration_minutes: number;
   negative_marking: boolean;
   negative_marking_value: number;
-  marks_per_question?: number; // Optional: marks per correct answer (default: 4)
   instructions?: string[];
   status: "draft" | "published" | "archived";
   created_by: string;
