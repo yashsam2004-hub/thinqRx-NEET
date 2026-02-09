@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import crypto from 'crypto';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -57,7 +56,7 @@ function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
 export async function POST(req: NextRequest) {
   try {
     // 1. Authenticate user
-    const supabase = createSupabaseServerClient(cookies());
+    const supabase = await createSupabaseServerClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
