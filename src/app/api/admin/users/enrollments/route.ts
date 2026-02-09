@@ -132,6 +132,7 @@ export async function GET() {
     const enrichedEnrollments = enrollments.map((enrollment) => {
       const user = userMap.get(enrollment.user_id);
       const course = courseMap.get(enrollment.course_id);
+      const profile = profileMap.get(enrollment.user_id);
 
       return {
         userId: enrollment.user_id,
@@ -141,7 +142,7 @@ export async function GET() {
         courseCode: course?.code || "Unknown",
         plan: enrollment.plan,
         status: enrollment.status,
-        userStatus: user?.status || "active",
+        userStatus: profile?.status || "active",
         enrolledAt: enrollment.created_at,
         validUntil: enrollment.valid_until,
         totalAttempts: attemptsMap.get(enrollment.user_id) || 0,
