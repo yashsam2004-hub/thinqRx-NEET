@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import Razorpay from 'razorpay';
 import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -20,7 +21,7 @@ const PRICING = {
 export async function POST(req: NextRequest) {
   try {
     // 1. Authenticate user
-    const supabase = await createSupabaseServerClient(req);
+    const supabase = createSupabaseServerClient(cookies());
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
