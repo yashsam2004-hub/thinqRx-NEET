@@ -88,7 +88,7 @@ export default function UpgradePage() {
 
           if (pricingData) {
             const pricingMap: Record<string, PricingPlan> = {};
-            pricingData.forEach((p: any) => {
+            pricingData.forEach((p: PricingPlan) => {
               pricingMap[p.plan] = {
                 plan: p.plan,
                 monthly_price: p.monthly_price,

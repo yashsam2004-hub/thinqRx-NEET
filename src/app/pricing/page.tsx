@@ -35,6 +35,15 @@ interface PricingData {
   pro: { monthlyPrice: number; annualPrice: number; validityDays: number | null; features: string[]; limitations: string[] };
 }
 
+interface PricingRow {
+  plan: string;
+  monthly_price: number;
+  annual_price: number;
+  validity_days: number | null;
+  features: string[];
+  limitations: string[];
+}
+
 async function getPricingData(): Promise<PricingData> {
   try {
     const supabase = await createSupabaseServerClient();
@@ -66,9 +75,10 @@ async function getPricingData(): Promise<PricingData> {
       pro: { monthlyPrice: 0, annualPrice: 0, validityDays: 365, features: [], limitations: [] },
     };
 
-    pricing.forEach((p: any) => {
-      if (p.plan === "free" || p.plan === "plus" || p.plan === "pro") {
-        pricingMap[p.plan] = {
+    pricing.forEach((p: PricingRow) => {
+      const planKey = p.plan.toLowerCase();
+      if (planKey === "free" || planKey === "plus" || planKey === "pro") {
+        pricingMap[planKey as keyof PricingData] = {
           monthlyPrice: p.monthly_price || 0,
           annualPrice: p.annual_price || 0,
           validityDays: p.validity_days,
