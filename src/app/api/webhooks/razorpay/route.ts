@@ -237,10 +237,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true });
   }
 }
-
-// Disable body parsing to get raw body for signature verification
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};

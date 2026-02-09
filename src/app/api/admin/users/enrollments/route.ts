@@ -80,14 +80,14 @@ export async function GET() {
         
         if (userData?.user) {
           userMap.set(userId, {
-            email: userData.user.email || profileEmail || "Unknown",
+            email: String(userData.user.email || profileEmail || "Unknown"),
             name: userData.user.user_metadata?.full_name || 
                   userData.user.user_metadata?.name || null,
           });
         } else {
           // Fallback to profile email
           userMap.set(userId, { 
-            email: profileEmail || "Unknown", 
+            email: String(profileEmail || "Unknown"), 
             name: null 
           });
         }
