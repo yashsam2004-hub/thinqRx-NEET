@@ -181,7 +181,6 @@ export default async function PricingPage() {
         monthly: { price: `₹${pricingData.plus.monthlyPrice}`, label: "per month" },
         annual: { price: `₹${pricingData.plus.annualPrice}`, label: "per year", savings: `Save ₹${pricingData.plus.monthlyPrice * 12 - pricingData.plus.annualPrice}` },
       } : null,
-      note: "Valid for 365 days from purchase",
       valueStatement: pricingData.plus.annualPrice > 0 ? `Save ₹${pricingData.plus.monthlyPrice * 12 - pricingData.plus.annualPrice} vs monthly` : `Only ₹${pricingData.plus.monthlyPrice}/month`,
       savingsAmount: pricingData.plus.annualPrice > 0 ? `₹${pricingData.plus.monthlyPrice * 12 - pricingData.plus.annualPrice}` : null,
     },

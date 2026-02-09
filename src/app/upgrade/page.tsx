@@ -165,15 +165,14 @@ export default function UpgradePage() {
     );
   }
 
-  const annualSavings =
-    selectedPlan !== "free" && pricing[selectedPlan]
-      ? Math.round(
-          ((pricing[selectedPlan].monthly_price * 12 -
-            pricing[selectedPlan].annual_price) /
-            (pricing[selectedPlan].monthly_price * 12)) *
-            100
-        )
-      : 20;
+  const annualSavings = pricing[selectedPlan]
+    ? Math.round(
+        ((pricing[selectedPlan].monthly_price * 12 -
+          pricing[selectedPlan].annual_price) /
+          (pricing[selectedPlan].monthly_price * 12)) *
+          100
+      )
+    : 20;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 py-12 px-6">
