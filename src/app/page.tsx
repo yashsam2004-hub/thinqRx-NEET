@@ -278,35 +278,35 @@ export default function HomePage() {
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Study Material Card */}
-              <Card className="p-8 hover:shadow-2xl transition-all duration-300 border-2 border-teal-100">
+              <Card className="p-8 hover:shadow-2xl transition-all duration-300 border-2 border-teal-100 dark:border-teal-900 dark:bg-slate-900">
                 <div className="mb-6">
-                  <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100 mb-4">
-                    <BookOpen className="h-10 w-10 text-teal-600" />
+                  <div className="inline-flex p-4 rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-950 dark:to-teal-900 mb-4">
+                    <BookOpen className="h-10 w-10 text-teal-600 dark:text-teal-400" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                     AI-Powered Study Material
                   </h3>
-                  <p className="text-slate-600 mb-6">
+                  <p className="text-slate-600 dark:text-slate-300 mb-6">
                     Comprehensive notes aligned with PCI syllabus, generated and organized by AI for efficient learning
                   </p>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">All 4 GPAT subjects covered comprehensively</span>
+                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">All 4 GPAT subjects covered comprehensively</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Topic-wise organized content with visual aids</span>
+                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Topic-wise organized content with visual aids</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Chemical structures and diagrams included</span>
+                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Chemical structures and diagrams included</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Quick revision guides for last-minute prep</span>
+                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Quick revision guides for last-minute prep</span>
                   </li>
                 </ul>
 
@@ -327,27 +327,27 @@ export default function HomePage() {
                   <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                     GPAT-Pattern Mock Tests
                   </h3>
-                  <p className="text-slate-600 mb-6">
+                  <p className="text-slate-600 dark:text-slate-300 mb-6">
                     Practice with full-length CBT-style mock tests that mirror the actual GPAT exam experience
                   </p>
                 </div>
 
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">125 MCQs • 3 hours • +4/-1 marking scheme</span>
+                    <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">125 MCQs • 3 hours • +4/-1 marking scheme</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Computer-based test interface simulation</span>
+                    <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Computer-based test interface simulation</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Detailed answer explanations for every question</span>
+                    <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Detailed answer explanations for every question</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700">Subject-wise and difficulty-wise breakdown</span>
+                    <CheckCircle2 className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-slate-700 dark:text-slate-300">Subject-wise and difficulty-wise breakdown</span>
                   </li>
                 </ul>
 
