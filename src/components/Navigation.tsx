@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { User, LogOut, Menu, X, Home, BookOpen, Tag, Info } from "lucide-react";
+import { User, LogOut, Menu, X, Home, BookOpen, Tag, Info, Loader2 } from "lucide-react";
 import { PLATFORM } from "@/config/platform";
 import { useAuth } from "@/contexts/AuthContext";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -20,6 +20,7 @@ export function Navigation({ showAuthButtons = true }: NavigationProps) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
+  const [loggingOut, setLoggingOut] = React.useState(false);
 
   // Main navigation items
   const navItems = [
@@ -111,15 +112,37 @@ export function Navigation({ showAuthButtons = true }: NavigationProps) {
                         </Link>
                         <hr className="my-1 border-slate-200 dark:border-slate-700" />
                         <button
-                          onClick={async () => {
-                            await signOut();
-                            setUserMenuOpen(false);
-                            window.location.href = "/";
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (loggingOut) return;
+                            
+                            setLoggingOut(true);
+                            try {
+                              setUserMenuOpen(false);
+                              await signOut();
+                              // Force reload to clear all state
+                              window.location.href = "/";
+                            } catch (error) {
+                              console.error("Logout error:", error);
+                              // Force logout even if signOut fails
+                              window.location.href = "/";
+                            }
                           }}
-                          className="flex w-full items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          disabled={loggingOut}
+                          className="flex w-full items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <LogOut className="h-4 w-4" />
-                          Logout
+                          {loggingOut ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Logging out...
+                            </>
+                          ) : (
+                            <>
+                              <LogOut className="h-4 w-4" />
+                              Logout
+                            </>
+                          )}
                         </button>
                       </div>
                     </>
@@ -203,15 +226,37 @@ export function Navigation({ showAuthButtons = true }: NavigationProps) {
                       Analytics
                     </Link>
                     <button
-                      onClick={async () => {
-                        await signOut();
-                        setMobileOpen(false);
-                        window.location.href = "/";
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (loggingOut) return;
+                        
+                        setLoggingOut(true);
+                        try {
+                          setMobileOpen(false);
+                          await signOut();
+                          // Force reload to clear all state
+                          window.location.href = "/";
+                        } catch (error) {
+                          console.error("Logout error:", error);
+                          // Force logout even if signOut fails
+                          window.location.href = "/";
+                        }
                       }}
-                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      disabled={loggingOut}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <LogOut className="h-4 w-4" />
-                      Logout
+                      {loggingOut ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Logging out...
+                        </>
+                      ) : (
+                        <>
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </>
+                      )}
                     </button>
                   </>
                 ) : (
