@@ -155,12 +155,30 @@ export async function POST(req: NextRequest) {
         amount: amountInINR,
         currency: 'INR',
         status: 'pending',
+        created_at: new Date().toISOString(),
+        // Explicitly set nullable fields to avoid NOT NULL violations
+        razorpay_payment_id: null,
+        completed_at: null,
+        notes: null,
       });
 
     if (dbError) {
-      console.error('[Razorpay] Failed to store pending payment in DB:', dbError);
+      console.error('[Razorpay] Failed to store pending payment in DB:', {
+        error: dbError,
+        code: dbError.code,
+        message: dbError.message,
+        details: dbError.details,
+        hint: dbError.hint,
+      });
       // IMPORTANT: Don't fail the request - Razorpay order is already created
       // Payment can still be tracked via webhook
+      
+      // Return warning in development mode
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[Razorpay] ⚠️  Payment created but not stored in DB. Check database schema.');
+      }
+    } else {
+      console.log('[Razorpay] ✅ Payment record stored in database');
     }
 
     // 10. Return order details to frontend (NEVER expose key_secret)

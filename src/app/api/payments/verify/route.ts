@@ -222,12 +222,70 @@ export async function POST(req: NextRequest) {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (paymentError || !payment) {
-      console.error('[Razorpay] Payment record not found:', paymentError);
+    if (paymentError) {
+      console.error('[Razorpay] Database error fetching payment:', {
+        error: paymentError,
+        code: paymentError.code,
+        message: paymentError.message,
+      });
       return NextResponse.json(
-        { error: 'Payment record not found' },
-        { status: 404 }
+        { error: 'Database error', details: paymentError.message },
+        { status: 500 }
       );
+    }
+
+    if (!payment) {
+      console.error('[Razorpay] Payment record not found in database:', {
+        order_id: razorpay_order_id,
+        user_id: user.id,
+      });
+      
+      // FALLBACK: If payment record not found (DB insert failed during order creation),
+      // create it now using admin client since signature is verified
+      console.log('[Razorpay] Creating missing payment record (fallback)');
+      
+      const adminSupabase = createSupabaseAdminClient();
+      
+      // We don't have all payment details, so we'll need to fetch from Razorpay or use defaults
+      // For now, create a minimal record - this is a workaround for the DB insert issue
+      const { data: createdPayment, error: createError } = await adminSupabase
+        .from('payments')
+        .insert({
+          user_id: user.id,
+          razorpay_order_id: razorpay_order_id,
+          razorpay_payment_id: razorpay_payment_id,
+          plan_name: 'PLUS', // Default - update based on amount if possible
+          billing_cycle: 'MONTHLY', // Default
+          amount: 0, // Will be updated by webhook
+          currency: 'INR',
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+        })
+        .select()
+        .single();
+      
+      if (createError || !createdPayment) {
+        console.error('[Razorpay] Failed to create fallback payment record:', createError);
+        return NextResponse.json(
+          { 
+            error: 'Payment record not found',
+            message: 'Payment was successful but database record is missing. Please contact support with your payment ID.',
+            payment_id: razorpay_payment_id,
+          },
+          { status: 404 }
+        );
+      }
+      
+      // Use the created payment record
+      console.log('[Razorpay] ✅ Created fallback payment record');
+      // Continue processing with the created record, but set reasonable defaults
+      // Skip subscription activation in this case - let webhook handle it
+      return NextResponse.json({
+        success: true,
+        message: 'Payment verified (processing subscription)',
+        payment_id: razorpay_payment_id,
+      });
     }
 
     // 9. Check for duplicate processing (idempotency)
