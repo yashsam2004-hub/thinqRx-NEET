@@ -299,6 +299,56 @@
     outline-offset: 2px;
     border-radius: 0.375rem;
   }
+  
+  /* ========================================
+     CRITICAL FIX: Dark Mode Form Element Text Visibility
+     ======================================== */
+  /* Ensure ALL form inputs have visible text in dark mode
+     This fixes the global issue where text was invisible until selected */
+  
+  input,
+  textarea,
+  select {
+    color: var(--foreground);
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--muted-foreground);
+    opacity: 0.7;
+  }
+  
+  /* Ensure caret (cursor) is visible in dark mode */
+  input,
+  textarea {
+    caret-color: currentColor;
+  }
+  
+  /* Dark mode specific overrides for maximum visibility */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    color: var(--text-primary); /* Explicitly use slate-100 equivalent */
+  }
+  
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: var(--text-muted); /* slate-400 equivalent */
+    opacity: 1;
+  }
+  
+  /* Selection (highlight) colors for readability */
+  input::selection,
+  textarea::selection {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  
+  .dark input::selection,
+  .dark textarea::selection {
+    background-color: rgba(20, 184, 166, 0.3);
+    color: var(--text-primary);
+  }
 }
 
 /* ========================================
