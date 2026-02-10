@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import { User } from '@supabase/supabase-js';
+import { useAuth } from './AuthContext'; // Use AuthContext user
 
 interface SubscriptionData {
   plan: 'Free' | 'Plus' | 'Pro';
@@ -12,7 +12,6 @@ interface SubscriptionData {
 }
 
 interface SubscriptionContextType {
-  user: User | null;
   subscription: SubscriptionData | null;
   loading: boolean;
   isSubscribed: boolean;
@@ -28,10 +27,10 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(u
  * Subscription Provider
  * 
  * Manages user subscription state globally
- * Provides helper functions to check subscription status
+ * Uses AuthContext for user state to avoid duplicate listeners
  */
 export function SubscriptionProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const { user } = useAuth(); // Get user from AuthContext
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -89,46 +88,25 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [user, fetchSubscription]);
 
   /**
-   * Initialize subscription on mount and auth changes
+   * CRITICAL FIX: Use AuthContext user instead of registering separate auth listener
+   * - Prevents duplicate auth listeners (AuthContext already handles this)
+   * - Only fetch subscription when user changes
+   * - Avoids infinite loop from fetchSubscription dependency
    */
   useEffect(() => {
-    const supabase = createSupabaseBrowserClient();
+    if (!user) {
+      setSubscription(null);
+      setLoading(false);
+      return;
+    }
 
-    // Get initial user
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      
-      if (user) {
-        fetchSubscription(user.id).then((data) => {
-          setSubscription(data);
-          setLoading(false);
-        });
-      } else {
-        setLoading(false);
-      }
+    // Fetch subscription for current user
+    console.log('[Subscription] Fetching subscription for user:', user.id);
+    fetchSubscription(user.id).then((data) => {
+      setSubscription(data);
+      setLoading(false);
     });
-
-    // Listen for auth changes
-    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('[Subscription] Auth state changed:', event);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          const data = await fetchSubscription(session.user.id);
-          setSubscription(data);
-        } else {
-          setSubscription(null);
-        }
-
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      authSubscription.unsubscribe();
-    };
-  }, [fetchSubscription]);
+  }, [user?.id]); // Only re-run when user ID changes (not fetchSubscription)
 
   // Helper: Check if user has any active subscription
   const isSubscribed = React.useMemo(() => {
@@ -169,7 +147,6 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [isPlus, isPro]);
 
   const value: SubscriptionContextType = {
-    user,
     subscription,
     loading,
     isSubscribed,

@@ -232,9 +232,14 @@ export default function NotesLayout({
     }
   }, [notes, isEnhancing, subjectName, topicName]);
 
+  // CRITICAL FIX: Call generate ONCE on mount, not on every generate function change
+  const hasGenerated = React.useRef(false);
   React.useEffect(() => {
-    generate(false);
-  }, [generate]);
+    if (!hasGenerated.current) {
+      hasGenerated.current = true;
+      generate(false);
+    }
+  }, []); // Empty deps = runs once on mount
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-6 sm:py-8">

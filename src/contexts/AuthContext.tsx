@@ -18,93 +18,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createSupabaseBrowserClient();
+  // Create Supabase client ONCE, not on every render
+  const [supabase] = useState(() => createSupabaseBrowserClient());
 
-  // Load session on mount
-  const loadSession = useCallback(async () => {
-    try {
-      const { data: { session: currentSession }, error } = await supabase.auth.getSession();
-      
+  /**
+   * CRITICAL FIX: Register auth listener EXACTLY ONCE on mount
+   * - No dependencies means this runs once and never re-registers
+   * - Prevents infinite loop from loadSession recreation
+   * - Auth listener handles all state changes (login, logout, token refresh)
+   */
+  useEffect(() => {
+    // Initial session load
+    supabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
       if (error) {
         console.error("Error loading session:", error);
-        setSession(null);
-        setUser(null);
-        setIsLoading(false);
-        return;
       }
-      
-      // Check if session is expired
-      if (currentSession?.expires_at) {
-        const expiresAt = currentSession.expires_at * 1000; // Convert to ms
-        if (Date.now() >= expiresAt) {
-          console.warn("Session expired, refreshing...");
-          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-          if (refreshError || !refreshData.session) {
-            console.error("Failed to refresh expired session");
-            setSession(null);
-            setUser(null);
-          } else {
-            setSession(refreshData.session);
-            setUser(refreshData.session.user);
-          }
-        } else {
-          setSession(currentSession);
-          setUser(currentSession.user);
-        }
-      } else {
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-      }
-    } catch (error) {
-      console.error("Failed to load session:", error);
-      setSession(null);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [supabase.auth]);
-
-  useEffect(() => {
-    loadSession();
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log("Auth state changed:", event);
-      
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-
-      // Don't auto sign-out unless explicitly requested
-      if (event === "SIGNED_OUT") {
-        setSession(null);
-        setUser(null);
-      }
+      setIsLoading(false);
     });
 
+    // Listen for auth state changes (login, logout, token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, currentSession) => {
+        console.log("Auth state changed:", event);
+        
+        // Update state immediately for all events
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+
+        // Explicit logout handling
+        if (event === "SIGNED_OUT") {
+          setSession(null);
+          setUser(null);
+        }
+
+        // Stop loading on any auth event
+        setIsLoading(false);
+      }
+    );
+
+    // Cleanup: unsubscribe on unmount
     return () => {
       subscription.unsubscribe();
     };
-  }, [loadSession, supabase.auth]);
+  }, []); // EMPTY DEPS = runs once on mount, never again
 
-  // Sign out function
+  /**
+   * Sign out function
+   * - Calls Supabase signOut (triggers SIGNED_OUT event)
+   * - Clears localStorage
+   * - Auth listener will handle state updates
+   */
   const signOut = useCallback(async () => {
     try {
       await supabase.auth.signOut();
-      setSession(null);
-      setUser(null);
       // Clear all localStorage to remove cached data
       localStorage.clear();
+      // State will be cleared by onAuthStateChange listener
     } catch (error) {
       console.error("Error signing out:", error);
-      // Clear localStorage even if signOut fails
+      // Force clear state even if API fails
+      setSession(null);
+      setUser(null);
       localStorage.clear();
     }
-  }, [supabase.auth]);
+  }, []); // No deps - supabase client is stable
 
-  // Refresh session manually
+  /**
+   * Refresh session manually
+   * - Useful for checking auth status after navigation
+   */
   const refreshSession = useCallback(async () => {
-    await loadSession();
-  }, [loadSession]);
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    setSession(currentSession);
+    setUser(currentSession?.user ?? null);
+  }, []); // No deps - supabase client is stable
 
   const value: AuthContextType = {
     user,

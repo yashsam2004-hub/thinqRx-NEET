@@ -101,14 +101,31 @@ export default function CBTTestInterface({
     return () => clearInterval(timer);
   }, []);
 
-  // Auto-save every 10 seconds
+  // Auto-save every 10 seconds (FIXED: Use useRef to prevent interval recreation)
+  const saveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const responsesRef = useRef(responses);
+  const currentQuestionIndexRef = useRef(currentQuestionIndex);
+  const timeRemainingRef = useRef(timeRemaining);
+
+  // Keep refs in sync with state
   useEffect(() => {
-    const interval = setInterval(() => {
+    responsesRef.current = responses;
+    currentQuestionIndexRef.current = currentQuestionIndex;
+    timeRemainingRef.current = timeRemaining;
+  }, [responses, currentQuestionIndex, timeRemaining]);
+
+  // Start auto-save interval ONCE on mount
+  useEffect(() => {
+    saveIntervalRef.current = setInterval(() => {
       saveProgress();
     }, 10000);
 
-    return () => clearInterval(interval);
-  }, [responses, currentQuestionIndex, timeRemaining]);
+    return () => {
+      if (saveIntervalRef.current) {
+        clearInterval(saveIntervalRef.current);
+      }
+    };
+  }, []); // Empty deps = runs once
 
   const saveProgress = useCallback(async () => {
     try {
