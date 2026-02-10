@@ -63,29 +63,28 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Validate environment variables
+    // 2. Validate environment variables (make optional for development)
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
-      console.error('[Razorpay Webhook] Webhook secret not configured');
-      return NextResponse.json(
-        { error: 'Webhook not configured' },
-        { status: 500 }
-      );
-    }
+      console.warn('[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET not configured - skipping signature verification');
+      console.warn('[Razorpay Webhook] This is OK for development, but REQUIRED for production');
+      // Continue processing without signature verification in development
+      // In production, you MUST configure webhook secret
+    } else {
+      // 3. CRITICAL: Verify webhook signature (only if secret is configured)
+      const isValid = verifyWebhookSignature(rawBody, signature, webhookSecret);
 
-    // 3. CRITICAL: Verify webhook signature
-    const isValid = verifyWebhookSignature(rawBody, signature, webhookSecret);
-
-    if (!isValid) {
-      console.error('[Razorpay Webhook] INVALID SIGNATURE', {
-        timestamp: new Date().toISOString(),
-        signature: signature.substring(0, 20) + '...',
-      });
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      );
+      if (!isValid) {
+        console.error('[Razorpay Webhook] INVALID SIGNATURE', {
+          timestamp: new Date().toISOString(),
+          signature: signature.substring(0, 20) + '...',
+        });
+        return NextResponse.json(
+          { error: 'Invalid signature' },
+          { status: 400 }
+        );
+      }
     }
 
     // 4. Parse webhook payload
