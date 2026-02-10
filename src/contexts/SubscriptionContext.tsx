@@ -35,36 +35,53 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
 
   /**
-   * Fetch user subscription from Supabase
+   * CRITICAL FIX: Fetch subscription from course_enrollments (NOT profiles)
+   * - profiles table doesn't have subscription columns (causes 400 error)
+   * - Subscription data is in course_enrollments table
+   * - Fall back to FREE plan if query fails (don't block UI)
    */
   const fetchSubscription = useCallback(async (userId: string) => {
     try {
       const supabase = createSupabaseBrowserClient();
 
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('subscription_plan, subscription_status, subscription_end_date, billing_cycle')
-        .eq('id', userId)
-        .maybeSingle();
+      // Get active course enrollment with subscription data
+      const { data: enrollment, error } = await supabase
+        .from('course_enrollments')
+        .select('plan, status, valid_until, billing_cycle')
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .maybeSingle(); // Use maybeSingle to avoid error if no enrollment exists
 
       if (error) {
-        console.error('[Subscription] Failed to fetch subscription:', error);
-        return null;
+        console.error('[Subscription] Failed to fetch enrollment:', error);
+        // CRITICAL: Return FREE plan instead of null to avoid blocking payment page
+        return {
+          plan: 'Free' as const,
+          status: 'inactive' as const,
+          endDate: null,
+          billingCycle: null,
+        };
       }
 
-      if (!profile) {
-        return null;
+      if (!enrollment) {
+        // No enrollment = FREE user
+        return {
+          plan: 'Free' as const,
+          status: 'inactive' as const,
+          endDate: null,
+          billingCycle: null,
+        };
       }
 
-      // Parse subscription data
+      // Parse enrollment data
       const subscriptionData: SubscriptionData = {
-        plan: (profile.subscription_plan || 'Free') as 'Free' | 'Plus' | 'Pro',
-        status: (profile.subscription_status || 'inactive') as 'active' | 'inactive' | 'expired' | 'cancelled',
-        endDate: profile.subscription_end_date ? new Date(profile.subscription_end_date) : null,
-        billingCycle: profile.billing_cycle as 'MONTHLY' | 'ANNUAL' | null,
+        plan: (enrollment.plan || 'Free') as 'Free' | 'Plus' | 'Pro',
+        status: (enrollment.status || 'inactive') as 'active' | 'inactive' | 'expired' | 'cancelled',
+        endDate: enrollment.valid_until ? new Date(enrollment.valid_until) : null,
+        billingCycle: enrollment.billing_cycle as 'MONTHLY' | 'ANNUAL' | null,
       };
 
-      // Check if subscription is expired (client-side validation)
+      // Check if subscription is expired
       if (subscriptionData.endDate && subscriptionData.endDate < new Date()) {
         subscriptionData.status = 'expired';
       }
@@ -72,7 +89,13 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       return subscriptionData;
     } catch (error) {
       console.error('[Subscription] Error fetching subscription:', error);
-      return null;
+      // CRITICAL: Always return FREE plan on error to prevent blocking
+      return {
+        plan: 'Free' as const,
+        status: 'inactive' as const,
+        endDate: null,
+        billingCycle: null,
+      };
     }
   }, []);
 
@@ -92,10 +115,17 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
    * - Prevents duplicate auth listeners (AuthContext already handles this)
    * - Only fetch subscription when user changes
    * - Avoids infinite loop from fetchSubscription dependency
+   * - Defaults to FREE plan if fetch fails (doesn't block payment page)
    */
   useEffect(() => {
     if (!user) {
-      setSubscription(null);
+      // No user = FREE plan, stop loading immediately
+      setSubscription({
+        plan: 'Free',
+        status: 'inactive',
+        endDate: null,
+        billingCycle: null,
+      });
       setLoading(false);
       return;
     }
@@ -103,17 +133,18 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     // Fetch subscription for current user
     console.log('[Subscription] Fetching subscription for user:', user.id);
     fetchSubscription(user.id).then((data) => {
+      // data is always non-null now (fallback to FREE on error)
       setSubscription(data);
       setLoading(false);
     });
-  }, [user?.id]); // Only re-run when user ID changes (not fetchSubscription)
+  }, [user?.id, fetchSubscription]); // Added fetchSubscription back since it's stable with useCallback
 
   // Helper: Check if user has any active subscription
   const isSubscribed = React.useMemo(() => {
-    if (!subscription) return false;
+    // CRITICAL: Check if subscription exists before accessing properties
+    if (!subscription || subscription.plan === 'Free') return false;
     return (
       subscription.status === 'active' &&
-      subscription.plan !== 'Free' &&
       subscription.endDate !== null &&
       subscription.endDate > new Date()
     );
