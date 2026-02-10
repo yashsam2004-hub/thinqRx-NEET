@@ -112,10 +112,10 @@ export async function POST(req: NextRequest) {
       });
     } catch (razorpayError: any) {
       console.error('[Razorpay] Order creation failed:', {
-        error: razorpayError,
         statusCode: razorpayError?.statusCode,
         message: razorpayError?.error?.description || razorpayError?.message,
-        details: razorpayError?.error
+        code: razorpayError?.error?.code
+        // Note: Full error object not logged to avoid exposing sensitive data
       });
       
       // Return Razorpay-specific error to help debug
@@ -129,10 +129,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 7. Log order creation (for debugging/audit)
-    console.log(`[Razorpay] Order created: ${order.id} for user ${user.email}`);
+    // 8. Log successful order creation (for debugging/audit)
+    console.log(`[Razorpay] ✅ Order created successfully: ${order.id} for user ${user.email}`);
 
-    // 8. Store pending payment in database
+    // 9. Store pending payment in database (for tracking and reconciliation)
     const { error: dbError } = await supabase
       .from('payments')
       .insert({
@@ -161,18 +161,18 @@ export async function POST(req: NextRequest) {
     });
 
   } catch (error: any) {
-    // CRITICAL FIX: Catch any unhandled errors (network, parsing, etc.)
+    // CRITICAL: Catch any unhandled errors (network, parsing, etc.)
+    // SECURITY: Don't expose full stack trace in production
     console.error('[Razorpay] Unexpected error in order creation flow:', {
-      error,
       name: error?.name,
       message: error?.message,
-      stack: error?.stack?.split('\n').slice(0, 3) // First 3 lines of stack
+      // Stack trace only logged server-side, never sent to client
     });
     
     return NextResponse.json(
       { 
         error: 'Failed to create payment order', 
-        message: error?.message || 'Unknown error',
+        message: process.env.NODE_ENV === 'development' ? error?.message : 'An error occurred',
         type: error?.name || 'UnknownError'
       },
       { status: 500 }
