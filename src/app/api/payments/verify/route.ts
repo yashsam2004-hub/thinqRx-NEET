@@ -5,6 +5,17 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 export const dynamic = "force-dynamic";
+export const runtime = 'nodejs'; // Explicitly set runtime
+
+// Simple GET handler to verify the route is accessible
+export async function GET() {
+  console.log('[Razorpay] GET /api/payments/verify called - endpoint is live');
+  return NextResponse.json({ 
+    status: 'ok', 
+    message: 'Payment verification endpoint is accessible',
+    timestamp: new Date().toISOString()
+  });
+}
 
 // Validation schema
 const VerifyPaymentSchema = z.object({
@@ -109,6 +120,9 @@ function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
 }
 
 export async function POST(req: NextRequest) {
+  // Log that the endpoint is being hit (debugging 404 issue)
+  console.log('[Razorpay] POST /api/payments/verify endpoint called');
+  
   try {
     // 1. Authenticate user
     const supabase = await createSupabaseServerClient();
@@ -293,13 +307,25 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error('[Razorpay] Verification failed:', error);
+    console.error('[Razorpay] Error stack:', error?.stack);
     
     return NextResponse.json(
       { 
         error: 'Payment verification failed', 
-        message: error?.message || 'Unknown error'
+        message: error?.message || 'Unknown error',
+        type: error?.name || 'UnknownError'
       },
       { status: 500 }
     );
   }
+}
+
+// OPTIONS handler for CORS preflight (if needed)
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Allow': 'GET, POST, OPTIONS',
+    },
+  });
 }
