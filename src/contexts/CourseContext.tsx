@@ -66,36 +66,55 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Initialize course from localStorage or default to GPAT
+  // Initialize course from localStorage or default to GPAT with timeout
   useEffect(() => {
     const initializeCourse = async () => {
       setIsLoading(true);
       
-      const courses = await loadCourses();
-      
-      if (courses.length === 0) {
+      try {
+        // Add 5-second timeout to prevent infinite loading
+        const coursesPromise = loadCourses();
+        const timeoutPromise = new Promise<Course[]>((_, reject) =>
+          setTimeout(() => reject(new Error("Loading timeout")), 5000)
+        );
+        
+        const courses = await Promise.race([coursesPromise, timeoutPromise]);
+        
+        if (courses.length === 0) {
+          setIsLoading(false);
+          return;
+        }
+
+        // Try to get stored course from localStorage
+        const storedCourseId = typeof window !== "undefined" 
+          ? localStorage.getItem("currentCourseId") 
+          : null;
+
+        let selected = courses.find((c: Course) => c.id === storedCourseId);
+        
+        // Default to GPAT if no stored course or stored course not found
+        if (!selected) {
+          selected = courses.find((c: Course) => c.code === "gpat") || courses[0];
+        }
+
+        if (selected) {
+          setCurrentCourse(selected);
+          // Load enrollment with timeout
+          const enrollmentPromise = loadEnrollment(selected.id);
+          const enrollmentTimeout = new Promise<void>((_, reject) =>
+            setTimeout(() => reject(new Error("Enrollment timeout")), 3000)
+          );
+          await Promise.race([enrollmentPromise, enrollmentTimeout]).catch(() => {
+            // If enrollment fails, continue with default "free" plan
+            console.warn("Enrollment load timed out, using default");
+          });
+        }
+      } catch (error) {
+        console.error("Course initialization error:", error);
+        // Continue with partial state rather than blocking
+      } finally {
         setIsLoading(false);
-        return;
       }
-
-      // Try to get stored course from localStorage
-      const storedCourseId = typeof window !== "undefined" 
-        ? localStorage.getItem("currentCourseId") 
-        : null;
-
-      let selected = courses.find((c: Course) => c.id === storedCourseId);
-      
-      // Default to GPAT if no stored course or stored course not found
-      if (!selected) {
-        selected = courses.find((c: Course) => c.code === "gpat") || courses[0];
-      }
-
-      if (selected) {
-        setCurrentCourse(selected);
-        await loadEnrollment(selected.id);
-      }
-
-      setIsLoading(false);
     };
 
     initializeCourse();

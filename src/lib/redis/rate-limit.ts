@@ -61,7 +61,8 @@ function getMonthKey(): string {
 }
 
 /**
- * Check AI notes generation rate limit
+ * Check AI notes generation rate limit (READ-ONLY, does NOT increment)
+ * Call incrementAINotesLimit() after successful generation
  */
 export async function checkAINotesLimit(
   userId: string,
@@ -96,7 +97,7 @@ export async function checkAINotesLimit(
   const key = `${RedisKeys.aiLimit(userId, courseId)}:${dayKey}`;
 
   try {
-    // Get current usage
+    // Get current usage (READ-ONLY)
     const current = await redisGet<number>(key);
     const usage = current || 0;
 
@@ -115,20 +116,9 @@ export async function checkAINotesLimit(
       };
     }
 
-    // Increment usage
-    await redisIncr(key);
-
-    // Set expiry if this is the first request of the day
-    if (usage === 0) {
-      const secondsUntilMidnight = Math.floor(
-        (resetAt.getTime() - now.getTime()) / 1000
-      );
-      await redisExpire(key, secondsUntilMidnight);
-    }
-
     return {
       allowed: true,
-      remaining: limit - usage - 1,
+      remaining: limit - usage,
       total: limit,
       resetAt,
     };
@@ -145,7 +135,40 @@ export async function checkAINotesLimit(
 }
 
 /**
- * Check practice test generation rate limit
+ * Increment AI notes counter AFTER successful generation
+ */
+export async function incrementAINotesLimit(
+  userId: string,
+  courseId: string
+): Promise<void> {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  const dayKey = getDayKey();
+  const key = `${RedisKeys.aiLimit(userId, courseId)}:${dayKey}`;
+
+  try {
+    const current = await redisGet<number>(key);
+    await redisIncr(key);
+
+    // Set expiry if this is the first request of the day
+    if (!current || current === 0) {
+      const now = new Date();
+      const resetAt = new Date(now);
+      resetAt.setUTCHours(23, 59, 59, 999);
+      const secondsUntilMidnight = Math.floor(
+        (resetAt.getTime() - now.getTime()) / 1000
+      );
+      await redisExpire(key, secondsUntilMidnight);
+    }
+  } catch (error) {
+    console.error("Failed to increment AI notes limit:", error);
+  }
+}
+
+/**
+ * Check practice test generation rate limit (READ-ONLY, does NOT increment)
+ * Call incrementPracticeTestLimit() after successful generation
  */
 export async function checkPracticeTestLimit(
   userId: string,
@@ -196,18 +219,9 @@ export async function checkPracticeTestLimit(
       };
     }
 
-    await redisIncr(key);
-
-    if (usage === 0) {
-      const secondsUntilMidnight = Math.floor(
-        (resetAt.getTime() - now.getTime()) / 1000
-      );
-      await redisExpire(key, secondsUntilMidnight);
-    }
-
     return {
       allowed: true,
-      remaining: limit - usage - 1,
+      remaining: limit - usage,
       total: limit,
       resetAt,
     };
@@ -219,6 +233,38 @@ export async function checkPracticeTestLimit(
       total: limit,
       resetAt: new Date(Date.now() + RedisTTL.ONE_DAY * 1000),
     };
+  }
+}
+
+/**
+ * Increment practice test counter AFTER successful generation
+ */
+export async function incrementPracticeTestLimit(
+  userId: string,
+  courseId: string
+): Promise<void> {
+  const redis = getRedisClient();
+  if (!redis) return;
+
+  const dayKey = getDayKey();
+  const key = `${RedisKeys.testLimit(userId, courseId)}:${dayKey}`;
+
+  try {
+    const current = await redisGet<number>(key);
+    await redisIncr(key);
+
+    // Set expiry if this is the first request of the day
+    if (!current || current === 0) {
+      const now = new Date();
+      const resetAt = new Date(now);
+      resetAt.setUTCHours(23, 59, 59, 999);
+      const secondsUntilMidnight = Math.floor(
+        (resetAt.getTime() - now.getTime()) / 1000
+      );
+      await redisExpire(key, secondsUntilMidnight);
+    }
+  } catch (error) {
+    console.error("Failed to increment practice test limit:", error);
   }
 }
 

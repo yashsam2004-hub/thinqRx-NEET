@@ -51,68 +51,118 @@ export default function UpgradePage() {
     }
   }, [searchParams]);
 
-  // Fetch user and pricing data
+  // Fetch user and pricing data with timeout and error handling
   React.useEffect(() => {
     async function loadData() {
       try {
         const supabase = createSupabaseBrowserClient();
 
-        // Get current user
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        // Add 10-second timeout to prevent infinite loading
+        const dataPromise = (async () => {
+          // Get current user
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
 
-        if (!user) {
-          toast.error("Please login to upgrade your plan");
-          router.push("/login");
-          return;
-        }
-
-        setUser(user);
-
-        // Get current enrollment
-        const { data: courses } = await supabase
-          .from("courses")
-          .select("id")
-          .eq("is_active", true)
-          .single();
-
-        if (courses) {
-          const { data: enrollment } = await supabase
-            .from("course_enrollments")
-            .select("plan")
-            .eq("user_id", user.id)
-            .eq("course_id", courses.id)
-            .maybeSingle();
-
-          if (enrollment) {
-            setCurrentPlan(enrollment.plan);
+          if (!user) {
+            toast.error("Please login to upgrade your plan");
+            router.push("/login");
+            return;
           }
 
-          // Fetch pricing
-          const { data: pricingData } = await supabase
-            .from("course_pricing")
-            .select("*")
-            .eq("course_id", courses.id);
+          setUser(user);
 
-          if (pricingData) {
-            const pricingMap: Record<string, PricingPlan> = {};
-            pricingData.forEach((p: PricingPlan) => {
-              pricingMap[p.plan] = {
-                plan: p.plan,
-                monthly_price: p.monthly_price,
-                annual_price: p.annual_price,
-                features: p.features || [],
-                limitations: p.limitations || [],
-                validity_days: p.validity_days,
-              };
-            });
-            setPricing(pricingMap);
+          // Get current enrollment
+          const { data: courses } = await supabase
+            .from("courses")
+            .select("id")
+            .eq("is_active", true)
+            .single();
+
+          if (courses) {
+            const { data: enrollment } = await supabase
+              .from("course_enrollments")
+              .select("plan")
+              .eq("user_id", user.id)
+              .eq("course_id", courses.id)
+              .maybeSingle();
+
+            if (enrollment) {
+              setCurrentPlan(enrollment.plan);
+            }
+
+            // Fetch pricing
+            const { data: pricingData } = await supabase
+              .from("course_pricing")
+              .select("*")
+              .eq("course_id", courses.id);
+
+            if (pricingData) {
+              const pricingMap: Record<string, PricingPlan> = {};
+              pricingData.forEach((p: PricingPlan) => {
+                pricingMap[p.plan] = {
+                  plan: p.plan,
+                  monthly_price: p.monthly_price,
+                  annual_price: p.annual_price,
+                  features: p.features || [],
+                  limitations: p.limitations || [],
+                  validity_days: p.validity_days,
+                };
+              });
+              setPricing(pricingMap);
+            } else {
+              // Fallback to default pricing if database fetch fails
+              setPricing({
+                plus: {
+                  plan: "plus",
+                  monthly_price: 199,
+                  annual_price: 1910,
+                  features: ["AI-Powered Study Notes", "Practice Tests", "Performance Analytics"],
+                  limitations: [],
+                  validity_days: 365,
+                },
+                pro: {
+                  plan: "pro",
+                  monthly_price: 299,
+                  annual_price: 2870,
+                  features: ["Everything in Plus", "Unlimited AI Notes", "Unlimited Practice Tests", "Priority Support"],
+                  limitations: [],
+                  validity_days: 365,
+                },
+              });
+            }
           }
-        }
+        })();
+
+        const timeoutPromise = new Promise<void>((_, reject) =>
+          setTimeout(() => reject(new Error("Loading timeout after 10 seconds")), 10000)
+        );
+
+        await Promise.race([dataPromise, timeoutPromise]);
       } catch (error) {
         console.error("Error loading data:", error);
-        toast.error("Failed to load pricing information");
+        const errorMessage = error instanceof Error ? error.message : "Failed to load pricing information";
+        toast.error(errorMessage);
+        
+        // Set fallback pricing even on error
+        setPricing({
+          plus: {
+            plan: "plus",
+            monthly_price: 199,
+            annual_price: 1910,
+            features: ["AI-Powered Study Notes", "Practice Tests", "Performance Analytics"],
+            limitations: [],
+            validity_days: 365,
+          },
+          pro: {
+            plan: "pro",
+            monthly_price: 299,
+            annual_price: 2870,
+            features: ["Everything in Plus", "Unlimited AI Notes", "Unlimited Practice Tests", "Priority Support"],
+            limitations: [],
+            validity_days: 365,
+          },
+        });
       } finally {
         setLoading(false);
       }

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { generateTest } from "@/lib/ai/generateTest";
 import { testSchema } from "@/lib/ai/schemas";
-import { checkPracticeTestLimit } from "@/lib/redis/rate-limit";
+import { checkPracticeTestLimit, incrementPracticeTestLimit } from "@/lib/redis/rate-limit";
 import { getUserPlan, hasAccessToCourse, canAccessPremiumContent } from "@/lib/enrollments";
 import { trackTokenUsage, trackFeatureUsage } from "@/lib/redis/usage";
 
@@ -195,12 +195,15 @@ export async function POST(request: Request) {
       },
     });
 
+    // CRITICAL: Increment rate limit ONLY after successful generation and save
+    await incrementPracticeTestLimit(auth.user.id, validCourseId);
+
     return NextResponse.json({
       ok: true,
       fromCache: false,
       testId: inserted?.id ?? null,
       test,
-      remaining: rateLimit.remaining,
+      remaining: rateLimit.remaining - 1, // Adjust remaining count
     });
   } catch (error) {
     const message =

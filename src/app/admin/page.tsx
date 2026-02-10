@@ -161,18 +161,6 @@ export default function AdminPage() {
             Refresh
           </Button>
         </div>
-        
-        <form action="/api/auth/logout" method="POST">
-          <Button 
-            type="submit"
-            variant="outline" 
-            size="sm" 
-            className="gap-2 text-red-600 border-red-300 hover:bg-red-50"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
-        </form>
       </div>
 
       {/* Header */}

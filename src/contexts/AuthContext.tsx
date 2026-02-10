@@ -92,8 +92,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await supabase.auth.signOut();
       setSession(null);
       setUser(null);
+      // Clear all localStorage to remove cached data
+      localStorage.clear();
     } catch (error) {
       console.error("Error signing out:", error);
+      // Clear localStorage even if signOut fails
+      localStorage.clear();
     }
   }, [supabase.auth]);
 

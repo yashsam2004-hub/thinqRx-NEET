@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { generateNotes } from "@/lib/ai/generateNotes";
 import { notesSchema } from "@/lib/ai/schemas";
-import { checkAINotesLimit } from "@/lib/redis/rate-limit";
+import { checkAINotesLimit, incrementAINotesLimit } from "@/lib/redis/rate-limit";
 import { getUserPlan, hasAccessToCourse, canAccessPremiumContent } from "@/lib/enrollments";
 import { trackTokenUsage, trackFeatureUsage } from "@/lib/redis/usage";
 
@@ -244,10 +244,13 @@ export async function POST(request: Request) {
       },
     });
 
+    // CRITICAL: Increment rate limit ONLY after successful generation and save
+    await incrementAINotesLimit(auth.user.id, validCourseId);
+
     return NextResponse.json({
       ok: true,
       fromCache: false,
-      remaining: rateLimit.remaining,
+      remaining: rateLimit.remaining - 1, // Adjust remaining count
       ...data,
     });
   } catch (error) {

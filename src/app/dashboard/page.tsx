@@ -170,18 +170,6 @@ export default async function DashboardPage() {
                 </Button>
               </Link>
             )}
-            
-            <form action="/api/auth/logout" method="POST">
-              <Button 
-                type="submit"
-                variant="outline" 
-                size="sm" 
-                className="gap-2 text-slate-600 border-slate-300 hover:bg-slate-50"
-              >
-                <LogOut className="h-4 w-4" />
-                Logout
-              </Button>
-            </form>
           </div>
         </div>
 

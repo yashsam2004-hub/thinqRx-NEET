@@ -62,20 +62,11 @@ export default function AnalyticsDashboard() {
     }
   }, []); // No dependencies needed - all state setters are stable
 
-  // CRITICAL FIX: Set up auto-refresh with proper cleanup to prevent memory leak
+  // Load analytics on mount only (auto-refresh removed to prevent performance cascade)
   React.useEffect(() => {
     fetchAnalytics();
-    
-    // Auto-refresh analytics every 60 seconds (reduced frequency)
-    const intervalId = setInterval(() => {
-      fetchAnalytics();
-    }, 60000);
-
-    // Clean up interval when component unmounts
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [fetchAnalytics]); // Depend on fetchAnalytics (stable due to useCallback)
+    // Users can refresh manually or analytics will update on navigation
+  }, [fetchAnalytics]);
 
   const generateImprovementPlan = async () => {
     setGeneratingPlan(true);
