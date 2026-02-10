@@ -16,6 +16,9 @@ const VerifyPaymentSchema = z.object({
 /**
  * CRITICAL SECURITY FUNCTION
  * Verifies Razorpay payment signature using HMAC SHA256
+ * 
+ * IMPORTANT: Must use RAZORPAY_KEY_SECRET (NOT webhook secret or key ID)
+ * Signature format: HMAC-SHA256(order_id|payment_id, KEY_SECRET)
  */
 function verifyRazorpaySignature(
   orderId: string,
@@ -24,20 +27,70 @@ function verifyRazorpaySignature(
   secret: string
 ): boolean {
   try {
-    // Create expected signature
-    const body = `${orderId}|${paymentId}`;
+    // CRITICAL: Validate all inputs are present and non-empty
+    if (!orderId || !paymentId || !signature || !secret) {
+      console.error('[Razorpay] Verification failed: Missing required parameters', {
+        hasOrderId: !!orderId,
+        hasPaymentId: !!paymentId,
+        hasSignature: !!signature,
+        hasSecret: !!secret,
+      });
+      return false;
+    }
+
+    // CRITICAL: Validate inputs are strings (prevent undefined/null)
+    if (typeof orderId !== 'string' || typeof paymentId !== 'string' || 
+        typeof signature !== 'string' || typeof secret !== 'string') {
+      console.error('[Razorpay] Verification failed: Invalid parameter types');
+      return false;
+    }
+
+    // Create signature string EXACTLY as Razorpay does: "order_id|payment_id"
+    // NO spaces, NO reversed order
+    const signatureBody = `${orderId}|${paymentId}`;
+    
+    // Generate expected signature using HMAC-SHA256
     const expectedSignature = crypto
       .createHmac('sha256', secret)
-      .update(body)
+      .update(signatureBody)
       .digest('hex');
 
-    // Compare signatures (constant-time comparison to prevent timing attacks)
-    return crypto.timingSafeEqual(
-      Buffer.from(expectedSignature),
-      Buffer.from(signature)
+    // Log signature details for debugging (DO NOT log the actual signatures or secret)
+    console.log('[Razorpay] Signature verification attempt:', {
+      orderIdLength: orderId.length,
+      paymentIdLength: paymentId.length,
+      receivedSigLength: signature.length,
+      expectedSigLength: expectedSignature.length,
+      bodyFormat: `order_id|payment_id (${signatureBody.length} chars)`,
+    });
+
+    // CRITICAL: Ensure both signatures have same length before timingSafeEqual
+    // timingSafeEqual throws if lengths differ
+    if (expectedSignature.length !== signature.length) {
+      console.error('[Razorpay] Signature length mismatch', {
+        expected: expectedSignature.length,
+        received: signature.length,
+      });
+      return false;
+    }
+
+    // Compare signatures using constant-time comparison (prevents timing attacks)
+    const isValid = crypto.timingSafeEqual(
+      Buffer.from(expectedSignature, 'hex'),
+      Buffer.from(signature, 'hex')
     );
-  } catch (error) {
-    console.error('[Razorpay] Signature verification error:', error);
+
+    if (!isValid) {
+      console.error('[Razorpay] Signature mismatch - verification failed');
+    }
+
+    return isValid;
+
+  } catch (error: any) {
+    console.error('[Razorpay] Signature verification exception:', {
+      error: error.message,
+      name: error.name,
+    });
     return false;
   }
 }
@@ -82,18 +135,41 @@ export async function POST(req: NextRequest) {
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = validation.data;
 
-    // 3. Validate environment variables
+    // 3. CRITICAL: Validate all required data is present and non-empty
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      console.error('[Razorpay] Missing verification data', {
+        hasOrderId: !!razorpay_order_id,
+        hasPaymentId: !!razorpay_payment_id,
+        hasSignature: !!razorpay_signature,
+      });
+      return NextResponse.json(
+        { error: 'Missing payment verification data. Please try again or contact support.' },
+        { status: 400 }
+      );
+    }
+
+    // 4. CRITICAL: Validate environment variable - MUST use RAZORPAY_KEY_SECRET
+    // DO NOT use RAZORPAY_WEBHOOK_SECRET (that's for webhooks only)
+    // DO NOT use NEXT_PUBLIC_RAZORPAY_KEY_ID (that's the public key)
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keySecret) {
-      console.error('[Razorpay] Key secret not configured');
+      console.error('[Razorpay] CRITICAL: RAZORPAY_KEY_SECRET not configured in environment');
+      console.error('[Razorpay] Ensure .env.local has: RAZORPAY_KEY_SECRET=your_secret_key');
       return NextResponse.json(
         { error: 'Payment gateway not configured. Please contact support.' },
         { status: 500 }
       );
     }
 
-    // 4. CRITICAL: Verify signature
+    // Log verification attempt (for debugging)
+    console.log('[Razorpay] Processing payment verification', {
+      user: user.email,
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id,
+    });
+
+    // 6. CRITICAL: Verify signature
     const isValid = verifyRazorpaySignature(
       razorpay_order_id,
       razorpay_payment_id,
@@ -103,7 +179,7 @@ export async function POST(req: NextRequest) {
 
     if (!isValid) {
       // Log failed verification attempt (security audit)
-      console.error('[Razorpay] SIGNATURE VERIFICATION FAILED', {
+      console.error('[Razorpay] ❌ SIGNATURE VERIFICATION FAILED', {
         user_id: user.id,
         user_email: user.email,
         order_id: razorpay_order_id,
@@ -112,12 +188,19 @@ export async function POST(req: NextRequest) {
       });
 
       return NextResponse.json(
-        { error: 'Payment verification failed. Invalid signature.' },
+        { 
+          error: 'Payment verification failed', 
+          message: 'Signature mismatch. Please contact support if payment was deducted.',
+          details: 'Invalid signature - possible tampering detected'
+        },
         { status: 400 }
       );
     }
 
-    // 5. Signature verified ✅ - Fetch payment details from database
+    // 7. ✅ Signature verified! Proceed with payment processing
+    console.log('[Razorpay] ✅ Signature verified successfully');
+
+    // 8. Fetch payment details from database
     const { data: payment, error: paymentError } = await supabase
       .from('payments')
       .select('*')
@@ -133,7 +216,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. Check for duplicate processing (idempotency)
+    // 9. Check for duplicate processing (idempotency)
     if (payment.status === 'completed') {
       console.log('[Razorpay] Payment already processed:', razorpay_payment_id);
       return NextResponse.json({
@@ -143,10 +226,10 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 7. Use admin client for privileged operations
+    // 10. Use admin client for privileged operations
     const adminSupabase = createSupabaseAdminClient();
 
-    // 8. Update payment record
+    // 11. Update payment record
     const { error: updatePaymentError } = await adminSupabase
       .from('payments')
       .update({
@@ -164,10 +247,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 9. Calculate subscription validity
+    // 12. Calculate subscription validity
     const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
 
-    // 10. Upsert subscription (idempotent)
+    // 13. Upsert subscription (idempotent)
     const { error: subscriptionError } = await adminSupabase
       .from('profiles')
       .update({
@@ -187,7 +270,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 11. Success! Log and return
+    // 14. Success! Log and return
     console.log(`[Razorpay] ✅ Payment verified and subscription activated`, {
       user_id: user.id,
       user_email: user.email,

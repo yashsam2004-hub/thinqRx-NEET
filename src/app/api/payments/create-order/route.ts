@@ -51,11 +51,13 @@ export async function POST(req: NextRequest) {
     const amountInPaise = amountInINR * 100; // Convert to paise
 
     // 4. Validate environment variables (CRITICAL FIX: Check before Razorpay init)
-    const keyId = process.env.RAZORPAY_KEY_ID;
+    // Try both possible env var names (with and without NEXT_PUBLIC prefix)
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
 
     if (!keyId || !keySecret) {
       console.error('[Razorpay] CRITICAL: Credentials missing in environment');
+      console.error('[Razorpay] Checked env vars: RAZORPAY_KEY_ID, NEXT_PUBLIC_RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET');
       console.error('[Razorpay] KEY_ID present:', !!keyId);
       console.error('[Razorpay] KEY_SECRET present:', !!keySecret);
       return NextResponse.json(
