@@ -6,24 +6,37 @@ export const dynamic = "force-dynamic";
 
 /**
  * CRITICAL: Verify Razorpay webhook signature
+ * 
+ * IMPORTANT: 
+ * - Uses RAW request body (NOT JSON parsed)
+ * - Uses RAZORPAY_WEBHOOK_SECRET (NOT RAZORPAY_KEY_SECRET)
+ * - Compares hex strings with proper encoding
  */
 function verifyWebhookSignature(
-  body: string,
-  signature: string,
-  secret: string
+  rawBody: string,
+  receivedSignature: string,
+  webhookSecret: string
 ): boolean {
   try {
+    // CRITICAL FIX: Compute expected signature from raw body
+    // Must use the exact raw body string that Razorpay sent
     const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(body)
+      .createHmac('sha256', webhookSecret)
+      .update(rawBody)
       .digest('hex');
 
+    // CRITICAL FIX: Both signatures are hex strings - must specify 'hex' encoding
+    // Without 'hex', Buffer.from() treats them as UTF-8, corrupting the data
+    // This was the root cause of signature mismatch
     return crypto.timingSafeEqual(
-      Buffer.from(expectedSignature),
-      Buffer.from(signature)
+      Buffer.from(expectedSignature, 'hex'),
+      Buffer.from(receivedSignature, 'hex')
     );
-  } catch (error) {
-    console.error('[Razorpay Webhook] Signature verification error:', error);
+  } catch (error: any) {
+    console.error('[Razorpay Webhook] Signature verification exception:', {
+      error: error.message,
+      name: error.name,
+    });
     return false;
   }
 }
@@ -51,49 +64,61 @@ function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
  */
 export async function POST(req: NextRequest) {
   try {
-    // 1. Get raw body (needed for signature verification)
+    // 1. CRITICAL: Get RAW request body (do NOT use req.json())
+    // Webhook signature is computed on the exact raw bytes Razorpay sent
     const rawBody = await req.text();
-    const signature = req.headers.get('x-razorpay-signature');
+    
+    // 2. Get signature from header
+    const receivedSignature = req.headers.get('x-razorpay-signature');
 
-    if (!signature) {
-      console.error('[Razorpay Webhook] Missing signature header');
+    if (!receivedSignature) {
+      console.error('[Razorpay Webhook] Missing x-razorpay-signature header');
       return NextResponse.json(
-        { error: 'Missing signature' },
+        { error: 'Missing signature header' },
         { status: 400 }
       );
     }
 
-    // 2. Validate environment variables (make optional for development)
+    // 3. CRITICAL: Get webhook secret (NOT the key secret!)
+    // This is the secret shown in Razorpay Dashboard → Settings → Webhooks
     const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
-      console.warn('[Razorpay Webhook] RAZORPAY_WEBHOOK_SECRET not configured - skipping signature verification');
-      console.warn('[Razorpay Webhook] This is OK for development, but REQUIRED for production');
-      // Continue processing without signature verification in development
-      // In production, you MUST configure webhook secret
-    } else {
-      // 3. CRITICAL: Verify webhook signature (only if secret is configured)
-      const isValid = verifyWebhookSignature(rawBody, signature, webhookSecret);
-
-      if (!isValid) {
-        console.error('[Razorpay Webhook] INVALID SIGNATURE', {
-          timestamp: new Date().toISOString(),
-          signature: signature.substring(0, 20) + '...',
-        });
-        return NextResponse.json(
-          { error: 'Invalid signature' },
-          { status: 400 }
-        );
-      }
+      console.error('[Razorpay Webhook] CRITICAL: RAZORPAY_WEBHOOK_SECRET not configured');
+      console.error('[Razorpay Webhook] Set this in Vercel environment variables');
+      console.error('[Razorpay Webhook] Get it from: Razorpay Dashboard → Settings → Webhooks');
+      return NextResponse.json(
+        { error: 'Webhook secret not configured' },
+        { status: 500 }
+      );
     }
 
-    // 4. Parse webhook payload
+    // 4. CRITICAL: Verify webhook signature BEFORE processing
+    // This ensures the webhook came from Razorpay and wasn't tampered with
+    const isValid = verifyWebhookSignature(rawBody, receivedSignature, webhookSecret);
+
+    if (!isValid) {
+      console.error('[Razorpay Webhook] ❌ INVALID SIGNATURE', {
+        timestamp: new Date().toISOString(),
+        bodyLength: rawBody.length,
+        signaturePrefix: receivedSignature.substring(0, 20) + '...',
+      });
+      
+      return NextResponse.json(
+        { error: 'Invalid webhook signature' },
+        { status: 400 }
+      );
+    }
+
+    console.log('[Razorpay Webhook] ✅ Signature verified successfully');
+
+    // 5. Parse webhook payload (ONLY after signature verification)
     const payload = JSON.parse(rawBody);
     const event = payload.event;
     const paymentEntity = payload.payload?.payment?.entity;
     const orderEntity = payload.payload?.order?.entity;
 
-    console.log(`[Razorpay Webhook] Received event: ${event}`);
+    console.log(`[Razorpay Webhook] Processing event: ${event}`);
 
     // 5. Use admin client for privileged operations
     const adminSupabase = createSupabaseAdminClient();
@@ -228,13 +253,21 @@ export async function POST(req: NextRequest) {
         console.log(`[Razorpay Webhook] Unhandled event: ${event}`);
     }
 
-    // 7. Always return 200 to acknowledge receipt
-    return NextResponse.json({ received: true });
+    // 7. Success - acknowledge webhook receipt
+    return NextResponse.json({ received: true }, { status: 200 });
 
   } catch (error: any) {
-    console.error('[Razorpay Webhook] Error processing webhook:', error);
+    console.error('[Razorpay Webhook] Unexpected error:', {
+      error: error.message,
+      name: error.name,
+      stack: error.stack,
+    });
     
-    // Still return 200 to avoid Razorpay retries
-    return NextResponse.json({ received: true });
+    // Return 500 for unexpected errors (Razorpay will retry)
+    // This helps catch genuine bugs vs signature issues
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
