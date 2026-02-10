@@ -4,7 +4,7 @@
 -- Issue: Users cannot create payment records due to missing INSERT policy
 -- Solution: Add policy allowing users to insert payments for themselves
 
--- Drop existing policies
+-- Drop existing policies to ensure clean state
 DROP POLICY IF EXISTS payments_select_own ON public.payments;
 DROP POLICY IF EXISTS payments_insert_own ON public.payments;
 DROP POLICY IF EXISTS payments_admin_all ON public.payments;
@@ -22,8 +22,20 @@ CREATE POLICY payments_insert_own ON public.payments
 -- Policy 3: Admins can do everything
 CREATE POLICY payments_admin_all ON public.payments
   FOR ALL
-  USING (public.is_user_admin())
-  WITH CHECK (public.is_user_admin());
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.profiles 
+      WHERE id = auth.uid() 
+      AND role = 'admin'
+    )
+  )
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM public.profiles 
+      WHERE id = auth.uid() 
+      AND role = 'admin'
+    )
+  );
 
 -- Verify policies exist
 DO $$
