@@ -99,10 +99,18 @@ export async function POST(req: NextRequest) {
     // 7. Create order with explicit error handling
     let order;
     try {
+      // CRITICAL FIX: Razorpay receipt max 40 chars
+      // Format: rcpt_TIMESTAMP_SHORTID (under 40 chars)
+      const shortUserId = user.id.split('-')[0]; // First 8 chars of UUID
+      const timestamp = Date.now().toString().slice(-8); // Last 8 digits of timestamp
+      const receipt = `rcpt_${timestamp}_${shortUserId}`; // ~25 chars total
+      
+      console.log('[Razorpay] Creating order with receipt:', receipt);
+      
       order = await razorpay.orders.create({
         amount: amountInPaise,
         currency: 'INR',
-        receipt: `receipt_${user.id}_${Date.now()}`,
+        receipt: receipt,
         notes: {
           user_id: user.id,
           user_email: user.email || '',
@@ -114,7 +122,9 @@ export async function POST(req: NextRequest) {
       console.error('[Razorpay] Order creation failed:', {
         statusCode: razorpayError?.statusCode,
         message: razorpayError?.error?.description || razorpayError?.message,
-        code: razorpayError?.error?.code
+        code: razorpayError?.error?.code,
+        field: razorpayError?.error?.field, // Shows which field caused error
+        reason: razorpayError?.error?.reason, // Detailed reason
         // Note: Full error object not logged to avoid exposing sensitive data
       });
       
