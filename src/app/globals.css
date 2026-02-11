@@ -1,3 +1,10 @@
+/* 
+ * ThinqRx Global Styles
+ * Version: 2.1.0 (Dark Mode Text Visibility Fix)
+ * Last Updated: 2026-02-10
+ * CACHE BUST: v2-dark-mode-force
+ */
+
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -309,45 +316,79 @@
   input,
   textarea,
   select {
-    color: var(--foreground);
+    color: var(--foreground) !important;
   }
   
   input::placeholder,
   textarea::placeholder {
-    color: var(--muted-foreground);
-    opacity: 0.7;
+    color: var(--muted-foreground) !important;
+    opacity: 0.7 !important;
   }
   
   /* Ensure caret (cursor) is visible in dark mode */
   input,
   textarea {
-    caret-color: currentColor;
+    caret-color: currentColor !important;
   }
   
-  /* Dark mode specific overrides for maximum visibility */
+  /* Dark mode specific overrides for maximum visibility - FORCED */
   .dark input,
   .dark textarea,
-  .dark select {
-    color: var(--text-primary); /* Explicitly use slate-100 equivalent */
+  .dark select,
+  html.dark input,
+  html.dark textarea,
+  html.dark select,
+  [data-theme="dark"] input,
+  [data-theme="dark"] textarea,
+  [data-theme="dark"] select {
+    color: #f1f5f9 !important; /* slate-100 - white text */
+    -webkit-text-fill-color: #f1f5f9 !important;
   }
   
   .dark input::placeholder,
-  .dark textarea::placeholder {
-    color: var(--text-muted); /* slate-400 equivalent */
-    opacity: 1;
+  .dark textarea::placeholder,
+  html.dark input::placeholder,
+  html.dark textarea::placeholder,
+  [data-theme="dark"] input::placeholder,
+  [data-theme="dark"] textarea::placeholder {
+    color: #94a3b8 !important; /* slate-400 - visible but muted */
+    opacity: 1 !important;
+    -webkit-text-fill-color: #94a3b8 !important;
+  }
+  
+  .dark input:focus,
+  .dark textarea:focus,
+  html.dark input:focus,
+  html.dark textarea:focus {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
   
   /* Selection (highlight) colors for readability */
   input::selection,
   textarea::selection {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
   }
   
   .dark input::selection,
-  .dark textarea::selection {
-    background-color: rgba(20, 184, 166, 0.3);
-    color: var(--text-primary);
+  .dark textarea::selection,
+  html.dark input::selection,
+  html.dark textarea::selection {
+    background-color: rgba(20, 184, 166, 0.3) !important;
+    color: #f1f5f9 !important;
+  }
+  
+  /* Force text color on autofill (browser autocomplete) */
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  html.dark input:-webkit-autofill,
+  html.dark input:-webkit-autofill:hover,
+  html.dark input:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f1f5f9 !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-card) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
   }
 }
 
