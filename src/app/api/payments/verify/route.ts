@@ -300,6 +300,20 @@ export async function POST(req: NextRequest) {
 
     // 10. Use admin client for privileged operations
     const adminSupabase = createSupabaseAdminClient();
+    
+    // DEBUG: Test if admin client has proper permissions
+    console.log('[Razorpay] Testing admin client permissions...');
+    const { data: testData, error: testError } = await adminSupabase
+      .from('profiles')
+      .select('id, email')
+      .eq('id', user.id)
+      .single();
+    
+    if (testError) {
+      console.error('[Razorpay] Admin client test FAILED:', testError);
+    } else {
+      console.log('[Razorpay] Admin client test SUCCESS - can read profiles');
+    }
 
     // 11. Update payment record
     const { error: updatePaymentError } = await adminSupabase
@@ -322,28 +336,33 @@ export async function POST(req: NextRequest) {
     // 12. Calculate subscription validity
     const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
 
-    // 13. Upsert subscription (idempotent) - using upsert instead of update to bypass RLS issues
-    const { error: subscriptionError } = await adminSupabase
-      .from('profiles')
-      .upsert({
-        id: user.id, // Include primary key for upsert
-        subscription_plan: payment.plan_name,
-        subscription_status: 'active',
-        subscription_end_date: validUntil.toISOString(),
-        billing_cycle: payment.billing_cycle,
-        updated_at: new Date().toISOString(),
-      }, {
-        onConflict: 'id', // Specify the conflict target
-        ignoreDuplicates: false, // We want to update existing records
-      });
+    // 13. Update subscription using RPC function (bypasses RLS completely with SECURITY DEFINER)
+    console.log('[Razorpay] Attempting to update subscription for user:', user.id);
+    const { error: subscriptionError } = await adminSupabase.rpc(
+      'update_user_subscription',
+      {
+        p_user_id: user.id,
+        p_plan_name: payment.plan_name,
+        p_billing_cycle: payment.billing_cycle,
+        p_valid_until: validUntil.toISOString(),
+      }
+    );
 
     if (subscriptionError) {
-      console.error('[Razorpay] Failed to update subscription:', subscriptionError);
+      console.error('[Razorpay] Failed to update subscription via RPC:', {
+        error: subscriptionError,
+        code: subscriptionError.code,
+        message: subscriptionError.message,
+        details: subscriptionError.details,
+        hint: subscriptionError.hint,
+      });
       return NextResponse.json(
-        { error: 'Failed to activate subscription' },
+        { error: 'Failed to activate subscription', details: subscriptionError.message },
         { status: 500 }
       );
     }
+    
+    console.log('[Razorpay] Subscription updated successfully via RPC function');
 
     // 14. Success! Log and return
     console.log(`[Razorpay] ✅ Payment verified and subscription activated`, {
