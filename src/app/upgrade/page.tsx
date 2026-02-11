@@ -218,8 +218,8 @@ export default function UpgradePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 flex items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-teal-600" />
+      <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-teal-600 dark:text-teal-400" />
       </div>
     );
   }
@@ -234,26 +234,26 @@ export default function UpgradePage() {
     : 20;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 py-12 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-12 px-6">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="mb-8">
           <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="mb-6 gap-2">
+            <Button variant="outline" size="sm" className="mb-6 gap-2 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
               <ArrowLeft className="h-4 w-4" />
               Back to Dashboard
             </Button>
           </Link>
 
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-slate-900 mb-3">
+            <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-3">
               Upgrade Your Plan
             </h1>
-            <p className="text-lg text-slate-600 mb-4">
+            <p className="text-lg text-slate-600 dark:text-slate-300 mb-4">
               Unlock premium features and supercharge your GPAT preparation
             </p>
             {currentPlan !== "free" && (
-              <Badge className="bg-teal-100 text-teal-700 border-0">
+              <Badge className="bg-teal-100 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 border-0">
                 Current Plan: {currentPlan.toUpperCase()}
               </Badge>
             )}
@@ -262,20 +262,20 @@ export default function UpgradePage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Plan Selection */}
-          <Card className="lg:col-span-2 p-8 border-2 border-slate-200">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">
+          <Card className="lg:col-span-2 p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
               Choose Your Plan
             </h2>
 
             {/* Secure Payment Notice */}
-            <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+            <div className="mb-6 p-4 bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800 rounded-lg">
               <div className="flex items-start gap-3">
-                <Shield className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                <Shield className="h-5 w-5 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  <p className="font-semibold text-green-900 mb-1">
+                  <p className="font-semibold text-green-900 dark:text-green-300 mb-1">
                     Secure Payment Powered by Razorpay
                   </p>
-                  <p className="text-green-800">
+                  <p className="text-green-800 dark:text-green-400">
                     Your payment is processed securely through Razorpay, India's leading payment gateway. All transactions are encrypted and PCI DSS compliant.
                   </p>
                 </div>
@@ -293,18 +293,18 @@ export default function UpgradePage() {
                 <label
                   className={`flex items-start gap-4 p-6 rounded-xl border-2 cursor-pointer transition-all ${
                     selectedPlan === "plus"
-                      ? "border-teal-500 bg-teal-50 shadow-md"
-                      : "border-slate-200 hover:border-teal-300"
+                      ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"
                   }`}
                 >
                   <RadioGroupItem value="plus" id="plus" className="mt-1" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <Zap className="h-5 w-5 text-teal-600" />
-                      <span className="font-bold text-xl text-slate-900">
+                      <Zap className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                      <span className="font-bold text-xl text-slate-900 dark:text-white">
                         Plus
                       </span>
-                      <Badge className="bg-teal-100 text-teal-700">
+                      <Badge className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300">
                         ₹
                         {billingCycle === "annual"
                           ? pricing.plus.annual_price
@@ -319,8 +319,8 @@ export default function UpgradePage() {
                     <div className="space-y-2 mb-3">
                       {pricing.plus.features.map((feature, i) => (
                         <div key={i} className="flex items-start gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-teal-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-slate-700">{feature}</span>
+                          <CheckCircle2 className="h-4 w-4 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-slate-700 dark:text-slate-300">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -333,8 +333,8 @@ export default function UpgradePage() {
                             key={i}
                             className="flex items-start gap-2 text-sm"
                           >
-                            <X className="h-4 w-4 text-slate-400 mt-0.5 flex-shrink-0" />
-                            <span className="text-slate-500">{limitation}</span>
+                            <X className="h-4 w-4 text-slate-400 dark:text-slate-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-slate-500 dark:text-slate-400">{limitation}</span>
                           </div>
                         ))}
                       </div>
@@ -348,18 +348,18 @@ export default function UpgradePage() {
                 <label
                   className={`flex items-start gap-4 p-6 rounded-xl border-2 cursor-pointer transition-all relative ${
                     selectedPlan === "pro"
-                      ? "border-amber-500 bg-amber-50 shadow-md"
-                      : "border-slate-200 hover:border-amber-300"
+                      ? "border-amber-500 bg-amber-50 dark:bg-amber-950/30 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600"
                   }`}
                 >
                   <RadioGroupItem value="pro" id="pro" className="mt-1" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <Crown className="h-5 w-5 text-amber-600" />
-                      <span className="font-bold text-xl text-slate-900">
+                      <Crown className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                      <span className="font-bold text-xl text-slate-900 dark:text-white">
                         Pro
                       </span>
-                      <Badge className="bg-amber-100 text-amber-700">
+                      <Badge className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
                         ₹
                         {billingCycle === "annual"
                           ? pricing.pro.annual_price
@@ -378,8 +378,8 @@ export default function UpgradePage() {
                     <div className="space-y-2 mb-3">
                       {pricing.pro.features.map((feature, i) => (
                         <div key={i} className="flex items-start gap-2 text-sm">
-                          <CheckCircle2 className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
-                          <span className="text-slate-700">{feature}</span>
+                          <CheckCircle2 className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-slate-700 dark:text-slate-300">{feature}</span>
                         </div>
                       ))}
                     </div>
