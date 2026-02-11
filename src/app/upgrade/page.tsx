@@ -395,7 +395,7 @@ export default function UpgradePage() {
 
             {/* Billing Cycle */}
             <div className="mb-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
                 Billing Cycle
               </h3>
 
@@ -407,33 +407,33 @@ export default function UpgradePage() {
                 <label
                   className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                     billingCycle === "monthly"
-                      ? "border-teal-500 bg-teal-50 shadow-md"
-                      : "border-slate-200 hover:border-teal-300"
+                      ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"
                   }`}
                 >
                   <RadioGroupItem value="monthly" id="monthly" />
                   <div>
-                    <div className="font-bold text-slate-900">Monthly</div>
-                    <div className="text-sm text-slate-600">Pay monthly</div>
+                    <div className="font-bold text-slate-900 dark:text-white">Monthly</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-300">Pay monthly</div>
                   </div>
                 </label>
 
                 <label
                   className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                     billingCycle === "annual"
-                      ? "border-green-500 bg-green-50 shadow-md"
-                      : "border-slate-200 hover:border-slate-300"
+                      ? "border-green-500 bg-green-50 dark:bg-green-950/30 shadow-md"
+                      : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                   }`}
                 >
                   <RadioGroupItem value="annual" id="annual" />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <div className="font-bold text-slate-900">Annual</div>
-                      <Badge className="bg-green-100 text-green-700 text-xs">
+                      <div className="font-bold text-slate-900 dark:text-white">Annual</div>
+                      <Badge className="bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-xs">
                         Save {annualSavings}%
                       </Badge>
                     </div>
-                    <div className="text-sm text-slate-600">Pay yearly</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-300">Pay yearly</div>
                   </div>
                 </label>
               </RadioGroup>
@@ -460,35 +460,35 @@ export default function UpgradePage() {
             
             {/* Powered by Razorpay */}
             <div className="mt-4 text-center">
-              <p className="text-xs text-slate-500">
-                Powered by <span className="font-semibold text-slate-700">Razorpay</span>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Powered by <span className="font-semibold text-slate-700 dark:text-slate-300">Razorpay</span>
               </p>
             </div>
           </Card>
 
           {/* Summary Card */}
-          <Card className="p-8 border-2 border-slate-200 h-fit">
-            <h3 className="text-xl font-bold text-slate-900 mb-6">
+          <Card className="p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 h-fit">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
               Payment Summary
             </h3>
 
             <div className="space-y-4 mb-6">
               <div className="flex items-center justify-between">
-                <span className="text-slate-600">Plan</span>
-                <span className="font-bold text-slate-900">
+                <span className="text-slate-600 dark:text-slate-300">Plan</span>
+                <span className="font-bold text-slate-900 dark:text-white">
                   {selectedPlan.toUpperCase()}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-slate-600">Billing</span>
-                <span className="font-semibold text-slate-900">
+                <span className="text-slate-600 dark:text-slate-300">Billing</span>
+                <span className="font-semibold text-slate-900 dark:text-white">
                   {billingCycle === "annual" ? "Yearly" : "Monthly"}
                 </span>
               </div>
 
               {billingCycle === "annual" && pricing[selectedPlan] && (
-                <div className="flex items-center justify-between text-green-600">
+                <div className="flex items-center justify-between text-green-600 dark:text-green-400">
                   <span>Savings</span>
                   <span className="font-semibold">
                     ₹
@@ -498,16 +498,16 @@ export default function UpgradePage() {
                 </div>
               )}
 
-              <div className="pt-4 border-t-2 border-slate-200">
+              <div className="pt-4 border-t-2 border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-slate-900">
+                  <span className="text-lg font-bold text-slate-900 dark:text-white">
                     Total
                   </span>
-                  <span className="text-2xl font-bold text-teal-600">
+                  <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">
                     ₹{getPrice()}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-2 text-right">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 text-right">
                   {billingCycle === "annual"
                     ? "Billed annually"
                     : "Billed monthly"}
@@ -516,17 +516,17 @@ export default function UpgradePage() {
             </div>
 
             {/* Trust Badges */}
-            <div className="space-y-3 pt-6 border-t-2 border-slate-200">
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <Shield className="h-4 w-4 text-green-600" />
+            <div className="space-y-3 pt-6 border-t-2 border-slate-200 dark:border-slate-700">
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <Shield className="h-4 w-4 text-green-600 dark:text-green-400" />
                 <span>Secure payment processing</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                 <span>Valid for 365 days (1 year)</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
                 <span>Instant access after payment</span>
               </div>
             </div>
@@ -534,12 +534,12 @@ export default function UpgradePage() {
         </div>
 
         {/* Need Help */}
-        <Card className="mt-8 p-6 bg-slate-50 border-2 border-slate-200">
+        <Card className="mt-8 p-6 bg-slate-50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700">
           <div className="text-center">
-            <h3 className="font-semibold text-slate-900 mb-2">
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">
               Need help choosing a plan?
             </h3>
-            <p className="text-sm text-slate-600 mb-4">
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
               Contact our support team or view detailed plan comparison
             </p>
             <div className="flex items-center justify-center gap-4">

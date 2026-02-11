@@ -277,8 +277,8 @@ export default async function PricingPage() {
                 key={plan.name}
                 className={`relative flex flex-col rounded-2xl border-2 p-8 transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
                   plan.highlighted
-                    ? `border-purple-400 bg-gradient-to-br ${plan.bgGradient} shadow-xl shadow-purple-200/50 ring-4 ring-purple-200`
-                    : "border-slate-200 bg-white shadow-lg"
+                    ? `border-purple-400 dark:border-purple-600 bg-gradient-to-br ${plan.bgGradient} shadow-xl shadow-purple-200/50 dark:shadow-purple-900/50 ring-4 ring-purple-200 dark:ring-purple-800`
+                    : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 shadow-lg"
                 }`}
               >
                 {plan.badge && (
@@ -300,12 +300,12 @@ export default async function PricingPage() {
                   <div className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${plan.gradient} mb-4`}>
                     <IconComponent className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">{plan.name}</h3>
-                  <p className="text-sm text-slate-600 font-medium mb-3">{plan.description}</p>
+                  <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">{plan.name}</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 font-medium mb-3">{plan.description}</p>
                   
                   {/* Social Proof */}
                   {plan.popularityBadge && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
                       <Users className="h-3.5 w-3.5" />
                       <span>{plan.popularityBadge}</span>
                     </div>
@@ -316,30 +316,30 @@ export default async function PricingPage() {
                 <div className="mb-6">
                   <div className="flex items-baseline gap-2 mb-2">
                     {plan.originalPrice && (
-                      <span className="text-2xl font-bold text-slate-400 line-through">{plan.originalPrice}</span>
+                      <span className="text-2xl font-bold text-slate-400 dark:text-slate-500 line-through">{plan.originalPrice}</span>
                     )}
-                    <span className="text-5xl font-extrabold text-slate-900">{plan.price}</span>
-                    {plan.period && <span className="ml-1 text-sm text-slate-600">{plan.period}</span>}
+                    <span className="text-5xl font-extrabold text-slate-900 dark:text-white">{plan.price}</span>
+                    {plan.period && <span className="ml-1 text-sm text-slate-600 dark:text-slate-300">{plan.period}</span>}
                   </div>
                   
                   {plan.billingOptions && (
-                    <div className="text-sm text-slate-600 mb-2">
-                      or <span className="font-bold text-slate-900">{plan.billingOptions.annual.price}/year</span>
-                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                    <div className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+                      or <span className="font-bold text-slate-900 dark:text-white">{plan.billingOptions.annual.price}/year</span>
+                      <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300">
                         {plan.billingOptions.annual.savings}
                       </span>
                     </div>
                   )}
                   
                   {plan.note && (
-                    <div className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-1 rounded mb-2">
+                    <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded mb-2">
                       ✓ {plan.note}
                     </div>
                   )}
 
                   {/* Value Statement */}
                   {plan.valueStatement && (
-                    <div className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                    <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded">
                       💎 {plan.valueStatement}
                     </div>
                   )}
@@ -349,21 +349,21 @@ export default async function PricingPage() {
                 <ul className="mb-4 flex-1 space-y-3">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-600 mt-0.5" />
-                      <span className="text-sm text-slate-700 font-medium">{feature}</span>
+                      <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 {/* Limitations (Loss Aversion) */}
                 {plan.limitations && plan.limitations.length > 0 && (
-                  <div className="mb-6 p-3 bg-red-50 rounded-lg border border-red-100">
-                    <p className="text-xs font-bold text-red-600 mb-2">⚠️ What you'll miss:</p>
+                  <div className="mb-6 p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-100 dark:border-red-800">
+                    <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-2">⚠️ What you'll miss:</p>
                     <ul className="space-y-1">
                       {plan.limitations.map((limitation, idx) => (
                         <li key={idx} className="flex items-start gap-2">
-                          <X className="h-3.5 w-3.5 flex-shrink-0 text-red-500 mt-0.5" />
-                          <span className="text-xs text-red-700">{limitation}</span>
+                          <X className="h-3.5 w-3.5 flex-shrink-0 text-red-500 dark:text-red-400 mt-0.5" />
+                          <span className="text-xs text-red-700 dark:text-red-400">{limitation}</span>
                         </li>
                       ))}
                     </ul>
