@@ -115,16 +115,16 @@ export default async function SubjectsPage() {
     .order("order", { ascending: true});
 
   return (
-    <div className="min-h-screen gradient-sky-radial">
+    <div className="min-h-screen gradient-sky-radial dark:bg-slate-950">
       <Navigation />
       <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <header className="mb-12 text-center">
-        <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-200 flex items-center gap-1.5 mx-auto w-fit">
+        <Badge className="mb-4 bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-950/70 dark:border-blue-800 flex items-center gap-1.5 mx-auto w-fit">
           <GraduationCap className="h-3.5 w-3.5" />
           GPAT Syllabus
         </Badge>
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">Browse Subjects</h1>
-        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">Browse Subjects</h1>
+        <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
           Select a subject to explore topics and generate AI-powered study notes
         </p>
       </header>
@@ -138,20 +138,20 @@ export default async function SubjectsPage() {
             <Link
               key={subject.id}
               href={`/subjects/${subject.id}`}
-              className="group relative rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 overflow-hidden"
+              className="group relative rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 p-6 shadow-sm dark:shadow-slate-900/50 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-slate-300 dark:hover:border-slate-600 overflow-hidden"
             >
-              <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${colorGradient} opacity-10 rounded-bl-[100px]`} />
+              <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${colorGradient} opacity-10 dark:opacity-20 rounded-bl-[100px]`} />
               
               <div className="relative">
                 <div className={`mb-4 p-3 rounded-xl bg-gradient-to-br ${colorGradient} w-fit group-hover:scale-110 transition-transform`}>
                   <Icon className="h-8 w-8 text-white" />
                 </div>
                 
-                <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   {subject.name}
                 </h3>
                 
-                <div className="flex items-center gap-2 text-slate-600 text-sm font-medium group-hover:text-blue-600 transition-colors">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 text-sm font-medium group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                   <Sparkles className="h-4 w-4" />
                   <span>Start Learning</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -164,11 +164,11 @@ export default async function SubjectsPage() {
 
       {(!subjects || subjects.length === 0) && (
         <div className="text-center py-16">
-          <div className="mx-auto w-fit p-4 rounded-2xl bg-slate-100 mb-4">
-            <BookMarked className="h-12 w-12 text-slate-400" />
+          <div className="mx-auto w-fit p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 mb-4">
+            <BookMarked className="h-12 w-12 text-slate-400 dark:text-slate-500" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 mb-2">No subjects available yet</h3>
-          <p className="text-slate-600">Please contact your administrator to add subjects to the syllabus.</p>
+          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">No subjects available yet</h3>
+          <p className="text-slate-600 dark:text-slate-300">Please contact your administrator to add subjects to the syllabus.</p>
         </div>
       )}
       </div>

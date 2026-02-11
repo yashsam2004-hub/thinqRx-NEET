@@ -124,16 +124,16 @@ export default function CreatePracticeTestPage() {
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 py-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900">Generate Practice Test</h1>
-        <p className="text-slate-600">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Generate Practice Test</h1>
+        <p className="text-slate-600 dark:text-slate-300">
           Create an AI-generated practice test for {currentCourse?.name}
         </p>
       </header>
 
-      <Card className="p-6">
+      <Card className="p-6 dark:bg-slate-800/50 dark:border-slate-700">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="subject">Select Subject *</Label>
+            <Label htmlFor="subject" className="dark:text-slate-200">Select Subject *</Label>
             <Select value={selectedSubject} onValueChange={setSelectedSubject}>
               <SelectTrigger id="subject">
                 <SelectValue placeholder="Choose a subject" />
@@ -149,7 +149,7 @@ export default function CreatePracticeTestPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="topic">Select Topic *</Label>
+            <Label htmlFor="topic" className="dark:text-slate-200">Select Topic *</Label>
             <Select
               value={selectedTopic}
               onValueChange={setSelectedTopic}
@@ -169,7 +169,7 @@ export default function CreatePracticeTestPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="difficulty">Difficulty Level *</Label>
+            <Label htmlFor="difficulty" className="dark:text-slate-200">Difficulty Level *</Label>
             <Select
               value={difficulty}
               onValueChange={(value) => setDifficulty(value as "easy" | "medium" | "hard")}
@@ -186,7 +186,7 @@ export default function CreatePracticeTestPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="questionCount">Number of Questions *</Label>
+            <Label htmlFor="questionCount" className="dark:text-slate-200">Number of Questions *</Label>
             <Input
               id="questionCount"
               type="number"
@@ -195,14 +195,14 @@ export default function CreatePracticeTestPage() {
               min="1"
               max={maxQuestions}
             />
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Your plan allows up to {maxQuestions} questions
             </p>
           </div>
 
-          <div className="rounded-lg bg-indigo-50 p-4">
-            <h3 className="font-semibold text-indigo-900">Rate Limits</h3>
-            <ul className="mt-2 space-y-1 text-sm text-indigo-700">
+          <div className="rounded-lg bg-indigo-50 dark:bg-indigo-950/30 dark:border dark:border-indigo-800/50 p-4">
+            <h3 className="font-semibold text-indigo-900 dark:text-indigo-300">Rate Limits</h3>
+            <ul className="mt-2 space-y-1 text-sm text-indigo-700 dark:text-indigo-400">
               <li>
                 <strong>Free:</strong> 3 tests/day
               </li>

@@ -47,15 +47,15 @@ export default async function SubjectTopicsPage({
 
   if (!subject) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white dark:bg-slate-950">
         <Navigation />
         <div className="mx-auto w-full max-w-4xl px-6 py-10">
           <div className="text-center py-16">
-            <div className="mx-auto w-fit p-4 rounded-2xl bg-red-100 mb-4">
-              <AlertCircle className="h-12 w-12 text-red-600" />
+            <div className="mx-auto w-fit p-4 rounded-2xl bg-red-100 dark:bg-red-950/30 dark:border dark:border-red-800 mb-4">
+              <AlertCircle className="h-12 w-12 text-red-600 dark:text-red-400" />
             </div>
-            <h1 className="text-2xl font-semibold text-slate-900 mb-2">Subject not found</h1>
-            <p className="text-slate-600 mb-6">The subject you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-white mb-2">Subject not found</h1>
+            <p className="text-slate-600 dark:text-slate-300 mb-6">The subject you're looking for doesn't exist or has been removed.</p>
             <Link href="/subjects">
               <Button variant="outline" className="flex items-center gap-2">
                 <ArrowLeft className="h-4 w-4" />
@@ -69,12 +69,12 @@ export default async function SubjectTopicsPage({
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-slate-950">
       <Navigation />
       <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="mb-8">
         <Link href="/subjects">
-          <Button variant="ghost" className="mb-4 flex items-center gap-2 text-slate-600 hover:text-slate-900">
+          <Button variant="ghost" className="mb-4 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
             <ArrowLeft className="h-4 w-4" />
             Back to Subjects
           </Button>
@@ -82,12 +82,12 @@ export default async function SubjectTopicsPage({
       </div>
 
       <header className="mb-12">
-        <Badge className="mb-4 bg-purple-100 text-purple-700 hover:bg-purple-200 flex items-center gap-1.5 w-fit">
+        <Badge className="mb-4 bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-950/70 dark:border-purple-800 flex items-center gap-1.5 w-fit">
           <BookOpen className="h-3.5 w-3.5" />
           {subject.name}
         </Badge>
-        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">{subject.name} Topics</h1>
-        <p className="text-xl text-slate-600">
+        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">{subject.name} Topics</h1>
+        <p className="text-xl text-slate-600 dark:text-slate-300">
           Select a topic to start learning with AI-powered study notes
         </p>
       </header>
@@ -96,11 +96,11 @@ export default async function SubjectTopicsPage({
         {(topics ?? []).map((topic) => (
           <div
             key={topic.id}
-            className="group relative rounded-2xl border-2 border-slate-200 bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 overflow-hidden"
+            className="group relative rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/50 p-6 shadow-sm dark:shadow-slate-900/50 transition-all hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 dark:hover:border-blue-600 overflow-hidden"
           >
             {topic.is_free_preview && (
               <div className="absolute top-4 right-4">
-                <Badge className="bg-green-100 text-green-700 border border-green-300 flex items-center gap-1">
+                <Badge className="bg-green-100 dark:bg-green-950/50 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-700 flex items-center gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   Free
                 </Badge>
@@ -109,7 +109,7 @@ export default async function SubjectTopicsPage({
 
             {!topic.is_free_preview && (
               <div className="absolute top-4 right-4">
-                <Badge className="bg-blue-100 text-blue-700 border border-blue-300 flex items-center gap-1">
+                <Badge className="bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-700 flex items-center gap-1">
                   <Lock className="h-3 w-3" />
                   Premium
                 </Badge>
@@ -117,24 +117,24 @@ export default async function SubjectTopicsPage({
             )}
 
             <div className="relative pt-8">
-              <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-100 w-fit">
-                <FileText className="h-8 w-8 text-blue-600" />
+              <div className="mb-4 p-3 rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-2 border-blue-100 dark:border-blue-800/50 w-fit">
+                <FileText className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               
-              <h3 className="text-xl font-bold text-slate-900 mb-4 leading-snug">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-4 leading-snug">
                 {topic.name}
               </h3>
               
               <div className="flex flex-col gap-2 mt-6">
                 <Link href={`/topics/${topic.id}`}>
-                  <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-2 border-blue-200 text-blue-700 hover:bg-blue-50">
+                  <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-2 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/30">
                     <FileText className="h-4 w-4" />
                     Quick Revision
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href={`/test/${topic.id}`}>
-                  <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-2 border-green-200 text-green-700 hover:bg-green-50">
+                  <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-2 border-green-200 dark:border-green-700 text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/30">
                     <ClipboardCheck className="h-4 w-4" />
                     Practice Test
                     <ArrowRight className="h-4 w-4" />

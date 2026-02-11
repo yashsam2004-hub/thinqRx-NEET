@@ -56,35 +56,35 @@ export function LoginClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 flex items-center justify-center px-6 py-16">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-6 py-16">
       {/* Home Icon - Top Left */}
       <Link 
         href="/" 
-        className="fixed top-6 left-6 p-2 rounded-lg bg-white/80 backdrop-blur-sm border border-slate-200 hover:bg-white hover:border-teal-300 transition-all shadow-sm"
+        className="fixed top-6 left-6 p-2 rounded-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:border-teal-300 dark:hover:border-teal-500 transition-all shadow-sm"
         aria-label="Home"
       >
-        <Home className="h-5 w-5 text-slate-700 hover:text-teal-600" />
+        <Home className="h-5 w-5 text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400" />
       </Link>
 
-      <Card className="w-full max-w-md p-8 bg-white/80 backdrop-blur-sm border-slate-200 shadow-2xl">
+      <Card className="w-full max-w-md p-8 bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-slate-200 dark:border-slate-700 shadow-2xl">
         <div className="mb-6">
           <div className="mb-4 flex justify-center">
-            <div className="rounded-full bg-gradient-to-br from-teal-500 to-teal-600 p-3 shadow-lg">
+            <div className="rounded-full bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 p-3 shadow-lg">
               <LogIn className="h-6 w-6 text-white" />
             </div>
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-900 mb-2 text-center">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 text-center">
             Welcome Back
           </h1>
-          <p className="text-sm text-slate-600 text-center">
+          <p className="text-sm text-slate-600 dark:text-slate-300 text-center">
             Sign in to your ThinqRx account
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={onSubmit}>
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email" className="dark:text-slate-200">Email Address</Label>
             <Input
               id="email"
               type="email"
@@ -98,10 +98,10 @@ export function LoginClient() {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="dark:text-slate-200">Password</Label>
               <Link 
                 href="/forgot-password" 
-                className="text-xs text-teal-600 hover:underline font-medium"
+                className="text-xs text-teal-600 dark:text-teal-400 hover:underline font-medium"
               >
                 Forgot password?
               </Link>
@@ -136,9 +136,9 @@ export function LoginClient() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-slate-600">
+        <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
           Don't have an account?{" "}
-          <Link className="text-teal-600 font-semibold hover:underline" href="/signup">
+          <Link className="text-teal-600 dark:text-teal-400 font-semibold hover:underline" href="/signup">
             Create one
           </Link>
         </div>

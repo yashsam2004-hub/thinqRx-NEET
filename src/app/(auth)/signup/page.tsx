@@ -203,9 +203,9 @@ export default function SignupPage() {
   if (loadingData) {
     return (
       <div className="mx-auto flex min-h-[calc(100vh-1px)] max-w-6xl items-center justify-center px-6 py-16">
-        <Card className="w-full max-w-2xl p-12 text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-teal-600 mx-auto mb-4" />
-          <p className="text-slate-600">Loading course information...</p>
+        <Card className="w-full max-w-2xl p-12 text-center dark:bg-slate-800/50 dark:border-slate-700">
+          <Loader2 className="h-12 w-12 animate-spin text-teal-600 dark:text-teal-400 mx-auto mb-4" />
+          <p className="text-slate-600 dark:text-slate-300">Loading course information...</p>
         </Card>
       </div>
     );
@@ -217,27 +217,27 @@ export default function SignupPage() {
     : 20;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 py-16 px-6">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-16 px-6">
       <div className="mx-auto max-w-4xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">Create Your ThinqRx Account</h1>
-          <p className="text-lg text-slate-600">Choose your plan and start preparing for GPAT</p>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Create Your ThinqRx Account</h1>
+          <p className="text-lg text-slate-600 dark:text-slate-300">Choose your plan and start preparing for GPAT</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Form */}
-          <Card className="lg:col-span-2 p-8 border-2 border-slate-200">
+          <Card className="lg:col-span-2 p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
             <form onSubmit={onSubmit} className="space-y-6">
               {/* Personal Information */}
               <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-teal-600" />
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />
                   Personal Information
                 </h2>
                 
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name *</Label>
+                    <Label htmlFor="name" className="dark:text-slate-200">Full Name *</Label>
                     <Input
                       id="name"
                       type="text"
@@ -249,7 +249,7 @@ export default function SignupPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email" className="dark:text-slate-200">Email Address *</Label>
                     <Input
                       id="email"
                       type="email"
@@ -262,7 +262,7 @@ export default function SignupPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password *</Label>
+                    <Label htmlFor="password" className="dark:text-slate-200">Password *</Label>
                     <Input
                       id="password"
                       type="password"
@@ -273,11 +273,11 @@ export default function SignupPage() {
                       required
                       minLength={6}
                     />
-                    <p className="text-xs text-slate-500">Minimum 6 characters required</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Minimum 6 characters required</p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                    <Label htmlFor="confirmPassword" className="dark:text-slate-200">Confirm Password *</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
@@ -306,16 +306,16 @@ export default function SignupPage() {
 
               {/* Plan Selection */}
               <div>
-                <h2 className="text-xl font-bold text-slate-900 mb-4">Choose Your Plan</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Choose Your Plan</h2>
                 
                 {/* Payment Info Alert */}
                 {(selectedPlan === "plus" || selectedPlan === "pro") && (
-                  <div className="mb-4 p-4 bg-amber-50 border-2 border-amber-200 rounded-lg">
+                  <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-lg">
                     <div className="flex items-start gap-3">
-                      <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
-                        <p className="font-semibold text-amber-900 mb-1">Payment Required</p>
-                        <p className="text-amber-800">
+                        <p className="font-semibold text-amber-900 dark:text-amber-300 mb-1">Payment Required</p>
+                        <p className="text-amber-800 dark:text-amber-400">
                           You'll need to complete payment to activate your {selectedPlan.toUpperCase()} plan. 
                           After account creation, you'll be prompted to complete payment.
                         </p>
@@ -326,53 +326,53 @@ export default function SignupPage() {
                 
                 <RadioGroup value={selectedPlan} onValueChange={(value: any) => setSelectedPlan(value)} className="space-y-3">
                   {/* Free Plan */}
-                  <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "free" ? "border-teal-500 bg-teal-50 shadow-md" : "border-slate-200 hover:border-teal-300"}`}>
+                  <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "free" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
                     <RadioGroupItem value="free" id="free" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <Sparkles className="h-4 w-4 text-slate-600" />
-                        <span className="font-bold text-slate-900">Free</span>
-                        <Badge className="bg-slate-100 text-slate-700">₹0</Badge>
+                        <Sparkles className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+                        <span className="font-bold text-slate-900 dark:text-white">Free</span>
+                        <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">₹0</Badge>
                       </div>
-                      <p className="text-sm text-slate-600">Basic access to get started</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-300">Basic access to get started</p>
                     </div>
                   </label>
 
                   {/* Plus Plan */}
                   {pricing.plus && (
-                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "plus" ? "border-teal-500 bg-teal-50 shadow-md" : "border-slate-200 hover:border-teal-300"}`}>
+                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "plus" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
                       <RadioGroupItem value="plus" id="plus" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <Zap className="h-4 w-4 text-teal-600" />
-                          <span className="font-bold text-slate-900">Plus</span>
-                          <Badge className="bg-teal-100 text-teal-700">
+                          <Zap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                          <span className="font-bold text-slate-900 dark:text-white">Plus</span>
+                          <Badge className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300">
                             ₹{billingCycle === "annual" ? pricing.plus.annual_price : pricing.plus.monthly_price}
                             <span className="text-xs ml-1">/{billingCycle === "annual" ? "year" : "month"}</span>
                           </Badge>
-                          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">Payment Required</Badge>
+                          <Badge variant="outline" className="text-xs border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">Payment Required</Badge>
                         </div>
-                        <p className="text-sm text-slate-600">More features and practice tests</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">More features and practice tests</p>
                       </div>
                     </label>
                   )}
 
                   {/* Pro Plan */}
                   {pricing.pro && (
-                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "pro" ? "border-amber-500 bg-amber-50" : "border-slate-200 hover:border-slate-300"}`}>
+                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "pro" ? "border-amber-500 bg-amber-50 dark:bg-amber-950/30" : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"}`}>
                       <RadioGroupItem value="pro" id="pro" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <Crown className="h-4 w-4 text-amber-600" />
-                          <span className="font-bold text-slate-900">Pro</span>
-                          <Badge className="bg-amber-100 text-amber-700">
+                          <Crown className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                          <span className="font-bold text-slate-900 dark:text-white">Pro</span>
+                          <Badge className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
                             ₹{billingCycle === "annual" ? pricing.pro.annual_price : pricing.pro.monthly_price}
                             <span className="text-xs ml-1">/{billingCycle === "annual" ? "year" : "month"}</span>
                           </Badge>
                           <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs">Most Popular</Badge>
-                          <Badge variant="outline" className="text-xs border-amber-300 text-amber-700">Payment Required</Badge>
+                          <Badge variant="outline" className="text-xs border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">Payment Required</Badge>
                         </div>
-                        <p className="text-sm text-slate-600">Unlimited access to everything</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-300">Unlimited access to everything</p>
                       </div>
                     </label>
                   )}
@@ -382,25 +382,25 @@ export default function SignupPage() {
               {/* Billing Cycle */}
               {selectedPlan !== "free" && (
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900 mb-4">Billing Cycle</h2>
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Billing Cycle</h2>
                   
                   <RadioGroup value={billingCycle} onValueChange={(value: any) => setBillingCycle(value)} className="grid grid-cols-2 gap-4">
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "monthly" ? "border-teal-500 bg-teal-50 shadow-md" : "border-slate-200 hover:border-teal-300"}`}>
+                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "monthly" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
                       <RadioGroupItem value="monthly" id="monthly" />
                       <div>
-                        <div className="font-bold text-slate-900">Monthly</div>
-                        <div className="text-sm text-slate-600">Pay monthly</div>
+                        <div className="font-bold text-slate-900 dark:text-white">Monthly</div>
+                        <div className="text-sm text-slate-600 dark:text-slate-300">Pay monthly</div>
                       </div>
                     </label>
 
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "annual" ? "border-green-500 bg-green-50" : "border-slate-200 hover:border-slate-300"}`}>
+                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "annual" ? "border-green-500 bg-green-50 dark:bg-green-950/30" : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"}`}>
                       <RadioGroupItem value="annual" id="annual" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <div className="font-bold text-slate-900">Annual</div>
+                          <div className="font-bold text-slate-900 dark:text-white">Annual</div>
                           <Badge className="bg-green-600 text-white text-xs">Save {annualSavings}%</Badge>
                         </div>
-                        <div className="text-sm text-slate-600">Pay yearly</div>
+                        <div className="text-sm text-slate-600 dark:text-slate-300">Pay yearly</div>
                       </div>
                     </label>
                   </RadioGroup>
@@ -427,66 +427,66 @@ export default function SignupPage() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm text-slate-600">
+            <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
               Already have an account?{" "}
-              <Link className="text-teal-600 font-semibold hover:underline" href="/login">
+              <Link className="text-teal-600 dark:text-teal-400 font-semibold hover:underline" href="/login">
                 Sign in
               </Link>
             </div>
           </Card>
 
           {/* Order Summary */}
-          <Card className="p-6 border-2 border-slate-200 h-fit sticky top-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-4">Registration Summary</h2>
+          <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 h-fit sticky top-6">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Registration Summary</h2>
             
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-slate-600 mb-1">Exam</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Exam</p>
                 <div className="flex items-center gap-2">
-                  <GraduationCap className="h-4 w-4 text-teal-600" />
-                  <p className="font-semibold text-slate-900">GPAT</p>
+                  <GraduationCap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                  <p className="font-semibold text-slate-900 dark:text-white">GPAT</p>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Access to all GPAT preparation content</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Access to all GPAT preparation content</p>
               </div>
 
               <div>
-                <p className="text-sm text-slate-600 mb-1">Plan</p>
+                <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Plan</p>
                 <div className="flex items-center gap-2">
                   {getPlanIcon(selectedPlan)}
-                  <p className="font-semibold text-slate-900 capitalize">{selectedPlan}</p>
+                  <p className="font-semibold text-slate-900 dark:text-white capitalize">{selectedPlan}</p>
                 </div>
               </div>
 
               {selectedPlan !== "free" && (
                 <div>
-                  <p className="text-sm text-slate-600 mb-1">Billing</p>
-                  <p className="font-semibold text-slate-900 capitalize">{billingCycle}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Billing</p>
+                  <p className="font-semibold text-slate-900 dark:text-white capitalize">{billingCycle}</p>
                 </div>
               )}
 
-              <div className="pt-4 border-t border-slate-200">
+              <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-slate-600">Subtotal</p>
-                  <p className="font-semibold">₹{totalPrice}</p>
+                  <p className="text-slate-600 dark:text-slate-300">Subtotal</p>
+                  <p className="font-semibold dark:text-white">₹{totalPrice}</p>
                 </div>
                 
                 {selectedPlan !== "free" && billingCycle === "annual" && (
-                  <div className="flex items-center justify-between text-sm text-green-600 mb-2">
+                  <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-400 mb-2">
                     <p>Annual Discount</p>
                     <p>-{annualSavings}%</p>
                   </div>
                 )}
                 
-                <div className="flex items-center justify-between text-lg font-bold text-slate-900 mt-4">
+                <div className="flex items-center justify-between text-lg font-bold text-slate-900 dark:text-white mt-4">
                   <p>Total</p>
                   <p>₹{totalPrice}</p>
                 </div>
               </div>
 
               {selectedPlan !== "free" && (
-                <div className="pt-4 border-t border-slate-200">
-                  <div className="flex items-start gap-2 text-xs text-slate-600">
-                    <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                  <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                     <p>Invoice will be sent to your email after registration</p>
                   </div>
                 </div>
