@@ -431,39 +431,39 @@ export default function HomePage() {
 
               {/* Content Experts */}
               <div className="text-center">
-                <div className="inline-flex p-4 rounded-2xl bg-teal-100 mb-4">
-                  <Shield className="h-10 w-10 text-teal-600" />
+                <div className="inline-flex p-4 rounded-2xl bg-teal-100 dark:bg-teal-950 mb-4">
+                  <Shield className="h-10 w-10 text-teal-600 dark:text-teal-400" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                   PCI-Aligned Content
                 </h3>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-300">
                   Our content is accurate, up-to-date, and aligned with the latest PCI syllabus and GPAT pattern
                 </p>
               </div>
 
               {/* AI-Powered */}
               <div className="text-center">
-                <div className="inline-flex p-4 rounded-2xl bg-amber-100 mb-4">
-                  <Zap className="h-10 w-10 text-amber-600" />
+                <div className="inline-flex p-4 rounded-2xl bg-amber-100 dark:bg-amber-950 mb-4">
+                  <Zap className="h-10 w-10 text-amber-600 dark:text-amber-400" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                   AI-Powered Learning
                 </h3>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-300">
                   Smart recommendations and personalized study plans powered by artificial intelligence
                 </p>
               </div>
 
               {/* Comprehensive */}
               <div className="text-center">
-                <div className="inline-flex p-4 rounded-2xl bg-teal-100 mb-4">
-                  <CheckCircle2 className="h-10 w-10 text-teal-600" />
+                <div className="inline-flex p-4 rounded-2xl bg-teal-100 dark:bg-teal-950 mb-4">
+                  <CheckCircle2 className="h-10 w-10 text-teal-600 dark:text-teal-400" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
                   Complete Preparation
                 </h3>
-                <p className="text-slate-600">
+                <p className="text-slate-600 dark:text-slate-300">
                   Everything you need in one place - notes, tests, and analytics for complete GPAT preparation
                 </p>
               </div>

@@ -200,20 +200,20 @@ export default function InteractiveTestUI({
   const selectedOption = currentQuestion?.options.find(opt => opt.id === selectedOptionId);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-slate-900">
       <Navigation />
       
       <div className="mx-auto max-w-4xl px-6 py-8">
         {/* Pre-test Configuration */}
         {!testStarted && !testCompleted && (
-          <Card className="p-8 bg-white border-2 border-slate-200">
+          <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700">
             <div className="text-center mb-8">
-              <Badge className="mb-4 bg-blue-100 text-blue-700 px-4 py-2">
+              <Badge className="mb-4 bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 px-4 py-2">
                 <Sparkles className="h-4 w-4 mr-2 inline" />
                 Practice Test
               </Badge>
-              <h1 className="text-4xl font-bold text-slate-900 mb-3">{topicName}</h1>
-              <p className="text-lg text-slate-600">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-3">{topicName}</h1>
+              <p className="text-lg text-slate-600 dark:text-slate-300">
                 Interactive quiz with instant feedback
               </p>
             </div>
@@ -221,7 +221,7 @@ export default function InteractiveTestUI({
             <div className="space-y-6 mb-8">
               {/* Question Count */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-3">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">
                   Number of Questions
                 </label>
                 <div className="grid grid-cols-3 gap-3">
@@ -240,7 +240,7 @@ export default function InteractiveTestUI({
 
               {/* Difficulty */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-3">
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">
                   Difficulty Level
                 </label>
                 <div className="grid grid-cols-3 gap-3">
@@ -290,16 +290,16 @@ export default function InteractiveTestUI({
         {testStarted && !testCompleted && currentQuestion && (
           <div className="space-y-6">
             {/* Progress Bar */}
-            <Card className="p-4 bg-white border-2 border-slate-200">
+            <Card className="p-4 bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-slate-700">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                   Question {currentQuestionIndex + 1} of {testData?.questions.length}
                 </span>
-                <span className="text-sm font-semibold text-blue-600">
+                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                   Score: {score}/{testData?.questions.length}
                 </span>
               </div>
-              <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300"
                   style={{
@@ -310,12 +310,12 @@ export default function InteractiveTestUI({
             </Card>
 
             {/* Question Card */}
-            <Card className="p-8 bg-white border-2 border-slate-200">
+            <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700">
               <div className="mb-6">
-                <Badge className="mb-4 bg-purple-100 text-purple-700">
+                <Badge className="mb-4 bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300">
                   Question {currentQuestionIndex + 1}
                 </Badge>
-                <h2 className="text-2xl font-bold text-slate-900 leading-relaxed">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white leading-relaxed">
                   {currentQuestion.question}
                 </h2>
               </div>
@@ -326,16 +326,16 @@ export default function InteractiveTestUI({
                   const isSelected = selectedOptionId === option.id;
                   const isCorrectAnswer = option.id === currentQuestion.correctOptionId;
                   
-                  let optionStyle = "border-2 border-slate-200 hover:border-blue-400 bg-white";
+                  let optionStyle = "border-2 border-slate-200 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-500 bg-white dark:bg-slate-800/50";
                   
                   if (showAnswer) {
                     if (isCorrectAnswer) {
-                      optionStyle = "border-2 border-green-500 bg-green-50";
+                      optionStyle = "border-2 border-green-500 dark:border-green-600 bg-green-50 dark:bg-green-950/30";
                     } else if (isSelected && !isCorrectAnswer) {
-                      optionStyle = "border-2 border-red-500 bg-red-50";
+                      optionStyle = "border-2 border-red-500 dark:border-red-600 bg-red-50 dark:bg-red-950/30";
                     }
                   } else if (isSelected) {
-                    optionStyle = "border-2 border-blue-600 bg-blue-50";
+                    optionStyle = "border-2 border-blue-600 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30";
                   }
 
                   return (
@@ -355,11 +355,11 @@ export default function InteractiveTestUI({
                             ? "bg-red-600 text-white"
                             : isSelected
                             ? "bg-blue-600 text-white"
-                            : "bg-slate-200 text-slate-700"
+                            : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200"
                         }`}>
                           {option.id}
                         </div>
-                        <span className="flex-1 text-lg text-slate-900">{option.text}</span>
+                        <span className="flex-1 text-lg text-slate-900 dark:text-white">{option.text}</span>
                         {showAnswer && isCorrectAnswer && (
                           <CheckCircle2 className="h-6 w-6 text-green-600" />
                         )}
@@ -378,29 +378,29 @@ export default function InteractiveTestUI({
                   {/* Result Badge */}
                   <div className={`p-6 rounded-xl border-2 ${
                     isCorrect
-                      ? "bg-green-50 border-green-200"
-                      : "bg-red-50 border-red-200"
+                      ? "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800"
+                      : "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800"
                   }`}>
                     <div className="flex items-start gap-3">
                       {isCorrect ? (
-                        <CheckCircle2 className="h-6 w-6 text-green-600 flex-shrink-0 mt-1" />
+                        <CheckCircle2 className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0 mt-1" />
                       ) : (
-                        <XCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-1" />
+                        <XCircle className="h-6 w-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-1" />
                       )}
                       <div>
                         <h3 className={`font-bold text-lg mb-2 ${
-                          isCorrect ? "text-green-900" : "text-red-900"
+                          isCorrect ? "text-green-900 dark:text-green-300" : "text-red-900 dark:text-red-300"
                         }`}>
                           {isCorrect ? "✓ Correct! Well done!" : "✗ Incorrect"}
                         </h3>
                         {!isCorrect && selectedOption && (
-                          <p className="text-slate-700 mb-2">
-                            <strong>Your answer:</strong> Option {selectedOption.id} - <span className="text-red-600 font-medium">{selectedOption.text}</span> (Wrong)
+                          <p className="text-slate-700 dark:text-slate-300 mb-2">
+                            <strong>Your answer:</strong> Option {selectedOption.id} - <span className="text-red-600 dark:text-red-400 font-medium">{selectedOption.text}</span> (Wrong)
                           </p>
                         )}
                         {correctOption && (
-                          <p className="text-slate-700">
-                            <strong>Correct answer:</strong> Option <span className="text-green-600 font-bold">{correctOption.id}</span> - <span className="text-green-600 font-medium">{correctOption.text}</span>
+                          <p className="text-slate-700 dark:text-slate-300">
+                            <strong>Correct answer:</strong> Option <span className="text-green-600 dark:text-green-400 font-bold">{correctOption.id}</span> - <span className="text-green-600 dark:text-green-400 font-medium">{correctOption.text}</span>
                           </p>
                         )}
                       </div>
@@ -408,12 +408,12 @@ export default function InteractiveTestUI({
                   </div>
 
                   {/* Detailed Explanation */}
-                  <div className="p-6 rounded-xl border-2 border-blue-200 bg-blue-50">
-                    <h4 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+                  <div className="p-6 rounded-xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/30">
+                    <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
                       <Sparkles className="h-5 w-5" />
                       Explanation
                     </h4>
-                    <p className="text-slate-700 leading-relaxed whitespace-pre-line">
+                    <p className="text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                       {currentQuestion.explanation}
                     </p>
                   </div>
@@ -449,27 +449,27 @@ export default function InteractiveTestUI({
 
         {/* Test Completed */}
         {testCompleted && testData && (
-          <Card className="p-8 bg-white border-2 border-slate-200 text-center">
+          <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 border-slate-200 dark:border-slate-700 text-center">
             <div className="mb-6">
               <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center mb-4">
                 <Award className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-4xl font-bold text-slate-900 mb-2">Test Completed!</h2>
-              <p className="text-lg text-slate-600">Great job on completing the practice test</p>
+              <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Test Completed!</h2>
+              <p className="text-lg text-slate-600 dark:text-slate-300">Great job on completing the practice test</p>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="p-4 rounded-xl bg-blue-50 border-2 border-blue-200">
-                <div className="text-3xl font-bold text-blue-600 mb-1">{score}</div>
-                <div className="text-sm text-slate-600">Correct</div>
+              <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-950/30 border-2 border-blue-200 dark:border-blue-800">
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-1">{score}</div>
+                <div className="text-sm text-slate-600 dark:text-slate-300">Correct</div>
               </div>
-              <div className="p-4 rounded-xl bg-purple-50 border-2 border-purple-200">
-                <div className="text-3xl font-bold text-purple-600 mb-1">{percentage}%</div>
-                <div className="text-sm text-slate-600">Score</div>
+              <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/30 border-2 border-purple-200 dark:border-purple-800">
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-1">{percentage}%</div>
+                <div className="text-sm text-slate-600 dark:text-slate-300">Score</div>
               </div>
-              <div className="p-4 rounded-xl bg-green-50 border-2 border-green-200">
-                <div className="text-3xl font-bold text-green-600 mb-1">{testData.questions.length}</div>
-                <div className="text-sm text-slate-600">Total</div>
+              <div className="p-4 rounded-xl bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-1">{testData.questions.length}</div>
+                <div className="text-sm text-slate-600 dark:text-slate-300">Total</div>
               </div>
             </div>
 
