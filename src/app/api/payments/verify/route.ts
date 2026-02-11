@@ -112,7 +112,7 @@ function verifyRazorpaySignature(
 function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
   const now = new Date();
   if (billingCycle === 'MONTHLY') {
-    now.setDate(now.getDate() + 30); // 30 days
+    now.setDate(now.getDate() + 31); // 31 days (1 month)
   } else {
     now.setDate(now.getDate() + 365); // 365 days (1 year)
   }
@@ -322,17 +322,20 @@ export async function POST(req: NextRequest) {
     // 12. Calculate subscription validity
     const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
 
-    // 13. Upsert subscription (idempotent)
+    // 13. Upsert subscription (idempotent) - using upsert instead of update to bypass RLS issues
     const { error: subscriptionError } = await adminSupabase
       .from('profiles')
-      .update({
+      .upsert({
+        id: user.id, // Include primary key for upsert
         subscription_plan: payment.plan_name,
         subscription_status: 'active',
         subscription_end_date: validUntil.toISOString(),
         billing_cycle: payment.billing_cycle,
         updated_at: new Date().toISOString(),
-      })
-      .eq('id', user.id);
+      }, {
+        onConflict: 'id', // Specify the conflict target
+        ignoreDuplicates: false, // We want to update existing records
+      });
 
     if (subscriptionError) {
       console.error('[Razorpay] Failed to update subscription:', subscriptionError);
