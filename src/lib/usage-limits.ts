@@ -3,8 +3,8 @@
  * Manages feature access based on user's plan
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase-server';
-import { createSupabaseBrowserClient } from '@/lib/supabase-client';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export type CounterType = 'ai_notes' | 'practice_tests' | 'explanations' | 'analytics_depth';
 
@@ -148,7 +148,7 @@ export async function incrementUsage(
       p_user_id: userId,
       p_plan_id: planId,
       p_counter_type: counterType,
-      p_limit: limit,
+      p_usage_limit: limit,
     });
 
     if (error) {

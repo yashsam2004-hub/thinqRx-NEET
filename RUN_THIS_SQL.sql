@@ -1,9 +1,71 @@
--- Add new exam-focused plans for better monetization
--- Keep existing Plus/Pro plans, add GPAT Last Minute and Full Prep packs
+-- ========================================
+-- ThinqRx: Complete Database Setup
+-- Run this entire file in Supabase SQL Editor
+-- ========================================
 
 -- ========================================
--- STEP 1: Create plans table if not exists
+-- PART 1: AI Cache Table (Cost Reduction)
 -- ========================================
+
+CREATE TABLE IF NOT EXISTS public.ai_cache (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  cache_key TEXT NOT NULL UNIQUE,
+  content JSONB NOT NULL,
+  content_type TEXT NOT NULL,
+  exam TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  topic TEXT,
+  version TEXT NOT NULL DEFAULT 'V1',
+  metadata JSONB,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_cache_key ON public.ai_cache(cache_key);
+CREATE INDEX IF NOT EXISTS idx_ai_cache_exam_subject ON public.ai_cache(exam, subject);
+CREATE INDEX IF NOT EXISTS idx_ai_cache_content_type ON public.ai_cache(content_type);
+
+ALTER TABLE public.ai_cache ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Authenticated users can read ai_cache" ON public.ai_cache;
+DROP POLICY IF EXISTS "Service role can manage ai_cache" ON public.ai_cache;
+
+CREATE POLICY "Authenticated users can read ai_cache"
+  ON public.ai_cache
+  FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Service role can manage ai_cache"
+  ON public.ai_cache
+  FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+CREATE OR REPLACE FUNCTION generate_cache_key(
+  p_content_type TEXT,
+  p_exam TEXT,
+  p_subject TEXT,
+  p_topic TEXT DEFAULT NULL,
+  p_version TEXT DEFAULT 'V1'
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  IF p_topic IS NOT NULL THEN
+    RETURN p_content_type || ':' || p_exam || ':' || p_subject || ':' || p_topic || ':' || p_version;
+  ELSE
+    RETURN p_content_type || ':' || p_exam || ':' || p_subject || ':' || p_version;
+  END IF;
+END;
+$$;
+
+-- ========================================
+-- PART 2: Plans Table (Monetization)
+-- ========================================
+
 CREATE TABLE IF NOT EXISTS public.plans (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -18,21 +80,17 @@ CREATE TABLE IF NOT EXISTS public.plans (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable RLS on plans table
 ALTER TABLE public.plans ENABLE ROW LEVEL SECURITY;
 
--- Drop existing policies if they exist
 DROP POLICY IF EXISTS "Anyone can view active plans" ON public.plans;
 DROP POLICY IF EXISTS "Service role can manage plans" ON public.plans;
 
--- Everyone can read plans (for pricing page)
 CREATE POLICY "Anyone can view active plans"
   ON public.plans
   FOR SELECT
   TO public
   USING (is_active = true);
 
--- Only service role can manage plans
 CREATE POLICY "Service role can manage plans"
   ON public.plans
   FOR ALL
@@ -40,39 +98,8 @@ CREATE POLICY "Service role can manage plans"
   USING (true)
   WITH CHECK (true);
 
--- ========================================
--- STEP 2: Insert/Update plans
--- ========================================
-
--- GPAT Last Minute Preparation Pack (₹299, 60 days)
-INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order)
-VALUES (
-  'gpat_last_minute',
-  'GPAT Last Minute Pack',
-  299,
-  60,
-  'High-yield revision for GPAT exam preparation',
-  jsonb_build_object(
-    'ai_notes_limit', 50,
-    'practice_tests_limit', 10,
-    'explanations', 'partial',
-    'analytics', 'basic',
-    'validity', '60 days',
-    'best_for', 'Students with 2-3 months left for GPAT'
-  ),
-  true,
-  2
-)
-ON CONFLICT (id) DO UPDATE SET
-  name = EXCLUDED.name,
-  price = EXCLUDED.price,
-  validity_days = EXCLUDED.validity_days,
-  description = EXCLUDED.description,
-  features = EXCLUDED.features,
-  display_order = EXCLUDED.display_order;
-
--- GPAT 2027 Full Preparation Pack (₹999, 365 days) - HERO PLAN
-INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order)
+-- Insert GPAT 2027 Full Prep (HERO PLAN)
+INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'gpat_2027_full',
   'GPAT 2027 Full Prep',
@@ -89,7 +116,8 @@ VALUES (
     'best_for', 'Serious GPAT 2027 aspirants'
   ),
   true,
-  1
+  1,
+  'exam_pack'
 )
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
@@ -97,9 +125,39 @@ ON CONFLICT (id) DO UPDATE SET
   validity_days = EXCLUDED.validity_days,
   description = EXCLUDED.description,
   features = EXCLUDED.features,
-  display_order = EXCLUDED.display_order;
+  display_order = EXCLUDED.display_order,
+  plan_category = EXCLUDED.plan_category;
 
--- Insert Free plan if doesn't exist
+-- Insert GPAT Last Minute Pack
+INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
+VALUES (
+  'gpat_last_minute',
+  'GPAT Last Minute Pack',
+  299,
+  60,
+  'High-yield revision for GPAT exam preparation',
+  jsonb_build_object(
+    'ai_notes_limit', 50,
+    'practice_tests_limit', 10,
+    'explanations', 'partial',
+    'analytics', 'basic',
+    'validity', '60 days',
+    'best_for', 'Students with 2-3 months left for GPAT'
+  ),
+  true,
+  2,
+  'exam_pack'
+)
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  price = EXCLUDED.price,
+  validity_days = EXCLUDED.validity_days,
+  description = EXCLUDED.description,
+  features = EXCLUDED.features,
+  display_order = EXCLUDED.display_order,
+  plan_category = EXCLUDED.plan_category;
+
+-- Insert Free Plan
 INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'free',
@@ -123,7 +181,7 @@ ON CONFLICT (id) DO UPDATE SET
   display_order = EXCLUDED.display_order,
   plan_category = EXCLUDED.plan_category;
 
--- Insert Plus plan if doesn't exist
+-- Insert Plus Plan
 INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'plus',
@@ -147,7 +205,7 @@ ON CONFLICT (id) DO UPDATE SET
   display_order = EXCLUDED.display_order,
   plan_category = EXCLUDED.plan_category;
 
--- Insert Pro plan if doesn't exist
+-- Insert Pro Plan
 INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'pro',
@@ -172,36 +230,29 @@ ON CONFLICT (id) DO UPDATE SET
   plan_category = EXCLUDED.plan_category;
 
 -- ========================================
--- STEP 3: Categorize plans
+-- PART 3: Usage Counters (Feature Limits)
 -- ========================================
-UPDATE public.plans
-SET plan_category = 'exam_pack'
-WHERE id IN ('gpat_last_minute', 'gpat_2027_full');
 
-UPDATE public.plans
-SET plan_category = 'subscription'
-WHERE id IN ('plus', 'pro', 'free');
-
--- Create usage tracking table if not exists
 CREATE TABLE IF NOT EXISTS public.usage_counters (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   plan_id TEXT NOT NULL,
-  counter_type TEXT NOT NULL, -- 'ai_notes', 'practice_tests', 'explanations'
+  counter_type TEXT NOT NULL,
   count INTEGER DEFAULT 0,
   usage_limit INTEGER NOT NULL,
-  reset_at TIMESTAMPTZ, -- For monthly limits
+  reset_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, plan_id, counter_type)
 );
 
--- Index for fast lookups
 CREATE INDEX IF NOT EXISTS idx_usage_counters_user ON public.usage_counters(user_id);
 CREATE INDEX IF NOT EXISTS idx_usage_counters_user_plan ON public.usage_counters(user_id, plan_id);
 
--- RLS for usage_counters
 ALTER TABLE public.usage_counters ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view their own usage" ON public.usage_counters;
+DROP POLICY IF EXISTS "Service role can manage usage" ON public.usage_counters;
 
 CREATE POLICY "Users can view their own usage"
   ON public.usage_counters
@@ -216,7 +267,10 @@ CREATE POLICY "Service role can manage usage"
   USING (true)
   WITH CHECK (true);
 
--- Function to check if user has reached limit
+-- ========================================
+-- PART 4: Helper Functions
+-- ========================================
+
 CREATE OR REPLACE FUNCTION check_usage_limit(
   p_user_id UUID,
   p_counter_type TEXT
@@ -237,15 +291,13 @@ BEGIN
   LIMIT 1;
 
   IF NOT FOUND THEN
-    -- No counter exists, check user's plan default limits
-    RETURN TRUE; -- Allow for now, counter will be created
+    RETURN TRUE;
   END IF;
 
   RETURN v_count < v_limit;
 END;
 $$;
 
--- Function to increment usage counter
 CREATE OR REPLACE FUNCTION increment_usage(
   p_user_id UUID,
   p_plan_id TEXT,
@@ -268,6 +320,24 @@ BEGIN
 END;
 $$;
 
-COMMENT ON TABLE public.usage_counters IS 'Tracks feature usage per user per plan';
-COMMENT ON FUNCTION check_usage_limit IS 'Returns true if user has not reached their limit';
-COMMENT ON FUNCTION increment_usage IS 'Increments usage counter for a specific feature';
+-- ========================================
+-- VERIFICATION QUERIES
+-- ========================================
+
+-- Check plans created
+SELECT id, name, price, validity_days, display_order, plan_category, is_active 
+FROM plans 
+ORDER BY display_order;
+
+-- Expected output:
+-- gpat_2027_full | GPAT 2027 Full Prep | 999 | 365 | 1 | exam_pack | true
+-- gpat_last_minute | GPAT Last Minute Pack | 299 | 60 | 2 | exam_pack | true
+-- plus | Plus Plan | 199 | 31 | 3 | subscription | true
+-- pro | Pro Plan | 299 | 31 | 4 | subscription | true
+-- free | Free Plan | 0 | 9999 | 5 | subscription | true
+
+-- Check tables exist
+SELECT COUNT(*) as ai_cache_ready FROM ai_cache;
+SELECT COUNT(*) as usage_counters_ready FROM usage_counters;
+
+-- ✅ SUCCESS! Your database is ready for AI caching and new plans!

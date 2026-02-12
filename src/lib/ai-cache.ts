@@ -3,7 +3,7 @@
  * Reduces OpenAI/Anthropic API costs by caching AI-generated content
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase-server';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export type CacheContentType = 'note' | 'explanation' | 'summary' | 'revision';
 

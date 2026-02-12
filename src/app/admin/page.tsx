@@ -21,7 +21,8 @@ import {
   Shield,
   Loader2,
   RefreshCw,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Settings
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -95,6 +96,13 @@ export default function AdminPage() {
       href: "/admin/payments",
       icon: DollarSign,
       color: "bg-emerald-500",
+    },
+    {
+      title: "Manage Plans",
+      description: "Update plan pricing, validity, and limits",
+      href: "/admin/plans",
+      icon: Settings,
+      color: "bg-teal-600",
     },
     {
       title: "Manage Pricing",
