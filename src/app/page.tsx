@@ -40,128 +40,57 @@ export default function HomePage() {
     <>
       <StructuredData data={[organizationSchema, webPageSchema, faqSchema]} />
 
-      <div className="min-h-screen bg-white dark:bg-slate-950">
+      <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
         <Navigation />
 
-        {/* Hero Section with Background Carousel */}
-        <section className="relative overflow-hidden py-20 lg:py-32 min-h-[600px]">
-          {/* Background Carousel */}
-          <div className="absolute inset-0 z-0">
-            <div className="flex animate-scroll h-full">
-              {/* First set of images */}
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1200&q=80"
-                  alt="Pharmacy student studying"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80"
-                  alt="Medical research and pharmacy"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&q=80"
-                  alt="Pharmacy and medicine"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-              {/* Duplicate for seamless loop */}
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1585435557343-3b092031a831?w=1200&q=80"
-                  alt="Pharmacy student studying"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&q=80"
-                  alt="Medical research and pharmacy"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-              <div className="relative w-1/3 h-full flex-shrink-0">
-                <Image
-                  src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&q=80"
-                  alt="Pharmacy and medicine"
-                  fill
-                  className="object-cover"
-                  unoptimized
-                  style={{ opacity: 0.45 }}
-                />
-              </div>
-            </div>
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-50/70 via-white/60 to-amber-50/70 dark:from-teal-950/70 dark:via-slate-950/60 dark:to-amber-950/70"></div>
-          </div>
-
-          {/* Hero Content */}
-          <div className="relative z-10 mx-auto max-w-7xl px-6">
+        {/* Hero Section */}
+        <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#E6F4F2' }}>
+          <div className="mx-auto max-w-5xl px-6">
             <div className="text-center">
-              {/* Logo with animation */}
-              <div className="mx-auto mb-10 flex items-center justify-center animate-fade-in">
-                <div className="p-4 rounded-3xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm shadow-2xl">
+              {/* Logo */}
+              <div className="mx-auto mb-12 flex items-center justify-center">
+                <div className="p-6 rounded-2xl bg-white border-2 border-[#E5E7EB]">
                   <Image
                     src="/images/Thinqr_logo.png"
                     alt="ThinqRx Logo"
-                    width={280}
-                    height={220}
+                    width={240}
+                    height={180}
                     priority
-                    className="object-contain h-44 w-auto"
+                    className="object-contain h-32 w-auto"
                   />
                 </div>
               </div>
 
-              {/* Main Heading - Clear and Factual */}
-              <h1 className="text-5xl lg:text-6xl font-bold text-slate-900 dark:text-slate-100 mb-8 leading-tight">
+              {/* Main Heading */}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" style={{ color: '#0F172A' }}>
                 AI-Powered Study Platform for<br />
-                <span className="bg-gradient-to-r from-teal-600 via-teal-500 to-sky-500 dark:from-teal-400 dark:via-teal-300 dark:to-sky-400 bg-clip-text text-transparent">GPAT Exam Preparation</span>
+                <span style={{ color: '#0F766E' }}>GPAT Exam Preparation</span>
               </h1>
 
-              {/* Subheading - Factual Description */}
-              <p className="text-xl lg:text-2xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto mb-12 leading-relaxed">
+              {/* Subheading */}
+              <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed" style={{ color: '#475569' }}>
                 ThinqRx helps pharmacy students prepare for GPAT with AI-generated study notes, practice questions, and performance tracking.
               </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 {user ? (
-                  <Link href="/dashboard">
-                    <Button size="lg" className="bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white px-10 py-7 text-xl shadow-2xl border-0 transform hover:scale-105 transition-all">
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto text-white px-8 py-6 text-lg rounded-lg border-0" style={{ backgroundColor: '#0F766E' }}>
                       Go to Dashboard
-                      <ArrowRight className="ml-3 h-6 w-6" />
+                      <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
                 ) : (
-                  <Link href="/signup">
-                    <Button size="lg" className="bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white px-10 py-7 text-xl shadow-2xl border-0 transform hover:scale-105 transition-all">
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto text-white px-8 py-6 text-lg rounded-lg border-0" style={{ backgroundColor: '#0F766E' }}>
                       Get Started Free
-                      <ArrowRight className="ml-3 h-6 w-6" />
+                      <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
                 )}
-                <Link href="#how-it-works">
-                  <Button size="lg" variant="outline" className="border-2 border-teal-600 text-teal-600 dark:text-teal-400 dark:border-teal-500 hover:bg-teal-50 dark:hover:bg-teal-950/30 px-10 py-7 text-xl transform hover:scale-105 transition-all">
+                <Link href="#how-it-works" className="w-full sm:w-auto">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 py-6 text-lg rounded-lg border-2" style={{ borderColor: '#0F766E', color: '#0F766E' }}>
                     How It Works
                   </Button>
                 </Link>
@@ -171,59 +100,59 @@ export default function HomePage() {
         </section>
 
         {/* What ThinqRx Does Section */}
-        <section className="py-20 bg-gradient-to-br from-teal-50/30 via-white to-sky-50/30 dark:from-teal-950/20 dark:via-slate-950 dark:to-sky-950/20">
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 What ThinqRx Does
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 A web application designed to help you prepare for the GPAT exam
               </p>
             </div>
 
-            <Card className="p-8 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-700">
-              <ul className="space-y-6">
+            <Card className="p-8 md:p-10 bg-white dark:bg-slate-900 border-2 rounded-xl" style={{ borderColor: '#E5E7EB' }}>
+              <ul className="space-y-8">
                 <li className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-950/50 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                  <div className="p-2 rounded-lg mt-1" style={{ backgroundColor: '#E6F4F2' }}>
+                    <CheckCircle2 className="h-5 w-5" style={{ color: '#0F766E' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white mb-1">AI-Generated Study Notes</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <h3 className="font-semibold mb-2" style={{ color: '#0F172A' }}>AI-Generated Study Notes</h3>
+                    <p style={{ color: '#475569' }}>
                       Creates topic-wise notes using AI, organized by subject according to the PCI syllabus for GPAT.
                     </p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-950/50 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                  <div className="p-2 rounded-lg mt-1" style={{ backgroundColor: '#E6F4F2' }}>
+                    <CheckCircle2 className="h-5 w-5" style={{ color: '#0F766E' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Practice Tests and Questions</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <h3 className="font-semibold mb-2" style={{ color: '#0F172A' }}>Practice Tests and Questions</h3>
+                    <p style={{ color: '#475569' }}>
                       Offers multiple-choice questions and full-length mock tests to practice exam patterns.
                     </p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-950/50 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                  <div className="p-2 rounded-lg mt-1" style={{ backgroundColor: '#E6F4F2' }}>
+                    <CheckCircle2 className="h-5 w-5" style={{ color: '#0F766E' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Answer Explanations</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <h3 className="font-semibold mb-2" style={{ color: '#0F172A' }}>Answer Explanations</h3>
+                    <p style={{ color: '#475569' }}>
                       Provides detailed explanations for each question to help you understand concepts.
                     </p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-950/50 mt-1">
-                    <CheckCircle2 className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                  <div className="p-2 rounded-lg mt-1" style={{ backgroundColor: '#E6F4F2' }}>
+                    <CheckCircle2 className="h-5 w-5" style={{ color: '#0F766E' }} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-slate-900 dark:text-white mb-1">Performance Analytics</h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <h3 className="font-semibold mb-2" style={{ color: '#0F172A' }}>Performance Analytics</h3>
+                    <p style={{ color: '#475569' }}>
                       Tracks your test scores and identifies areas where you need more practice.
                     </p>
                   </div>
@@ -234,135 +163,135 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-24 bg-white dark:bg-slate-950">
+        <section id="features" className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
           <div className="mx-auto max-w-7xl px-6">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 Features
               </h2>
-              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 Study material, practice tests, and analytics for GPAT preparation
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-10">
-              {/* Study Material Card - Enhanced */}
-              <Card className="p-10 hover:shadow-2xl transition-all duration-300 border-2 border-teal-100 dark:border-teal-900 dark:bg-slate-900 transform hover:-translate-y-2 group">
-                <div className="mb-8">
-                  <div className="inline-flex p-5 rounded-3xl bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 mb-6 shadow-xl group-hover:scale-110 transition-transform">
-                    <BookOpen className="h-12 w-12 text-white" />
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+              {/* Study Material Card */}
+              <Card className="p-8 bg-white dark:bg-slate-900 border-2 rounded-xl" style={{ borderColor: '#E5E7EB' }}>
+                <div className="mb-6">
+                  <div className="inline-flex p-4 rounded-xl mb-6" style={{ backgroundColor: '#E6F4F2' }}>
+                    <BookOpen className="h-10 w-10" style={{ color: '#0F766E' }} />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: '#0F172A' }}>
                     Study Material
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-8 text-lg leading-relaxed">
+                  <p className="text-base leading-relaxed mb-6" style={{ color: '#475569' }}>
                     AI-generated notes covering all four GPAT subjects, aligned with the PCI syllabus
                   </p>
                 </div>
 
-                <ul className="space-y-4 mb-10">
+                <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Covers Pharmaceutics, Pharmaceutical Chemistry, Pharmacology, and Pharmacognosy</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Covers Pharmaceutics, Pharmaceutical Chemistry, Pharmacology, and Pharmacognosy</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Organized by topics for easy navigation</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Organized by topics for easy navigation</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Includes chemical structures and diagrams where relevant</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Includes chemical structures and diagrams where relevant</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Based on PCI-approved syllabus</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Based on PCI-approved syllabus</span>
                   </li>
                 </ul>
 
                 <Link href="/subjects">
-                  <Button className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white border-0 py-6 text-base shadow-lg hover:shadow-xl transition-all">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     View Study Material
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               </Card>
 
-              {/* Mock Tests Card - Enhanced */}
-              <Card className="p-10 hover:shadow-2xl transition-all duration-300 border-2 border-amber-200 dark:border-amber-900 bg-gradient-to-br from-amber-50/30 to-white dark:from-amber-950/30 dark:to-slate-900 transform hover:-translate-y-2 group">
-                <div className="mb-8">
-                  <div className="inline-flex p-5 rounded-3xl bg-gradient-to-br from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700 mb-6 shadow-xl group-hover:scale-110 transition-transform">
-                    <ClipboardList className="h-12 w-12 text-white" />
+              {/* Practice Tests Card */}
+              <Card className="p-8 bg-white dark:bg-slate-900 border-2 rounded-xl" style={{ borderColor: '#E5E7EB' }}>
+                <div className="mb-6">
+                  <div className="inline-flex p-4 rounded-xl mb-6" style={{ backgroundColor: '#FEF3E7' }}>
+                    <ClipboardList className="h-10 w-10" style={{ color: '#F4C430' }} />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: '#0F172A' }}>
                     Practice Tests
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-8 text-lg leading-relaxed">
+                  <p className="text-base leading-relaxed mb-6" style={{ color: '#475569' }}>
                     Full-length practice tests designed according to GPAT exam format
                   </p>
                 </div>
 
-                <ul className="space-y-4 mb-10">
+                <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">125 multiple-choice questions per test</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>125 multiple-choice questions per test</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Computer-based test interface</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Computer-based test interface</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Answer explanations provided after submission</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Answer explanations provided after submission</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Subject-wise score breakdowns</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Subject-wise score breakdowns</span>
                   </li>
                 </ul>
 
                 <Link href="/mock-tests">
-                  <Button className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white border-0 py-6 text-base shadow-lg hover:shadow-xl transition-all">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     View Practice Tests
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               </Card>
 
-              {/* Analytics Card - Enhanced */}
-              <Card className="p-10 hover:shadow-2xl transition-all duration-300 border-2 border-blue-100 dark:border-blue-900 dark:bg-slate-900 transform hover:-translate-y-2 group">
-                <div className="mb-8">
-                  <div className="inline-flex p-5 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 mb-6 shadow-xl group-hover:scale-110 transition-transform">
-                    <BarChart3 className="h-12 w-12 text-white" />
+              {/* Analytics Card */}
+              <Card className="p-8 bg-white dark:bg-slate-900 border-2 rounded-xl" style={{ borderColor: '#E5E7EB' }}>
+                <div className="mb-6">
+                  <div className="inline-flex p-4 rounded-xl mb-6" style={{ backgroundColor: '#E6F4F2' }}>
+                    <BarChart3 className="h-10 w-10" style={{ color: '#0F766E' }} />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: '#0F172A' }}>
                     Performance Tracking
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-300 mb-8 text-lg leading-relaxed">
+                  <p className="text-base leading-relaxed mb-6" style={{ color: '#475569' }}>
                     Track your test scores and identify topics that need more practice
                   </p>
                 </div>
 
-                <ul className="space-y-4 mb-10">
+                <ul className="space-y-3 mb-8">
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">View your test history and scores</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>View your test history and scores</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">See which subjects you score better in</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>See which subjects you score better in</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Track your progress over time</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Track your progress over time</span>
                   </li>
                   <li className="flex items-start gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                    <span className="text-slate-700 dark:text-slate-300 text-base">Identify weak areas for focused study</span>
+                    <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" style={{ color: '#0F766E' }} />
+                    <span className="text-sm" style={{ color: '#64748B' }}>Identify weak areas for focused study</span>
                   </li>
                 </ul>
 
                 <Link href="/analytics">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white border-0 py-6 text-base shadow-lg hover:shadow-xl transition-all">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     View Analytics
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -373,66 +302,66 @@ export default function HomePage() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-20 bg-gradient-to-br from-teal-50/30 via-white to-sky-50/30 dark:from-teal-950/20 dark:via-slate-950 dark:to-sky-950/20">
+        <section id="how-it-works" className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-4xl px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 How It Works
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 Three simple steps to start your GPAT preparation
               </p>
             </div>
 
-            <div className="space-y-8">
-              <Card className="p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <div className="flex items-start gap-6">
+            <div className="space-y-6">
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 dark:bg-teal-500 text-white text-xl font-bold shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold" style={{ backgroundColor: '#0F766E' }}>
                       1
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: '#0F172A' }}>
                       Create a free account
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <p className="text-base" style={{ color: '#475569' }}>
                       Sign up with your email address. Choose a free plan to start, or select a paid plan for full access to all features.
                     </p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <div className="flex items-start gap-6">
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 dark:bg-teal-500 text-white text-xl font-bold shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold" style={{ backgroundColor: '#0F766E' }}>
                       2
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: '#0F172A' }}>
                       Access study material and tests
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <p className="text-base" style={{ color: '#475569' }}>
                       Browse subjects, read AI-generated notes, and take practice tests. Answer explanations help you learn from mistakes.
                     </p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <div className="flex items-start gap-6">
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-teal-600 dark:bg-teal-500 text-white text-xl font-bold shadow-lg">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold" style={{ backgroundColor: '#0F766E' }}>
                       3
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+                    <h3 className="text-lg md:text-xl font-bold mb-2" style={{ color: '#0F172A' }}>
                       Track your progress
                     </h3>
-                    <p className="text-slate-600 dark:text-slate-300">
+                    <p className="text-base" style={{ color: '#475569' }}>
                       Check your analytics dashboard to see scores, identify weak topics, and focus your study time where it's needed most.
                     </p>
                   </div>
@@ -443,50 +372,50 @@ export default function HomePage() {
         </section>
 
         {/* Who It's For Section */}
-        <section className="py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 Who Is ThinqRx For?
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 This platform is designed for students preparing for pharmacy entrance exams
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: '#0F172A' }}>
                   GPAT Aspirants
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-base" style={{ color: '#475569' }}>
                   Students preparing for the Graduate Pharmacy Aptitude Test (GPAT) conducted by NTA.
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: '#0F172A' }}>
                   Pharmacy Students
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-base" style={{ color: '#475569' }}>
                   B.Pharm and M.Pharm students who want to review core pharmacy subjects systematically.
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: '#0F172A' }}>
                   Self-Study Learners
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-base" style={{ color: '#475569' }}>
                   Individuals who prefer studying at their own pace with structured material and practice questions.
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">
+              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ color: '#0F172A' }}>
                   Working Professionals
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300">
+                <p className="text-base" style={{ color: '#475569' }}>
                   Pharmacy professionals preparing for competitive exams while managing other commitments.
                 </p>
               </Card>
@@ -495,46 +424,46 @@ export default function HomePage() {
         </section>
 
         {/* Pricing Overview Section */}
-        <section className="py-20 bg-gradient-to-br from-teal-50/30 via-white to-sky-50/30 dark:from-teal-950/20 dark:via-slate-950 dark:to-sky-950/20">
-          <div className="mx-auto max-w-4xl px-6">
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
+          <div className="mx-auto max-w-5xl px-6">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 Pricing
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 Choose a plan that works for your preparation needs
               </p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
-              <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-900">
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Free</h3>
-                <p className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-4">₹0</p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">Limited access to study material and features</p>
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Free</h3>
+                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹0</p>
+                <p className="text-sm mb-8" style={{ color: '#64748B' }}>Limited access to study material and features</p>
                 <Link href="/signup">
-                  <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white border-0">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     Get Started
                   </Button>
                 </Link>
               </Card>
 
-              <Card className="p-6 border-2 border-teal-300 dark:border-teal-700 bg-teal-50/50 dark:bg-teal-950/20">
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Plus</h3>
-                <p className="text-3xl font-bold text-teal-600 dark:text-teal-400 mb-1">₹199<span className="text-base font-normal">/month</span></p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">More practice tests and features. Annual option available.</p>
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#0F766E' }}>
+                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Plus</h3>
+                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹199<span className="text-base font-normal">/month</span></p>
+                <p className="text-sm mb-8" style={{ color: '#64748B' }}>More practice tests and features. Annual option available.</p>
                 <Link href="/pricing">
-                  <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white border-0">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     View Details
                   </Button>
                 </Link>
               </Card>
 
-              <Card className="p-6 border-2 border-amber-300 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-950/20">
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Pro</h3>
-                <p className="text-3xl font-bold text-amber-600 dark:text-amber-400 mb-1">₹299<span className="text-base font-normal">/month</span></p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">Full access to all features. Annual option available.</p>
+              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
+                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Pro</h3>
+                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹299<span className="text-base font-normal">/month</span></p>
+                <p className="text-sm mb-8" style={{ color: '#64748B' }}>Full access to all features. Annual option available.</p>
                 <Link href="/pricing">
-                  <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white border-0">
+                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
                     View Details
                   </Button>
                 </Link>
@@ -544,13 +473,13 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
                 Frequently Asked Questions
               </h2>
-              <p className="text-lg text-slate-600 dark:text-slate-300">
+              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
                 Answers to common questions about ThinqRx
               </p>
             </div>
@@ -558,9 +487,9 @@ export default function HomePage() {
             <FAQ limit={8} />
 
             <div className="mt-8 text-center">
-              <p className="text-slate-600 dark:text-slate-300">
+              <p style={{ color: '#475569' }}>
                 Need help?{" "}
-                <a href="mailto:support@thinqrx.com" className="text-teal-600 dark:text-teal-400 hover:underline font-medium">
+                <a href="mailto:support@thinqrx.com" className="hover:underline font-medium" style={{ color: '#0F766E' }}>
                   Contact support
                 </a>
               </p>
@@ -569,32 +498,32 @@ export default function HomePage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 bg-gradient-to-br from-teal-600 via-teal-500 to-teal-600">
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-4xl px-6 text-center">
-            <h2 className="text-4xl font-bold text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: '#0F172A' }}>
               Start Your GPAT Preparation
             </h2>
-            <p className="text-xl text-teal-50 mb-10 leading-relaxed">
+            <p className="text-lg md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto" style={{ color: '#475569' }}>
               Create a free account to access AI-generated study material and practice tests
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               {user ? (
-                <Link href="/dashboard">
-                  <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50 px-8 py-6 text-lg shadow-xl">
+                <Link href="/dashboard" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto text-white px-8 py-6 text-lg rounded-lg border-0" style={{ backgroundColor: '#0F766E' }}>
                     Go to Dashboard
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
                 <>
-                  <Link href="/signup">
-                    <Button size="lg" className="bg-white text-teal-600 hover:bg-teal-50 px-8 py-6 text-lg shadow-xl">
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto text-white px-8 py-6 text-lg rounded-lg border-0" style={{ backgroundColor: '#0F766E' }}>
                       Get Started Free
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
-                  <Link href="/pricing">
-                    <Button size="lg" variant="outline" className="bg-transparent border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg">
+                  <Link href="/pricing" className="w-full sm:w-auto">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto px-8 py-6 text-lg rounded-lg border-2" style={{ borderColor: '#0F766E', color: '#0F766E' }}>
                       View Pricing
                     </Button>
                   </Link>
@@ -605,33 +534,33 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 py-12">
+        <footer className="border-t py-12" style={{ borderColor: '#E5E7EB', backgroundColor: '#F8FAFC' }}>
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               {/* About */}
               <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-3">About ThinqRx</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                <h3 className="font-semibold mb-3" style={{ color: '#0F172A' }}>About ThinqRx</h3>
+                <p className="text-sm leading-relaxed" style={{ color: '#64748B' }}>
                   ThinqRx is an AI-powered exam preparation platform for GPAT and other pharmacy entrance exams in India.
                 </p>
               </div>
 
               {/* Links */}
               <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-3">Quick Links</h3>
+                <h3 className="font-semibold mb-3" style={{ color: '#0F172A' }}>Quick Links</h3>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link href="/pricing" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href="/pricing" className="hover:underline" style={{ color: '#64748B' }}>
                       Pricing
                     </Link>
                   </li>
                   <li>
-                    <Link href="/about" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href="/about" className="hover:underline" style={{ color: '#64748B' }}>
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <a href="mailto:support@thinqrx.com" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <a href="mailto:support@thinqrx.com" className="hover:underline" style={{ color: '#64748B' }}>
                       Contact Support
                     </a>
                   </li>
@@ -640,20 +569,20 @@ export default function HomePage() {
 
               {/* Legal */}
               <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-3">Legal</h3>
+                <h3 className="font-semibold mb-3" style={{ color: '#0F172A' }}>Legal</h3>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <Link href="/privacy" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href="/privacy" className="hover:underline" style={{ color: '#64748B' }}>
                       Privacy Policy
                     </Link>
                   </li>
                   <li>
-                    <Link href="/terms" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href="/terms" className="hover:underline" style={{ color: '#64748B' }}>
                       Terms of Service
                     </Link>
                   </li>
                   <li>
-                    <Link href="/refund" className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400">
+                    <Link href="/refund" className="hover:underline" style={{ color: '#64748B' }}>
                       Refund Policy
                     </Link>
                   </li>
@@ -662,12 +591,13 @@ export default function HomePage() {
             </div>
 
             {/* Social Media */}
-            <div className="flex items-center justify-center gap-6 mb-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center justify-center gap-6 mb-6 pt-6 border-t" style={{ borderColor: '#E5E7EB' }}>
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                className="transition-colors"
+                style={{ color: '#64748B' }}
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
@@ -676,7 +606,8 @@ export default function HomePage() {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                className="transition-colors"
+                style={{ color: '#64748B' }}
                 aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
@@ -685,7 +616,8 @@ export default function HomePage() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                className="transition-colors"
+                style={{ color: '#64748B' }}
                 aria-label="LinkedIn"
               >
                 <Linkedin className="h-5 w-5" />
@@ -694,7 +626,8 @@ export default function HomePage() {
                 href="https://x.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-600 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors"
+                className="transition-colors"
+                style={{ color: '#64748B' }}
                 aria-label="X (formerly Twitter)"
               >
                 <svg
@@ -710,10 +643,10 @@ export default function HomePage() {
 
             {/* Copyright and Company */}
             <div className="text-center">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+              <p className="text-sm mb-1" style={{ color: '#64748B' }}>
                 © 2026 Thinqr (OPC) Pvt Ltd. All rights reserved.
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-500">
+              <p className="text-xs" style={{ color: '#64748B' }}>
                 Registered in India
               </p>
             </div>
