@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 // Update a plan
 export async function PUT(request: NextRequest) {
@@ -25,28 +26,31 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Update the plan
-    const { error } = await supabase
+    // Use admin client to update the plan (bypasses RLS)
+    const adminClient = createSupabaseAdminClient();
+    const { data, error } = await adminClient
       .from('plans')
       .update({
         ...updates,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', planId);
+      .eq('id', planId)
+      .select();
 
     if (error) {
       console.error('[Admin Plans API] Update error:', error);
       return NextResponse.json(
-        { error: 'Failed to update plan' },
+        { error: 'Failed to update plan', details: error.message },
         { status: 500 }
       );
     }
 
-    // No cache invalidation needed - pricing page is now fully dynamic
+    console.log('[Admin Plans API] Plan updated successfully:', data);
 
     return NextResponse.json({ 
       success: true,
-      message: 'Plan updated successfully' 
+      message: 'Plan updated successfully',
+      data
     });
   } catch (error) {
     console.error('[Admin Plans API] Error:', error);
@@ -81,28 +85,31 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Update plan status
-    const { error } = await supabase
+    // Use admin client to update plan status (bypasses RLS)
+    const adminClient = createSupabaseAdminClient();
+    const { data, error } = await adminClient
       .from('plans')
       .update({ 
         is_active: isActive,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', planId);
+      .eq('id', planId)
+      .select();
 
     if (error) {
       console.error('[Admin Plans API] Toggle error:', error);
       return NextResponse.json(
-        { error: 'Failed to update plan status' },
+        { error: 'Failed to update plan status', details: error.message },
         { status: 500 }
       );
     }
 
-    // No cache invalidation needed - pricing page is now fully dynamic
+    console.log('[Admin Plans API] Plan status updated successfully:', data);
 
     return NextResponse.json({ 
       success: true,
-      message: `Plan ${isActive ? 'activated' : 'deactivated'} successfully` 
+      message: `Plan ${isActive ? 'activated' : 'deactivated'} successfully`,
+      data
     });
   } catch (error) {
     console.error('[Admin Plans API] Error:', error);
