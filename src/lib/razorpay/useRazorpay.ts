@@ -127,6 +127,8 @@ export function useRazorpay(): UseRazorpayReturn {
 
       const orderData = await createOrderResponse.json();
 
+      console.log('[Razorpay] Order data received from backend:', orderData);
+
       // 3. Configure Razorpay options
       const options: RazorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
@@ -192,6 +194,28 @@ export function useRazorpay(): UseRazorpayReturn {
           },
         },
       };
+
+      // Debug logging (CRITICAL: Check these values before opening Razorpay)
+      console.log('[Razorpay] Checkout config:', {
+        key: options.key,
+        order_id: options.order_id,
+        amount: options.amount,
+        currency: options.currency,
+      });
+
+      if (!options.key) {
+        console.error('[Razorpay] CRITICAL: NEXT_PUBLIC_RAZORPAY_KEY_ID is not set!');
+        toast.error('Payment configuration error. Please contact support.');
+        setLoading(false);
+        return;
+      }
+
+      if (!options.order_id) {
+        console.error('[Razorpay] CRITICAL: order_id is missing from backend response!');
+        toast.error('Payment order creation failed. Please try again.');
+        setLoading(false);
+        return;
+      }
 
       // 4. Open Razorpay checkout
       const razorpay = new window.Razorpay(options);
