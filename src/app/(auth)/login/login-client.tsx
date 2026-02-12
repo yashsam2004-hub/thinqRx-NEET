@@ -9,16 +9,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { LogIn, Loader2, Home } from "lucide-react";
+import { LogIn, Loader2, Home, AlertCircle } from "lucide-react";
 
 export function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "/dashboard";
+  const blockedParam = searchParams.get("blocked");
+  const messageParam = searchParams.get("message");
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+
+  // Show blocked message if user was blocked
+  React.useEffect(() => {
+    if (blockedParam === "true") {
+      toast.error("Your account has been blocked by an administrator. Please contact support for assistance.", {
+        duration: 10000
+      });
+    }
+    if (messageParam) {
+      toast.info(decodeURIComponent(messageParam), { duration: 8000 });
+    }
+  }, [blockedParam, messageParam]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -81,6 +95,21 @@ export function LoginClient() {
             Sign in to your ThinqRx account
           </p>
         </div>
+
+        {/* Blocked User Alert */}
+        {blockedParam === "true" && (
+          <Card className="mb-6 p-4 bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <p className="font-semibold text-red-900 dark:text-red-300 mb-1">Account Blocked</p>
+                <p className="text-red-800 dark:text-red-400">
+                  Your account has been blocked by an administrator. Please contact support for assistance.
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <form className="space-y-4" onSubmit={onSubmit}>
           <div className="space-y-2">

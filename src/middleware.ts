@@ -99,6 +99,27 @@ export async function middleware(request: NextRequest) {
 
   // Check email verification for protected paths
   if (isProtectedPath(pathname) && user) {
+    // Check if user is blocked (CRITICAL: Block before any other checks)
+    try {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("status")
+        .eq("id", user.id)
+        .single();
+
+      if (profile?.status === "blocked") {
+        console.log("[Middleware] User is blocked:", user.email);
+        // Sign out the blocked user
+        await supabase.auth.signOut();
+        const url = request.nextUrl.clone();
+        url.pathname = "/login";
+        url.searchParams.set("blocked", "true");
+        return NextResponse.redirect(url);
+      }
+    } catch (err) {
+      console.error("[Middleware] Error checking user block status:", err);
+    }
+
     if (!user.email_confirmed_at) {
       console.log("[Middleware] Email not verified for user:", user.email);
       const url = request.nextUrl.clone();
@@ -107,16 +128,45 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Check if paid user has completed payment (for Plus/Pro users)
+    // Check enrollment validity and expiration
     try {
       const { data: enrollments } = await supabase
         .from("course_enrollments")
-        .select("plan, status")
-        .eq("user_id", user.id)
-        .eq("status", "active");
+        .select("plan, status, valid_until")
+        .eq("user_id", user.id);
 
-      const hasPaidPlan = enrollments?.some((e: any) => e.plan === "plus" || e.plan === "pro");
-      const hasFreePlan = enrollments?.some((e: any) => e.plan === "free");
+      const activeEnrollment = enrollments?.find((e: any) => 
+        e.status === "active" && 
+        (e.plan === "plus" || e.plan === "pro" || e.plan === "free")
+      );
+
+      // Check if paid plan has expired
+      if (activeEnrollment?.valid_until && activeEnrollment.plan !== "free") {
+        const now = new Date();
+        const validUntil = new Date(activeEnrollment.valid_until);
+        
+        if (now > validUntil) {
+          console.log("[Middleware] User subscription expired:", user.email);
+          // Update enrollment status to expired
+          await supabase
+            .from("course_enrollments")
+            .update({ status: "expired" })
+            .eq("user_id", user.id)
+            .eq("status", "active");
+
+          const url = request.nextUrl.clone();
+          url.pathname = "/upgrade";
+          url.searchParams.set("expired", "true");
+          return NextResponse.redirect(url);
+        }
+      }
+
+      const hasPaidPlan = enrollments?.some((e: any) => 
+        (e.plan === "plus" || e.plan === "pro") && e.status === "active"
+      );
+      const hasFreePlan = enrollments?.some((e: any) => 
+        e.plan === "free" && e.status === "active"
+      );
 
       // If user has Plus/Pro plan intention but no active enrollment, redirect to payment
       if (!hasPaidPlan && !hasFreePlan && user.email_confirmed_at) {
