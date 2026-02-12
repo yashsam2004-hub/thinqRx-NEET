@@ -98,16 +98,14 @@ export default function HomePage() {
             <div className="text-center">
               {/* Logo */}
               <div className="mx-auto mb-12 flex items-center justify-center">
-                <div className="p-6 rounded-2xl bg-white dark:bg-slate-800/80 border-2 border-[#E5E7EB] dark:border-slate-700">
-                  <Image
-                    src="/images/Thinqr_logo.png"
-                    alt="ThinqRx Logo"
-                    width={240}
-                    height={180}
-                    priority
-                    className="object-contain h-32 w-auto"
-                  />
-                </div>
+                <Image
+                  src="/images/Thinqr_logo.png"
+                  alt="ThinqRx Logo"
+                  width={480}
+                  height={360}
+                  priority
+                  className="object-contain h-64 w-auto"
+                />
               </div>
 
               {/* Main Heading */}
