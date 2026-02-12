@@ -165,7 +165,7 @@ export async function invalidateCache(
     if (pattern.subject) query = query.eq('subject', pattern.subject);
     if (pattern.topic) query = query.eq('topic', pattern.topic);
 
-    const { error, count } = query;
+    const { error, count } = await query;
 
     if (error) {
       console.error('[AI Cache] Error invalidating cache:', error);
