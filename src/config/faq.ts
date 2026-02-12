@@ -6,11 +6,38 @@
 export interface FAQItem {
   question: string;
   answer: string;
-  category: "general" | "gpat";
+  category: "general" | "gpat" | "platform";
 }
 
 export const FAQ_DATA: FAQItem[] = [
-  // General
+  // Platform-specific questions
+  {
+    question: "What is ThinqRx?",
+    answer: "ThinqRx is a web-based exam preparation platform for GPAT and other pharmacy entrance exams in India. It uses AI to generate study notes, provides practice questions, and tracks your performance. ThinqRx is built by Thinqr (OPC) Pvt Ltd.",
+    category: "platform",
+  },
+  {
+    question: "Is ThinqRx free to use?",
+    answer: "ThinqRx offers a free plan with limited access to study material and features. Paid plans (Plus at ₹199/month and Pro at ₹299/month) provide full access to all features, including unlimited practice tests and advanced analytics. Annual billing options are also available.",
+    category: "platform",
+  },
+  {
+    question: "Which exams are supported by ThinqRx?",
+    answer: "ThinqRx currently focuses on GPAT (Graduate Pharmacy Aptitude Test) preparation. The platform covers all four main subjects according to the PCI syllabus: Pharmaceutics, Pharmaceutical Chemistry, Pharmacology, and Pharmacognosy.",
+    category: "platform",
+  },
+  {
+    question: "How does AI help in exam preparation on ThinqRx?",
+    answer: "ThinqRx uses artificial intelligence to generate topic-wise study notes based on the GPAT syllabus. The AI organizes content by subject and topic, making it easier to navigate and study. The platform also uses your test performance to identify areas where you need more practice.",
+    category: "platform",
+  },
+  {
+    question: "Is payment secure on ThinqRx?",
+    answer: "Yes. ThinqRx uses Razorpay, a certified payment gateway in India, to process all payments. Razorpay is PCI DSS compliant and all transactions are encrypted. ThinqRx does not store your payment card details on its servers.",
+    category: "platform",
+  },
+  
+  // General GPAT questions
   {
     question: "What is GPAT exam?",
     answer: "GPAT (Graduate Pharmacy Aptitude Test) is a national-level entrance exam for M.Pharm admissions in India. It is conducted as a computer-based test with 125 MCQs covering pharmaceutical sciences as per PCI syllabus. A valid GPAT score is mandatory for government-funded M.Pharm programs.",
