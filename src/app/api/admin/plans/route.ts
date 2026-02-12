@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { revalidatePath, revalidateTag } from 'next/cache';
 
 // Update a plan
 export async function PUT(request: NextRequest) {
@@ -43,9 +42,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Invalidate pricing cache (both tags and paths)
-    revalidateTag('pricing');
-    revalidatePath('/pricing', 'page');
+    // No cache invalidation needed - pricing page is now fully dynamic
 
     return NextResponse.json({ 
       success: true,
@@ -101,9 +98,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Invalidate pricing cache (both tags and paths)
-    revalidateTag('pricing');
-    revalidatePath('/pricing', 'page');
+    // No cache invalidation needed - pricing page is now fully dynamic
 
     return NextResponse.json({ 
       success: true,
