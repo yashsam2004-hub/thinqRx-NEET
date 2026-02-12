@@ -119,7 +119,7 @@ export async function GET() {
       .from("payments")
       .select("user_id, amount, razorpay_payment_id, created_at, status")
       .in("user_id", userIds)
-      .eq("status", "captured")
+      .eq("status", "completed")
       .order("created_at", { ascending: false });
 
     // Map stats by user
