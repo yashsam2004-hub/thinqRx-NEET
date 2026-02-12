@@ -43,9 +43,71 @@ export default function HomePage() {
       <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
         <Navigation />
 
-        {/* Hero Section */}
-        <section className="relative py-16 md:py-24 lg:py-32" style={{ backgroundColor: '#E6F4F2' }}>
-          <div className="mx-auto max-w-5xl px-6">
+        {/* Hero Section with Background Carousel */}
+        <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden" style={{ backgroundColor: '#E6F4F2' }}>
+          {/* Background Carousel */}
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+            <div className="animate-scroll flex gap-8 h-full">
+              {/* Pharmacology Icons/Images */}
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* Pills/Tablets */}
+                  <ellipse cx="35" cy="35" rx="15" ry="8" fill="currentColor" opacity="0.3" />
+                  <ellipse cx="65" cy="65" rx="12" ry="6" fill="currentColor" opacity="0.3" />
+                  <rect x="25" y="50" width="20" height="30" rx="10" fill="currentColor" opacity="0.3" />
+                </svg>
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* DNA Helix */}
+                  <path d="M20,30 Q50,40 80,30 T20,30" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
+                  <path d="M20,50 Q50,60 80,50 T20,50" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
+                  <path d="M20,70 Q50,80 80,70 T20,70" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
+                </svg>
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* Molecular Structure */}
+                  <circle cx="50" cy="30" r="8" fill="currentColor" opacity="0.3" />
+                  <circle cx="30" cy="60" r="8" fill="currentColor" opacity="0.3" />
+                  <circle cx="70" cy="60" r="8" fill="currentColor" opacity="0.3" />
+                  <line x1="50" y1="30" x2="30" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+                  <line x1="50" y1="30" x2="70" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
+                </svg>
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* Flask/Beaker */}
+                  <path d="M40,20 L40,40 L30,70 Q30,80 50,80 Q70,80 70,70 L60,40 L60,20 Z" fill="currentColor" opacity="0.3" />
+                  <rect x="38" y="15" width="24" height="5" fill="currentColor" opacity="0.3" />
+                </svg>
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* Syringe */}
+                  <rect x="30" y="45" width="40" height="10" rx="2" fill="currentColor" opacity="0.3" />
+                  <polygon points="70,45 75,50 70,55" fill="currentColor" opacity="0.3" />
+                  <rect x="25" y="48" width="5" height="4" fill="currentColor" opacity="0.3" />
+                </svg>
+              </div>
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  {/* Heart with ECG */}
+                  <path d="M50,70 L35,50 Q30,40 35,30 Q40,25 45,30 L50,35 L55,30 Q60,25 65,30 Q70,40 65,50 Z" fill="currentColor" opacity="0.3" />
+                </svg>
+              </div>
+              {/* Duplicate for seamless loop */}
+              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
+                <svg viewBox="0 0 100 100" className="w-48 h-48">
+                  <ellipse cx="35" cy="35" rx="15" ry="8" fill="currentColor" opacity="0.3" />
+                  <ellipse cx="65" cy="65" rx="12" ry="6" fill="currentColor" opacity="0.3" />
+                  <rect x="25" y="50" width="20" height="30" rx="10" fill="currentColor" opacity="0.3" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto max-w-5xl px-6 relative z-10">
             <div className="text-center">
               {/* Logo */}
               <div className="mx-auto mb-12 flex items-center justify-center">
@@ -418,55 +480,6 @@ export default function HomePage() {
                 <p className="text-base" style={{ color: '#475569' }}>
                   Pharmacy professionals preparing for competitive exams while managing other commitments.
                 </p>
-              </Card>
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing Overview Section */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
-          <div className="mx-auto max-w-5xl px-6">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
-                Pricing
-              </h2>
-              <p className="text-base md:text-lg max-w-2xl mx-auto" style={{ color: '#475569' }}>
-                Choose a plan that works for your preparation needs
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
-                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Free</h3>
-                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹0</p>
-                <p className="text-sm mb-8" style={{ color: '#64748B' }}>Limited access to study material and features</p>
-                <Link href="/signup">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
-                    Get Started
-                  </Button>
-                </Link>
-              </Card>
-
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#0F766E' }}>
-                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Plus</h3>
-                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹199<span className="text-base font-normal">/month</span></p>
-                <p className="text-sm mb-8" style={{ color: '#64748B' }}>More practice tests and features. Annual option available.</p>
-                <Link href="/pricing">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
-                    View Details
-                  </Button>
-                </Link>
-              </Card>
-
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-900" style={{ borderColor: '#E5E7EB' }}>
-                <h3 className="text-2xl font-bold mb-2" style={{ color: '#0F172A' }}>Pro</h3>
-                <p className="text-3xl font-bold mb-1" style={{ color: '#0F766E' }}>₹299<span className="text-base font-normal">/month</span></p>
-                <p className="text-sm mb-8" style={{ color: '#64748B' }}>Full access to all features. Annual option available.</p>
-                <Link href="/pricing">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg" style={{ backgroundColor: '#0F766E' }}>
-                    View Details
-                  </Button>
-                </Link>
               </Card>
             </div>
           </div>
