@@ -13,13 +13,13 @@ SET search_path = public
 AS $$
 BEGIN
   -- Update the user's subscription details in the profiles table
+  -- Note: updated_at column doesn't exist in profiles table, so it's not included
   UPDATE public.profiles
   SET 
     subscription_plan = p_plan_name,
     subscription_status = 'active',
     subscription_end_date = p_valid_until,
-    billing_cycle = p_billing_cycle,
-    updated_at = NOW()
+    billing_cycle = p_billing_cycle
   WHERE id = p_user_id;
   
   -- Raise an error if no profile was found/updated
