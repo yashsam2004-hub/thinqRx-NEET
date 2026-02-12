@@ -114,9 +114,18 @@ export async function GET() {
       .select("user_id")
       .in("user_id", userIds);
 
+    // Get payment information for each user (most recent successful payment)
+    const { data: payments } = await supabase
+      .from("payments")
+      .select("user_id, amount, razorpay_payment_id, created_at, status")
+      .in("user_id", userIds)
+      .eq("status", "captured")
+      .order("created_at", { ascending: false });
+
     // Map stats by user
     const notesMap = new Map<string, number>();
     const attemptsMap = new Map<string, number>();
+    const paymentsMap = new Map<string, { amount: number; date: string }>();
 
     if (!notesError && notesCounts) {
       notesCounts.forEach((note) => {
@@ -130,11 +139,24 @@ export async function GET() {
       });
     }
 
+    // Store most recent payment for each user
+    if (payments) {
+      payments.forEach((payment) => {
+        if (!paymentsMap.has(payment.user_id)) {
+          paymentsMap.set(payment.user_id, {
+            amount: payment.amount,
+            date: payment.created_at,
+          });
+        }
+      });
+    }
+
     // Combine data
     const enrichedEnrollments = enrollments.map((enrollment) => {
       const user = userMap.get(enrollment.user_id);
       const course = courseMap.get(enrollment.course_id);
       const profile = profileMap.get(enrollment.user_id);
+      const payment = paymentsMap.get(enrollment.user_id);
 
       return {
         userId: enrollment.user_id,
@@ -149,6 +171,8 @@ export async function GET() {
         validUntil: enrollment.valid_until,
         totalAttempts: attemptsMap.get(enrollment.user_id) || 0,
         notesGenerated: notesMap.get(enrollment.user_id) || 0,
+        paymentAmount: payment?.amount || null,
+        paymentDate: payment?.date || null,
       };
     });
 

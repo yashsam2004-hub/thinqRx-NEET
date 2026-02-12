@@ -19,7 +19,8 @@ import {
   BookOpen,
   TrendingUp,
   Ban,
-  CheckCircle
+  CheckCircle,
+  IndianRupee
 } from "lucide-react";
 
 // Block User Button Component
@@ -104,6 +105,8 @@ interface UserEnrollment {
   validUntil: string | null;
   totalAttempts: number;
   notesGenerated: number;
+  paymentAmount: number | null;
+  paymentDate: string | null;
 }
 
 export default function AdminUsersPage() {
@@ -246,7 +249,7 @@ export default function AdminUsersPage() {
   };
 
   const exportToCSV = () => {
-    const headers = ["Email", "Name", "Course", "Plan", "Status", "Enrolled At", "Valid Until", "Total Attempts", "Notes Generated"];
+    const headers = ["Email", "Name", "Course", "Plan", "Status", "Enrolled At", "Valid Until", "Total Attempts", "Notes Generated", "Payment Amount", "Payment Date"];
     const rows = filteredEnrollments.map((e) => [
       e.email,
       e.name || "N/A",
@@ -257,6 +260,8 @@ export default function AdminUsersPage() {
       e.validUntil ? new Date(e.validUntil).toLocaleDateString() : "Lifetime",
       e.totalAttempts.toString(),
       e.notesGenerated.toString(),
+      e.paymentAmount ? `₹${(e.paymentAmount / 100).toFixed(2)}` : "N/A",
+      e.paymentDate ? new Date(e.paymentDate).toLocaleDateString() : "N/A",
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
@@ -458,6 +463,7 @@ export default function AdminUsersPage() {
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Plan</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Account</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Payment</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Activity</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Actions</th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Enrolled</th>
@@ -509,6 +515,22 @@ export default function AdminUsersPage() {
                       } border capitalize`}>
                         {enrollment.userStatus || 'active'}
                       </Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      {enrollment.paymentAmount && enrollment.paymentDate ? (
+                        <div className="text-sm">
+                          <div className="flex items-center gap-1 font-semibold text-green-600">
+                            <IndianRupee className="h-3 w-3" />
+                            {(enrollment.paymentAmount / 100).toFixed(2)}
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(enrollment.paymentDate).toLocaleDateString()}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400">No payment</span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3 text-xs text-slate-600">
