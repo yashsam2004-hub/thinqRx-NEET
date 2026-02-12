@@ -175,11 +175,35 @@ export default function AdminPricingPage() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6 px-6 py-10">
       <header>
-        <h1 className="text-3xl font-bold text-slate-900">Pricing Management</h1>
-        <p className="mt-2 text-slate-600">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Pricing Management</h1>
+        <p className="mt-2 text-slate-600 dark:text-slate-300">
           Set monthly and annual pricing for each course and plan
         </p>
       </header>
+
+      {/* New Plans Management Notice */}
+      <div className="rounded-lg border-2 border-blue-200 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-800 p-6">
+        <div className="flex items-start gap-4">
+          <svg className="h-6 w-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div className="flex-1">
+            <h3 className="font-bold text-blue-900 dark:text-blue-200 mb-2">
+              📢 New Plans Management System Available!
+            </h3>
+            <p className="text-sm text-blue-800 dark:text-blue-300 mb-4">
+              We've created a new modern plans management interface with support for exam packs, usage tracking, and better plan organization. 
+              Check it out at <a href="/admin/plans" className="font-bold underline hover:text-blue-600 dark:hover:text-blue-400">/admin/plans</a>
+            </p>
+            <Button 
+              onClick={() => window.location.href = '/admin/plans'}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Go to New Plans Management →
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left: Pricing Form */}
