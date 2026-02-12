@@ -115,7 +115,7 @@ export default async function SubjectsPage() {
     .order("order", { ascending: true});
 
   return (
-    <div className="min-h-screen gradient-sky-radial dark:bg-slate-950">
+    <div className="min-h-screen" style={{ backgroundColor: '#E6F4F2' }}>
       <Navigation />
       <div className="mx-auto w-full max-w-6xl px-6 py-10">
       <header className="mb-12 text-center">

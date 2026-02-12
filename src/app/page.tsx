@@ -40,11 +40,11 @@ export default function HomePage() {
     <>
       <StructuredData data={[organizationSchema, webPageSchema, faqSchema]} />
 
-      <div className="min-h-screen bg-white dark:bg-slate-950">
+      <div className="min-h-screen" style={{ backgroundColor: '#E6F4F2' }}>
         <Navigation />
 
         {/* Hero Section with Real Pharmacology Images */}
-        <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden bg-white dark:bg-slate-950">
+        <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden" style={{ backgroundColor: '#E6F4F2' }}>
           {/* Background Image Carousel */}
           <div className="absolute inset-0 opacity-15 pointer-events-none">
             <div className="animate-scroll flex gap-0 h-full">
@@ -150,7 +150,7 @@ export default function HomePage() {
         </section>
 
         {/* What ThinqRx Does Section */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -213,7 +213,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section id="features" className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -352,7 +352,7 @@ export default function HomePage() {
         </section>
 
         {/* How It Works Section */}
-        <section id="how-it-works" className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section id="how-it-works" className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -422,7 +422,7 @@ export default function HomePage() {
         </section>
 
         {/* Who It's For Section */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -474,7 +474,7 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -499,7 +499,7 @@ export default function HomePage() {
         </section>
 
         {/* Final CTA */}
-        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
+        <section className="py-16 md:py-20" style={{ backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-4xl px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: '#0F172A' }}>
               Start Your GPAT Preparation
@@ -535,7 +535,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t py-12 bg-white dark:bg-slate-950" style={{ borderColor: '#E5E7EB' }}>
+        <footer className="border-t py-12" style={{ borderColor: '#E5E7EB', backgroundColor: '#E6F4F2' }}>
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               {/* About */}

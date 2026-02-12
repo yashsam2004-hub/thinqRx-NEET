@@ -149,7 +149,7 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-sky-radial dark:bg-slate-950">
+    <div className="min-h-screen" style={{ backgroundColor: '#E6F4F2' }}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 sm:py-10">
         {/* Navigation Bar */}
         <div className="mb-8 flex items-center justify-between">
