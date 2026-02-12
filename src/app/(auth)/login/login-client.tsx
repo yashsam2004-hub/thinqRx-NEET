@@ -21,6 +21,8 @@ export function LoginClient() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [resending, setResending] = React.useState(false);
+  const [showResend, setShowResend] = React.useState(false);
 
   // Show blocked message if user was blocked
   React.useEffect(() => {
@@ -31,8 +33,48 @@ export function LoginClient() {
     }
     if (messageParam) {
       toast.info(decodeURIComponent(messageParam), { duration: 8000 });
+      // Show resend option if message mentions email verification
+      if (messageParam.toLowerCase().includes("verify")) {
+        setShowResend(true);
+      }
     }
   }, [blockedParam, messageParam]);
+
+  // Pre-fill email from URL params
+  React.useEffect(() => {
+    const emailParam = searchParams.get("email");
+    if (emailParam) {
+      setEmail(decodeURIComponent(emailParam));
+    }
+  }, [searchParams]);
+
+  async function resendVerification() {
+    if (!email) {
+      toast.error("Please enter your email address first");
+      return;
+    }
+    setResending(true);
+    try {
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (data.alreadyVerified) {
+        toast.success("Your email is already verified. You can sign in now!");
+        setShowResend(false);
+      } else if (data.ok) {
+        toast.success("Verification email sent! Check your inbox and spam folder.", { duration: 8000 });
+      } else {
+        toast.error(data.error || "Failed to resend verification email");
+      }
+    } catch (error) {
+      toast.error("Failed to resend verification email. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -165,7 +207,46 @@ export function LoginClient() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
+        {/* Resend Verification Email */}
+        {showResend && (
+          <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <p className="text-sm text-amber-800 dark:text-amber-300 mb-2">
+              Didn't receive the verification email? Check your spam folder, or click below to resend.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-950/50"
+              onClick={resendVerification}
+              disabled={resending || !email}
+            >
+              {resending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Sending...
+                </>
+              ) : (
+                "Resend Verification Email"
+              )}
+            </Button>
+          </div>
+        )}
+
+        {/* Manual resend link (always visible) */}
+        <div className="mt-4 text-center">
+          {!showResend && (
+            <button 
+              type="button"
+              onClick={() => setShowResend(true)}
+              className="text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:underline"
+            >
+              Didn't receive verification email?
+            </button>
+          )}
+        </div>
+
+        <div className="mt-4 text-center text-sm text-slate-600 dark:text-slate-300">
           Don't have an account?{" "}
           <Link className="text-teal-600 dark:text-teal-400 font-semibold hover:underline" href="/signup">
             Create one

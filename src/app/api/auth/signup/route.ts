@@ -108,9 +108,41 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 3: Supabase automatically sends verification email
-    // when email_confirm is set to false in createUser()
-    console.log('Verification email will be sent automatically to:', email);
+    // Step 3: Explicitly send verification email
+    // NOTE: admin.createUser() does NOT send emails automatically.
+    // We must explicitly generate the signup confirmation link which triggers the email.
+    try {
+      // Method 1: Generate signup link (triggers email if SMTP is configured in Supabase)
+      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'signup',
+        email: email,
+        password: password,
+      });
+
+      if (linkError) {
+        console.error('[Signup] Failed to generate verification link:', linkError.message);
+        
+        // Method 2: Fallback - try auth.resend() 
+        const { error: resendError } = await supabaseAdmin.auth.resend({
+          type: 'signup',
+          email: email,
+        });
+        
+        if (resendError) {
+          console.error('[Signup] Resend also failed:', resendError.message);
+          console.warn('[Signup] Email verification could not be sent. User may need manual verification.');
+        } else {
+          console.log('[Signup] Verification email resent successfully to:', email);
+        }
+      } else {
+        console.log('[Signup] Verification email link generated for:', email);
+        // The link is in linkData.properties.action_link if you need to send it via custom email service
+        console.log('[Signup] Action link available:', !!linkData?.properties?.action_link);
+      }
+    } catch (emailError: any) {
+      console.error('[Signup] Email sending error (non-fatal):', emailError.message);
+      // Don't fail signup if email sending fails - user can request resend from login page
+    }
 
     // Step 4: Create enrollment - ONLY for FREE plan
     // PAYMENT GATE: Paid plans (plus/pro) require payment before enrollment
