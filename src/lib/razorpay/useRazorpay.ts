@@ -146,7 +146,10 @@ export function useRazorpay(): UseRazorpayReturn {
         },
         handler: async (response: RazorpaySuccessResponse) => {
           // 4. Payment success - verify on server
-          console.log('[Razorpay] Payment successful, verifying...');
+          console.log('[Razorpay] Payment successful, verifying...', response);
+          
+          // Show immediate success feedback
+          toast.success('Payment completed! Verifying...', { duration: 3000 });
           
           try {
             const verifyResponse = await fetch('/api/payments/verify', {
@@ -161,29 +164,40 @@ export function useRazorpay(): UseRazorpayReturn {
               }),
             });
 
+            console.log('[Razorpay] Verify response status:', verifyResponse.status);
+
             if (!verifyResponse.ok) {
-              throw new Error('Payment verification failed');
+              const errorData = await verifyResponse.json().catch(() => ({}));
+              console.error('[Razorpay] Verification failed with status:', verifyResponse.status, errorData);
+              throw new Error(errorData.error || 'Payment verification failed');
             }
 
             const verifyData = await verifyResponse.json();
+            console.log('[Razorpay] Verification response:', verifyData);
 
             // 5. Success!
             console.log('[Razorpay] ✅ Payment verified successfully');
-            toast.success('Payment successful! Your subscription is now active.', {
-              duration: 5000,
+            toast.success('Payment successful! Redirecting to dashboard...', {
+              duration: 3000,
             });
 
-            // 6. Redirect to dashboard after a short delay
+            // 6. Redirect to dashboard immediately
             setTimeout(() => {
+              console.log('[Razorpay] Redirecting to dashboard...');
               window.location.href = '/dashboard';
-            }, 2000);
+            }, 1500);
 
           } catch (verifyError: any) {
             console.error('[Razorpay] Verification failed:', verifyError);
-            toast.error('Payment verification failed. Please contact support.', {
-              duration: 7000,
+            toast.error('Payment received but verification failed. Please contact support with your payment ID.', {
+              duration: 10000,
             });
             setLoading(false);
+            
+            // Still redirect to dashboard after 5 seconds so user isn't stuck
+            setTimeout(() => {
+              window.location.href = '/dashboard';
+            }, 5000);
           }
         },
         modal: {
