@@ -3,7 +3,7 @@
  * Manages feature access based on user's plan
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export type CounterType = 'ai_notes' | 'practice_tests' | 'explanations' | 'analytics_depth';
@@ -52,7 +52,7 @@ export async function checkFeatureAccess(
   counterType: CounterType
 ): Promise<{ allowed: boolean; remaining: number; message?: string }> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
 
     // Get user's current plan
     const { data: profile } = await supabase
@@ -123,7 +123,7 @@ export async function incrementUsage(
   counterType: CounterType
 ): Promise<boolean> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
 
     // Get plan limits
     const { data: plan } = await supabase
@@ -172,7 +172,7 @@ export async function getUserUsageStats(userId: string): Promise<{
   explanations: { used: number; limit: number };
 }> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
 
     // Get user's plan
     const { data: profile } = await supabase

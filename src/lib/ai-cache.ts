@@ -3,7 +3,7 @@
  * Reduces OpenAI/Anthropic API costs by caching AI-generated content
  */
 
-import { createServerSupabaseClient } from '@/lib/supabase/server';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 export type CacheContentType = 'note' | 'explanation' | 'summary' | 'revision';
 
@@ -48,7 +48,7 @@ export async function getCachedContent(
   cacheKey: string
 ): Promise<CachedContent | null> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
     
     const { data, error } = await supabase
       .from('ai_cache')
@@ -77,7 +77,7 @@ export async function setCachedContent(
   metadata?: any
 ): Promise<boolean> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
     const cacheKey = generateCacheKey(config);
 
     const { error } = await supabase
@@ -156,7 +156,7 @@ export async function invalidateCache(
   }
 ): Promise<number> {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createSupabaseServerClient();
     
     let query = supabase.from('ai_cache').delete();
 
