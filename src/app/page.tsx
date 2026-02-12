@@ -40,69 +40,57 @@ export default function HomePage() {
     <>
       <StructuredData data={[organizationSchema, webPageSchema, faqSchema]} />
 
-      <div className="min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
+      <div className="min-h-screen bg-white dark:bg-slate-950">
         <Navigation />
 
-        {/* Hero Section with Background Carousel */}
-        <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden" style={{ backgroundColor: '#E6F4F2' }}>
-          {/* Background Carousel */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none">
-            <div className="animate-scroll flex gap-8 h-full">
-              {/* Pharmacology Icons/Images */}
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* Pills/Tablets */}
-                  <ellipse cx="35" cy="35" rx="15" ry="8" fill="currentColor" opacity="0.3" />
-                  <ellipse cx="65" cy="65" rx="12" ry="6" fill="currentColor" opacity="0.3" />
-                  <rect x="25" y="50" width="20" height="30" rx="10" fill="currentColor" opacity="0.3" />
-                </svg>
+        {/* Hero Section with Real Pharmacology Images */}
+        <section className="relative py-16 md:py-24 lg:py-32 overflow-hidden bg-white dark:bg-slate-950">
+          {/* Background Image Carousel */}
+          <div className="absolute inset-0 opacity-15 pointer-events-none">
+            <div className="animate-scroll flex gap-0 h-full">
+              {/* Pharmacology and Education Images from Unsplash */}
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* DNA Helix */}
-                  <path d="M20,30 Q50,40 80,30 T20,30" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
-                  <path d="M20,50 Q50,60 80,50 T20,50" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
-                  <path d="M20,70 Q50,80 80,70 T20,70" stroke="currentColor" fill="none" strokeWidth="2" opacity="0.3" />
-                </svg>
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* Molecular Structure */}
-                  <circle cx="50" cy="30" r="8" fill="currentColor" opacity="0.3" />
-                  <circle cx="30" cy="60" r="8" fill="currentColor" opacity="0.3" />
-                  <circle cx="70" cy="60" r="8" fill="currentColor" opacity="0.3" />
-                  <line x1="50" y1="30" x2="30" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
-                  <line x1="50" y1="30" x2="70" y2="60" stroke="currentColor" strokeWidth="2" opacity="0.3" />
-                </svg>
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* Flask/Beaker */}
-                  <path d="M40,20 L40,40 L30,70 Q30,80 50,80 Q70,80 70,70 L60,40 L60,20 Z" fill="currentColor" opacity="0.3" />
-                  <rect x="38" y="15" width="24" height="5" fill="currentColor" opacity="0.3" />
-                </svg>
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* Syringe */}
-                  <rect x="30" y="45" width="40" height="10" rx="2" fill="currentColor" opacity="0.3" />
-                  <polygon points="70,45 75,50 70,55" fill="currentColor" opacity="0.3" />
-                  <rect x="25" y="48" width="5" height="4" fill="currentColor" opacity="0.3" />
-                </svg>
-              </div>
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  {/* Heart with ECG */}
-                  <path d="M50,70 L35,50 Q30,40 35,30 Q40,25 45,30 L50,35 L55,30 Q60,25 65,30 Q70,40 65,50 Z" fill="currentColor" opacity="0.3" />
-                </svg>
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1584362917165-526a968579e8?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
               {/* Duplicate for seamless loop */}
-              <div className="flex-shrink-0 flex items-center justify-center w-64 h-64">
-                <svg viewBox="0 0 100 100" className="w-48 h-48">
-                  <ellipse cx="35" cy="35" rx="15" ry="8" fill="currentColor" opacity="0.3" />
-                  <ellipse cx="65" cy="65" rx="12" ry="6" fill="currentColor" opacity="0.3" />
-                  <rect x="25" y="50" width="20" height="30" rx="10" fill="currentColor" opacity="0.3" />
-                </svg>
+              <div className="flex-shrink-0 w-screen h-full relative">
+                <img
+                  src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&auto=format&fit=crop"
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
@@ -225,7 +213,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
+        <section id="features" className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-7xl px-6">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -434,7 +422,7 @@ export default function HomePage() {
         </section>
 
         {/* Who It's For Section */}
-        <section className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -486,7 +474,7 @@ export default function HomePage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 md:py-20" style={{ backgroundColor: '#F8FAFC' }}>
+        <section className="py-16 md:py-20 bg-white dark:bg-slate-950">
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#0F172A' }}>
@@ -547,7 +535,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-t py-12" style={{ borderColor: '#E5E7EB', backgroundColor: '#F8FAFC' }}>
+        <footer className="border-t py-12 bg-white dark:bg-slate-950" style={{ borderColor: '#E5E7EB' }}>
           <div className="mx-auto max-w-7xl px-6">
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               {/* About */}
