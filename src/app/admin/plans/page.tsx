@@ -133,7 +133,7 @@ export default function AdminPlansPage() {
   }
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: '#E6F4F2' }}>
+    <div className="min-h-screen p-6 bg-[#E6F4F2] dark:bg-[#0F172A]">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -157,17 +157,21 @@ export default function AdminPlansPage() {
           {plans.map((plan) => (
             <Card 
               key={plan.id} 
-              className="p-6 border-2"
-              style={{ 
-                borderColor: editing === plan.id ? '#0F766E' : '#E5E7EB',
-                backgroundColor: plan.is_active ? '#FFFFFF' : '#F8FAFC'
-              }}
+              className={`p-6 border-2 ${
+                editing === plan.id 
+                  ? 'border-[#0F766E] dark:border-teal-500' 
+                  : 'border-[#E5E7EB] dark:border-slate-700'
+              } ${
+                plan.is_active 
+                  ? 'bg-white dark:bg-slate-800/50' 
+                  : 'bg-[#F8FAFC] dark:bg-slate-900/50'
+              }`}
             >
               {editing === plan.id ? (
                 // Edit Mode
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold" style={{ color: '#0F172A' }}>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                       Editing: {plan.id}
                     </h3>
                     <Button
@@ -236,8 +240,7 @@ export default function AdminPlansPage() {
 
                   <Button
                     onClick={() => saveChanges(plan.id)}
-                    className="w-full text-white border-0 gap-2"
-                    style={{ backgroundColor: '#0F766E' }}
+                    className="w-full text-white border-0 gap-2 bg-[#0F766E] hover:bg-[#115E59]"
                   >
                     <Save className="h-4 w-4" />
                     Save Changes
@@ -248,22 +251,21 @@ export default function AdminPlansPage() {
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-3 flex-wrap">
-                      <h2 className="text-2xl font-bold" style={{ color: '#0F172A' }}>
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                         {plan.name}
                       </h2>
                       <Badge 
-                        style={{ 
-                          backgroundColor: plan.is_active ? '#E6F4F2' : '#E5E7EB',
-                          color: plan.is_active ? '#0F766E' : '#64748B'
-                        }}
+                        className={plan.is_active 
+                          ? 'bg-[#E6F4F2] dark:bg-teal-950/50 text-[#0F766E] dark:text-teal-400' 
+                          : 'bg-[#E5E7EB] dark:bg-slate-700 text-[#64748B] dark:text-slate-400'}
                       >
                         {plan.is_active ? 'Active' : 'Inactive'}
                       </Badge>
-                      <Badge variant="outline">
+                      <Badge variant="outline" className="dark:border-slate-600 dark:text-slate-300">
                         {plan.plan_category}
                       </Badge>
                       {plan.display_order === 1 && (
-                        <Badge style={{ backgroundColor: '#FEF3E7', color: '#F4C430' }}>
+                        <Badge className="bg-[#FEF3E7] dark:bg-amber-950/50 text-[#F4C430] dark:text-amber-400">
                           ⭐ Hero Plan
                         </Badge>
                       )}
@@ -276,7 +278,7 @@ export default function AdminPlansPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="text-slate-500">Price</span>
-                        <p className="font-bold text-xl" style={{ color: '#0F766E' }}>
+                        <p className="font-bold text-xl text-[#0F766E] dark:text-teal-400">
                           ₹{plan.price}
                         </p>
                       </div>
@@ -347,11 +349,11 @@ export default function AdminPlansPage() {
         </div>
 
         {/* Info Card */}
-        <Card className="mt-8 p-6 border-2" style={{ borderColor: '#E5E7EB', backgroundColor: '#F8FAFC' }}>
-          <h3 className="font-semibold mb-3" style={{ color: '#0F172A' }}>
+        <Card className="mt-8 p-6 border-2 border-[#E5E7EB] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-800/50">
+          <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">
             Plan Display Order Guide
           </h3>
-          <ul className="space-y-2 text-sm" style={{ color: '#475569' }}>
+          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li><strong>1</strong> - Hero plan (highlighted on pricing page)</li>
             <li><strong>2-4</strong> - Secondary plans</li>
             <li><strong>5+</strong> - De-emphasized plans</li>

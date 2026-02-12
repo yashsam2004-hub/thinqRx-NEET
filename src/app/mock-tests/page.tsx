@@ -93,7 +93,7 @@ export default async function MockTestsPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#E6F4F2' }}>
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
       <div className="mx-auto max-w-7xl px-6 py-10">
         {/* Header */}
         <div className="mb-8">

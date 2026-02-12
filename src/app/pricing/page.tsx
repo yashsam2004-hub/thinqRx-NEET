@@ -137,7 +137,7 @@ export default async function PricingPage() {
   const heroPlan = allPlans.find(p => p.display_order === 1);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#E6F4F2' }}>
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
       <Navigation />
 
       {/* Hero Section */}
