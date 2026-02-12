@@ -45,7 +45,7 @@ CREATE POLICY "Service role can manage plans"
 -- ========================================
 
 -- GPAT Last Minute Preparation Pack (₹299, 60 days)
-INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order)
+INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'gpat_last_minute',
   'GPAT Last Minute Pack',
@@ -61,7 +61,8 @@ VALUES (
     'best_for', 'Students with 2-3 months left for GPAT'
   ),
   true,
-  2
+  2,
+  'exam_pack'
 )
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
@@ -69,10 +70,11 @@ ON CONFLICT (id) DO UPDATE SET
   validity_days = EXCLUDED.validity_days,
   description = EXCLUDED.description,
   features = EXCLUDED.features,
-  display_order = EXCLUDED.display_order;
+  display_order = EXCLUDED.display_order,
+  plan_category = EXCLUDED.plan_category;
 
 -- GPAT 2027 Full Preparation Pack (₹999, 365 days) - HERO PLAN
-INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order)
+INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
 VALUES (
   'gpat_2027_full',
   'GPAT 2027 Full Prep',
@@ -89,7 +91,8 @@ VALUES (
     'best_for', 'Serious GPAT 2027 aspirants'
   ),
   true,
-  1
+  1,
+  'exam_pack'
 )
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
@@ -97,7 +100,8 @@ ON CONFLICT (id) DO UPDATE SET
   validity_days = EXCLUDED.validity_days,
   description = EXCLUDED.description,
   features = EXCLUDED.features,
-  display_order = EXCLUDED.display_order;
+  display_order = EXCLUDED.display_order,
+  plan_category = EXCLUDED.plan_category;
 
 -- Insert Free plan if doesn't exist
 INSERT INTO public.plans (id, name, price, validity_days, description, features, is_active, display_order, plan_category)
@@ -202,6 +206,10 @@ CREATE INDEX IF NOT EXISTS idx_usage_counters_user_plan ON public.usage_counters
 
 -- RLS for usage_counters
 ALTER TABLE public.usage_counters ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their own usage" ON public.usage_counters;
+DROP POLICY IF EXISTS "Service role can manage usage" ON public.usage_counters;
 
 CREATE POLICY "Users can view their own usage"
   ON public.usage_counters
