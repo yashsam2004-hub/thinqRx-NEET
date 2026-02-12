@@ -74,46 +74,50 @@ export default function AdminPlansPage() {
 
   async function saveChanges(planId: string) {
     try {
-      const supabase = createSupabaseBrowserClient();
-      
-      const { error } = await supabase
-        .from('plans')
-        .update({
-          ...editForm,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', planId);
+      const response = await fetch('/api/admin/plans', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId,
+          updates: editForm,
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update plan');
+      }
 
-      toast.success('Plan updated successfully');
+      toast.success('Plan updated successfully. Changes will appear immediately.');
       await fetchPlans();
       cancelEditing();
     } catch (error) {
       console.error('Error updating plan:', error);
-      toast.error('Failed to update plan');
+      toast.error(error instanceof Error ? error.message : 'Failed to update plan');
     }
   }
 
   async function toggleActive(planId: string, currentStatus: boolean) {
     try {
-      const supabase = createSupabaseBrowserClient();
-      
-      const { error } = await supabase
-        .from('plans')
-        .update({ 
-          is_active: !currentStatus,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', planId);
+      const response = await fetch('/api/admin/plans', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId,
+          isActive: !currentStatus,
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to update plan status');
+      }
 
-      toast.success(`Plan ${!currentStatus ? 'activated' : 'deactivated'}`);
+      toast.success(`Plan ${!currentStatus ? 'activated' : 'deactivated'}. Changes will appear immediately.`);
       await fetchPlans();
     } catch (error) {
       console.error('Error toggling plan:', error);
-      toast.error('Failed to update plan status');
+      toast.error(error instanceof Error ? error.message : 'Failed to update plan status');
     }
   }
 
