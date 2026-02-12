@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
 // Update a plan
 export async function PUT(request: NextRequest) {
@@ -44,8 +44,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Invalidate pricing cache
-    revalidateTag('pricing');
-    revalidateTag('all-plans');
+    revalidatePath('/pricing');
+    revalidatePath('/admin/plans');
 
     return NextResponse.json({ 
       success: true,
@@ -102,8 +102,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Invalidate pricing cache
-    revalidateTag('pricing');
-    revalidateTag('all-plans');
+    revalidatePath('/pricing');
+    revalidatePath('/admin/plans');
 
     return NextResponse.json({ 
       success: true,
