@@ -15,12 +15,12 @@ import {
   TrendingUp
 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
-import { unstable_cache } from "next/cache";
 import { Navigation } from "@/components/Navigation";
 import { PricingCTA } from "@/components/PricingCTA";
 
-// Revalidate pricing data every 5 minutes
-export const revalidate = 300;
+// Make pricing page dynamic (no caching) so updates appear immediately
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface Plan {
   id: string;
@@ -40,25 +40,21 @@ const supabaseAnon = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Cached pricing data fetch (5 minutes)
-const getCachedPlans = unstable_cache(
-  async (): Promise<Plan[]> => {
-    try {
-      const { data: plans } = await supabaseAnon
-        .from("plans")
-        .select("*")
-        .eq("is_active", true)
-        .order("display_order");
+// Fetch plans dynamically (no cache) for immediate updates
+async function getPlans(): Promise<Plan[]> {
+  try {
+    const { data: plans } = await supabaseAnon
+      .from("plans")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order");
 
-      return plans || [];
-    } catch (error) {
-      console.error("Error fetching plans:", error);
-      return [];
-    }
-  },
-  ["all-plans"],
-  { revalidate: 300, tags: ["pricing"] }
-);
+    return plans || [];
+  } catch (error) {
+    console.error("Error fetching plans:", error);
+    return [];
+  }
+}
 
 function formatValidity(days: number): string {
   if (days >= 9999) return "Lifetime access";
@@ -133,7 +129,7 @@ function getFeaturesList(features: any): string[] {
 }
 
 export default async function PricingPage() {
-  const allPlans = await getCachedPlans();
+  const allPlans = await getPlans();
   
   // Separate plans by category
   const examPacks = allPlans.filter(p => p.plan_category === 'exam_pack');
