@@ -24,11 +24,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 1: Create auth user with email verification required
+    // Step 1: Create auth user with email auto-confirmed (no verification required)
     const { data: authData, error: authError} = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: false, // User must verify email
+      email_confirm: true, // Auto-confirm email (no verification needed)
       user_metadata: {
         name: name || email,
         selected_plan: plan, // Store selected plan for payment redirect
@@ -108,47 +108,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 3: Explicitly send verification email
-    // NOTE: admin.createUser() does NOT send emails automatically.
-    // We must explicitly generate the signup confirmation link which triggers the email.
-    try {
-      // Method 1: Generate signup link (triggers email if SMTP is configured in Supabase)
-      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-        type: 'signup',
-        email: email,
-        password: password,
-      });
+    console.log("Signup completed successfully");
 
-      if (linkError) {
-        console.error('[Signup] Failed to generate verification link:', linkError.message);
-        
-        // Method 2: Fallback - try auth.resend() 
-        const { error: resendError } = await supabaseAdmin.auth.resend({
-          type: 'signup',
-          email: email,
-        });
-        
-        if (resendError) {
-          console.error('[Signup] Resend also failed:', resendError.message);
-          console.warn('[Signup] Email verification could not be sent. User may need manual verification.');
-        } else {
-          console.log('[Signup] Verification email resent successfully to:', email);
-        }
-      } else {
-        console.log('[Signup] Verification email link generated for:', email);
-        // The link is in linkData.properties.action_link if you need to send it via custom email service
-        console.log('[Signup] Action link available:', !!linkData?.properties?.action_link);
-      }
-    } catch (emailError: any) {
-      console.error('[Signup] Email sending error (non-fatal):', emailError.message);
-      // Don't fail signup if email sending fails - user can request resend from login page
-    }
-
-    // Step 4: Create enrollment - ONLY for FREE plan
-    // PAYMENT GATE: Paid plans (plus/pro) require payment before enrollment
-    
+    // PAID PLAN: User account created, but enrollment requires payment
     if (plan !== "free") {
-      // PAID PLAN: User account created, but enrollment requires payment
       console.log(`Paid plan selected (${plan}). Payment required before enrollment.`);
       
       return NextResponse.json({
@@ -156,10 +119,10 @@ export async function POST(request: Request) {
         userId: authData.user.id,
         email: email,
         requiresPayment: true,
-        requiresEmailVerification: true,
+        requiresEmailVerification: false,
         plan: plan,
         billingCycle: billingCycle,
-        message: "Account created! Please check your email to verify your account, then complete payment to activate your plan.",
+        message: "Account created successfully! You can now sign in and complete payment to activate your plan.",
       });
     }
 
@@ -213,8 +176,8 @@ export async function POST(request: Request) {
       userId: authData.user.id,
       email: email,
       enrollmentId: result.enrollment_id,
-      requiresEmailVerification: true,
-      message: "Account created successfully! Please check your email to verify your account before signing in.",
+      requiresEmailVerification: false,
+      message: "Account created successfully! You can now sign in.",
     });
 
   } catch (error: any) {

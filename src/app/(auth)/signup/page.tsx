@@ -174,7 +174,7 @@ export default function SignupPage() {
       // Check if email verification is required
       if (signupData.requiresEmailVerification) {
         toast.success(
-          `Account created successfully! We've sent a verification email to ${email}. Please verify your email to continue.`,
+          `Account created successfully! Please verify your email to continue.`,
           { duration: 10000 }
         );
         
@@ -187,7 +187,7 @@ export default function SignupPage() {
           
           setTimeout(() => {
             router.push(
-              `/login?message=Please verify your email first. Check your inbox for the verification link. After verification, you'll be prompted to complete payment for your ${selectedPlan.toUpperCase()} plan.&email=${encodeURIComponent(email)}`
+              `/login?message=Please verify your email first. Check your inbox for the verification link.&email=${encodeURIComponent(email)}`
             );
           }, 3000);
           return;
@@ -196,15 +196,26 @@ export default function SignupPage() {
         // FREE plan success - enrollment created but email verification required
         setTimeout(() => {
           router.push(
-            `/login?message=Please verify your email first. Check your inbox for the verification link, then sign in.&email=${encodeURIComponent(email)}`
+            `/login?message=Please verify your email first. Check your inbox for the verification link.&email=${encodeURIComponent(email)}`
           );
         }, 3000);
         return;
       }
 
-      // Fallback (if email verification is disabled)
+      // Account created - check if payment required
+      if (signupData.requiresPayment) {
+        toast.success(`Account created successfully! Please complete payment to activate your ${selectedPlan.toUpperCase()} plan.`);
+        setTimeout(() => {
+          router.push(`/login?email=${encodeURIComponent(email)}`);
+        }, 2000);
+        return;
+      }
+
+      // Free account - direct to login
       toast.success("Account created successfully! You can now sign in.");
-      router.push("/login");
+      setTimeout(() => {
+        router.push(`/login?email=${encodeURIComponent(email)}`);
+      }, 2000);
     } catch (error: any) {
       console.error("Signup error:", error);
       toast.error("Failed to create account. Please try again.");
