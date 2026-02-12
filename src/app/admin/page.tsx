@@ -105,13 +105,6 @@ export default function AdminPage() {
       color: "bg-teal-600",
     },
     {
-      title: "Manage Pricing",
-      description: "Configure GPAT pricing plans",
-      href: "/admin/pricing",
-      icon: TrendingUp,
-      color: "bg-teal-500",
-    },
-    {
       title: "Create Coupons",
       description: "Set up discount codes",
       href: "/admin/coupons",
@@ -297,8 +290,8 @@ export default function AdminPage() {
               2
             </div>
             <div>
-              <p className="font-semibold">Configure Pricing</p>
-              <p className="text-slate-600">Set up Free, Plus, and Pro pricing plans for GPAT</p>
+              <p className="font-semibold">Configure Plans</p>
+              <p className="text-slate-600">Set up and manage all pricing plans (Free, Plus, Pro, GPAT packs)</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
