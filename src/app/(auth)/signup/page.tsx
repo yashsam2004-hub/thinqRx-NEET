@@ -171,26 +171,39 @@ export default function SignupPage() {
         return;
       }
 
-      // Check if payment is required (paid plans)
-      if (signupData.requiresPayment) {
-        toast.info(
-          `Account created! Please complete payment to activate your ${selectedPlan.toUpperCase()} plan.`,
-          { duration: 5000 }
+      // Check if email verification is required
+      if (signupData.requiresEmailVerification) {
+        toast.success(
+          `Account created successfully! We've sent a verification email to ${email}. Please verify your email to continue.`,
+          { duration: 10000 }
         );
         
-        // TODO: Redirect to Razorpay payment page when integrated
-        // For now, redirect to login with message to upgrade from dashboard
+        // Check if payment is required (paid plans)
+        if (signupData.requiresPayment) {
+          toast.info(
+            `After verifying your email, you'll need to complete payment to activate your ${selectedPlan.toUpperCase()} plan.`,
+            { duration: 10000 }
+          );
+          
+          setTimeout(() => {
+            router.push(
+              `/login?message=Please verify your email first. Check your inbox for the verification link. After verification, you'll be prompted to complete payment for your ${selectedPlan.toUpperCase()} plan.&email=${encodeURIComponent(email)}`
+            );
+          }, 3000);
+          return;
+        }
+
+        // FREE plan success - enrollment created but email verification required
         setTimeout(() => {
           router.push(
-            `/login?message=Account created! Please login and complete payment from your dashboard to activate your ${selectedPlan.toUpperCase()} plan.`
+            `/login?message=Please verify your email first. Check your inbox for the verification link, then sign in.&email=${encodeURIComponent(email)}`
           );
-        }, 2000);
+        }, 3000);
         return;
       }
 
-      // FREE plan success - enrollment created
+      // Fallback (if email verification is disabled)
       toast.success("Account created successfully! You can now sign in.");
-      
       router.push("/login");
     } catch (error: any) {
       console.error("Signup error:", error);

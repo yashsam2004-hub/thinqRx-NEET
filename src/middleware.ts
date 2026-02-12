@@ -80,7 +80,7 @@ export async function middleware(request: NextRequest) {
 
   // Important: Use getSession() for cookie-based auth (more reliable for SSR)
   // Guard against edge fetch failures so we don't block page rendering.
-  let user: { id: string; email?: string } | null = null;
+  let user: { id: string; email?: string; email_confirmed_at?: string } | null = null;
   try {
     const {
       data: { session },
@@ -95,6 +95,48 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/login";
     url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
+  }
+
+  // Check email verification for protected paths
+  if (isProtectedPath(pathname) && user) {
+    if (!user.email_confirmed_at) {
+      console.log("[Middleware] Email not verified for user:", user.email);
+      const url = request.nextUrl.clone();
+      url.pathname = "/verify-email";
+      url.searchParams.set("email", user.email || "");
+      return NextResponse.redirect(url);
+    }
+
+    // Check if paid user has completed payment (for Plus/Pro users)
+    try {
+      const { data: enrollments } = await supabase
+        .from("course_enrollments")
+        .select("plan, status")
+        .eq("user_id", user.id)
+        .eq("status", "active");
+
+      const hasPaidPlan = enrollments?.some((e: any) => e.plan === "plus" || e.plan === "pro");
+      const hasFreePlan = enrollments?.some((e: any) => e.plan === "free");
+
+      // If user has Plus/Pro plan intention but no active enrollment, redirect to payment
+      if (!hasPaidPlan && !hasFreePlan && user.email_confirmed_at) {
+        // Check user metadata for selected plan
+        const { data: { user: fullUser } } = await supabase.auth.getUser();
+        const selectedPlan = fullUser?.user_metadata?.selected_plan;
+        
+        if (selectedPlan === "plus" || selectedPlan === "pro") {
+          console.log("[Middleware] User needs to complete payment for:", selectedPlan);
+          const url = request.nextUrl.clone();
+          url.pathname = "/upgrade";
+          url.searchParams.set("plan", selectedPlan);
+          url.searchParams.set("required", "true");
+          return NextResponse.redirect(url);
+        }
+      }
+    } catch (err) {
+      console.error("[Middleware] Error checking enrollment status:", err);
+      // Don't block access if enrollment check fails
+    }
   }
 
   if (isAdminPath(pathname) && user) {

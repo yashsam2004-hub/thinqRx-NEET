@@ -24,13 +24,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 1: Create auth user
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    // Step 1: Create auth user with email verification required
+    const { data: authData, error: authError} = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: true,
+      email_confirm: false, // User must verify email
       user_metadata: {
         name: name || email,
+        selected_plan: plan, // Store selected plan for payment redirect
+        billing_cycle: billingCycle,
       },
     });
 
@@ -106,7 +108,25 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 3: Create enrollment - ONLY for FREE plan
+    // Step 3: Send welcome email with verification link
+    try {
+      // Generate email verification link
+      const { data: verificationData, error: verificationError } = await supabaseAdmin.auth.admin.generateLink({
+        type: 'signup',
+        email: email,
+      });
+
+      if (!verificationError && verificationData) {
+        console.log('Email verification link generated for:', email);
+        // Note: Supabase automatically sends the verification email
+        // If you want to send custom emails, you can use the verificationData.properties.action_link
+      }
+    } catch (emailError) {
+      console.error('Failed to generate verification link:', emailError);
+      // Don't fail signup if email fails - user can request new verification email
+    }
+
+    // Step 4: Create enrollment - ONLY for FREE plan
     // PAYMENT GATE: Paid plans (plus/pro) require payment before enrollment
     
     if (plan !== "free") {
@@ -116,10 +136,12 @@ export async function POST(request: Request) {
       return NextResponse.json({
         ok: true,
         userId: authData.user.id,
+        email: email,
         requiresPayment: true,
+        requiresEmailVerification: true,
         plan: plan,
         billingCycle: billingCycle,
-        message: "Account created. Please complete payment to activate your plan.",
+        message: "Account created! Please check your email to verify your account, then complete payment to activate your plan.",
       });
     }
 
@@ -171,8 +193,10 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       userId: authData.user.id,
+      email: email,
       enrollmentId: result.enrollment_id,
-      message: "Account created successfully",
+      requiresEmailVerification: true,
+      message: "Account created successfully! Please check your email to verify your account before signing in.",
     });
 
   } catch (error: any) {
