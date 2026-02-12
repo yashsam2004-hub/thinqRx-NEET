@@ -181,6 +181,7 @@ export function useRazorpay(): UseRazorpayReturn {
             toast.error('Payment verification failed. Please contact support.', {
               duration: 7000,
             });
+            setLoading(false);
           }
         },
         modal: {
@@ -204,6 +205,11 @@ export function useRazorpay(): UseRazorpayReturn {
       });
 
       razorpay.open();
+
+      // Safety timeout: reset loading after 2 minutes if nothing happened
+      setTimeout(() => {
+        setLoading(false);
+      }, 120000);
 
     } catch (error: any) {
       console.error('[Razorpay] Payment initiation failed:', error);
