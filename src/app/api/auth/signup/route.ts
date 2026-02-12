@@ -108,23 +108,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Step 3: Send welcome email with verification link
-    try {
-      // Generate email verification link
-      const { data: verificationData, error: verificationError } = await supabaseAdmin.auth.admin.generateLink({
-        type: 'signup',
-        email: email,
-      });
-
-      if (!verificationError && verificationData) {
-        console.log('Email verification link generated for:', email);
-        // Note: Supabase automatically sends the verification email
-        // If you want to send custom emails, you can use the verificationData.properties.action_link
-      }
-    } catch (emailError) {
-      console.error('Failed to generate verification link:', emailError);
-      // Don't fail signup if email fails - user can request new verification email
-    }
+    // Step 3: Supabase automatically sends verification email
+    // when email_confirm is set to false in createUser()
+    console.log('Verification email will be sent automatically to:', email);
 
     // Step 4: Create enrollment - ONLY for FREE plan
     // PAYMENT GATE: Paid plans (plus/pro) require payment before enrollment
