@@ -181,11 +181,12 @@ export function useRazorpay(): UseRazorpayReturn {
               duration: 3000,
             });
 
-            // 6. Redirect to dashboard immediately
+            // 6. Redirect to dashboard with cache bust to force fresh data load
             setTimeout(() => {
               console.log('[Razorpay] Redirecting to dashboard...');
-              window.location.href = '/dashboard';
-            }, 1500);
+              // Add cache bust parameter and force full reload
+              window.location.href = '/dashboard?payment_success=true&t=' + Date.now();
+            }, 2500);
 
           } catch (verifyError: any) {
             console.error('[Razorpay] Verification failed:', verifyError);
@@ -196,7 +197,7 @@ export function useRazorpay(): UseRazorpayReturn {
             
             // Still redirect to dashboard after 5 seconds so user isn't stuck
             setTimeout(() => {
-              window.location.href = '/dashboard';
+              window.location.href = '/dashboard?payment_issue=true&t=' + Date.now();
             }, 5000);
           }
         },
