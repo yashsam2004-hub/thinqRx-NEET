@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
 // Razorpay window declaration
 declare global {
@@ -177,6 +178,16 @@ export function useRazorpay(): UseRazorpayReturn {
 
             // 5. Success!
             console.log('[Razorpay] ✅ Payment verified successfully');
+            
+            // 5.5. Force session refresh to update enrollment data
+            try {
+              const supabase = createSupabaseBrowserClient();
+              await supabase.auth.refreshSession();
+              console.log('[Razorpay] Session refreshed - enrollment data should be updated');
+            } catch (refreshError) {
+              console.error('[Razorpay] Session refresh failed (non-critical):', refreshError);
+            }
+            
             toast.success('Payment successful! Redirecting to dashboard...', {
               duration: 3000,
             });
