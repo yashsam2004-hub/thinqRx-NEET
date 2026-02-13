@@ -9,38 +9,25 @@ import {
   Clock,
   Award,
   Star,
-  Users,
-  X,
   Target,
-  TrendingUp
 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { Navigation } from "@/components/Navigation";
 import { PricingCTA } from "@/components/PricingCTA";
+import type { Plan } from "@/lib/plans";
+import { getFeaturesList, formatValidity } from "@/lib/plans";
 
 // Make pricing page dynamic (no caching) so updates appear immediately
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-interface Plan {
-  id: string;
-  name: string;
-  price: number;
-  validity_days: number;
-  description: string;
-  features: any;
-  is_active: boolean;
-  display_order: number;
-  plan_category: string;
-}
-
-// Anonymous Supabase client for public data (no cookies, fully cacheable)
+// Anonymous Supabase client for public data
 const supabaseAnon = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Fetch plans dynamically (no cache) for immediate updates
+// SINGLE SOURCE OF TRUTH: Fetch ALL active plans from plans table
 async function getPlans(): Promise<Plan[]> {
   try {
     const { data: plans } = await supabaseAnon
@@ -54,17 +41,6 @@ async function getPlans(): Promise<Plan[]> {
     console.error("Error fetching plans:", error);
     return [];
   }
-}
-
-function formatValidity(days: number): string {
-  if (days >= 9999) return "Lifetime access";
-  if (days === 365) return "Valid for 1 year";
-  if (days === 730) return "Valid for 2 years";
-  if (days < 365) return `Valid for ${days} days`;
-  const years = Math.floor(days / 365);
-  const remainingDays = days % 365;
-  if (remainingDays === 0) return `Valid for ${years} ${years === 1 ? 'year' : 'years'}`;
-  return `Valid for ${days} days`;
 }
 
 function getPlanIcon(planId: string) {
@@ -98,34 +74,6 @@ function getPlanBgGradient(planId: string) {
     'gpat_2027_full': 'from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30',
   };
   return bgGradients[planId] || 'from-slate-50 to-slate-100 dark:from-slate-950/30 dark:to-slate-900/30';
-}
-
-function getFeaturesList(features: any): string[] {
-  if (!features) return [];
-  
-  // If features is already an array
-  if (Array.isArray(features)) return features;
-  
-  // If features is an object with specific properties
-  const featureList: string[] = [];
-  
-  if (features.ai_notes_limit) {
-    featureList.push(features.ai_notes_limit === 999 ? 'Unlimited AI Notes' : `${features.ai_notes_limit} AI Notes`);
-  }
-  if (features.practice_tests_limit) {
-    featureList.push(features.practice_tests_limit === 999 ? 'Unlimited Practice Tests' : `${features.practice_tests_limit} Practice Tests`);
-  }
-  if (features.explanations) {
-    featureList.push(`${features.explanations === 'full' ? 'Full' : 'Partial'} Explanations`);
-  }
-  if (features.analytics) {
-    featureList.push(`${features.analytics === 'advanced' ? 'Advanced' : 'Basic'} Analytics`);
-  }
-  if (features.best_for) {
-    featureList.push(`Best for: ${features.best_for}`);
-  }
-  
-  return featureList;
 }
 
 export default async function PricingPage() {

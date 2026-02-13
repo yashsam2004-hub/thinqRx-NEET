@@ -37,8 +37,8 @@ interface RazorpaySuccessResponse {
 }
 
 interface PaymentData {
-  planId: 'PLUS' | 'PRO';
-  billingCycle: 'MONTHLY' | 'ANNUAL';
+  planId: string;          // Any plan ID from the plans table (e.g. 'plus', 'pro', 'gpat_2027_full')
+  billingCycle: string;    // 'MONTHLY' | 'ANNUAL' | 'ONE_TIME'
   userEmail?: string;
   userName?: string;
 }
