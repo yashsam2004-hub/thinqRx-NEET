@@ -108,20 +108,6 @@ function verifyRazorpaySignature(
 }
 
 /**
- * Calculate subscription validity based on plan's validity_days from database
- * DEPRECATED: Use fetchPlanDetails instead
- */
-function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
-  const now = new Date();
-  if (billingCycle === 'MONTHLY') {
-    now.setDate(now.getDate() + 31); // 31 days (1 month)
-  } else {
-    now.setDate(now.getDate() + 365); // 365 days (1 year)
-  }
-  return now;
-}
-
-/**
  * Fetch plan details from database (single source of truth)
  */
 async function fetchPlanDetails(planId: string, adminSupabase: any) {
@@ -332,8 +318,8 @@ export async function POST(req: NextRequest) {
         
         // Extract plan details from order notes (set during create-order)
         const notes = order.notes as Record<string, string> | undefined;
-        planName = (notes?.plan || 'PLUS').toUpperCase();
-        billingCycle = notes?.billing_cycle || 'MONTHLY';
+        planName = (notes?.plan || 'plus').toLowerCase(); // Use lowercase plan IDs
+        billingCycle = notes?.billing_cycle || 'ONE_TIME'; // Default to ONE_TIME (all plans are one-time)
         amount = Math.round((order.amount as number) / 100); // Razorpay returns paise
         
         console.log('[Razorpay] Got plan info from Razorpay order:', { planName, billingCycle, amount, notes });
@@ -366,8 +352,8 @@ export async function POST(req: NextRequest) {
       } catch (rzpError: any) {
         console.error('[Razorpay] Failed to fetch order from Razorpay:', rzpError?.message);
         // Last resort defaults — at least activate SOMETHING
-        planName = 'PLUS';
-        billingCycle = 'MONTHLY';
+        planName = 'plus'; // Default to plus plan (lowercase)
+        billingCycle = 'ONE_TIME'; // All plans are one-time payments
         amount = 0;
         
         // Try to create a minimal payment record

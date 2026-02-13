@@ -48,6 +48,17 @@ export async function POST(request: Request) {
     const invoiceNumber = `INV-${Date.now()}-${userId.substring(0, 8)}`;
     const invoiceDate = new Date().toLocaleDateString("en-IN");
 
+    // Get plan details for validity information
+    const { data: planDetails } = await supabase
+      .from("plans")
+      .select("name, validity_days")
+      .eq("id", plan)
+      .maybeSingle();
+    
+    const validityText = planDetails?.validity_days 
+      ? `${planDetails.validity_days} days access`
+      : "One-time purchase";
+
     // Create invoice data
     const invoice = {
       invoiceNumber,
@@ -59,7 +70,7 @@ export async function POST(request: Request) {
       items: [
         {
           description: `${course.name} (${course.code}) - ${plan.toUpperCase()} Plan`,
-          billingCycle: billingCycle === "annual" ? "Annual Subscription" : "Monthly Subscription",
+          billingCycle: validityText, // Show validity instead of billing cycle
           amount: amount,
         },
       ],

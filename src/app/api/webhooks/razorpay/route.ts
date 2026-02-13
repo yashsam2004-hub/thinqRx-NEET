@@ -42,15 +42,29 @@ function verifyWebhookSignature(
 }
 
 /**
- * Calculate subscription validity based on billing cycle
+ * Fetch plan details from database (single source of truth)
  */
-function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
-  const now = new Date();
-  if (billingCycle === 'MONTHLY') {
-    now.setDate(now.getDate() + 30); // 30 days
-  } else {
-    now.setDate(now.getDate() + 365); // 365 days (1 year)
+async function fetchPlanDetails(planId: string, adminSupabase: any) {
+  const { data: plan, error } = await adminSupabase
+    .from('plans')
+    .select('id, name, price, validity_days')
+    .eq('id', planId)
+    .maybeSingle();
+  
+  if (error || !plan) {
+    console.error('[Razorpay Webhook] Failed to fetch plan details:', error);
+    return null;
   }
+  
+  return plan;
+}
+
+/**
+ * Calculate valid_until date based on plan's validity_days
+ */
+function calculateValidUntilFromDays(validityDays: number): Date {
+  const now = new Date();
+  now.setDate(now.getDate() + validityDays);
   return now;
 }
 
@@ -173,8 +187,16 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ received: true }, { status: 500 });
         }
 
-        // Calculate subscription validity
-        const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
+        // Calculate subscription validity from plans table (single source of truth)
+        const planDetails = await fetchPlanDetails(payment.plan_name, adminSupabase);
+        const validityDays = planDetails?.validity_days || 31; // fallback to 31 days
+        const validUntil = calculateValidUntilFromDays(validityDays);
+        
+        console.log('[Razorpay Webhook] Calculated validity from plan:', {
+          planName: payment.plan_name,
+          validityDays,
+          validUntil: validUntil.toISOString()
+        });
 
         // Update subscription using RPC function (updates BOTH profiles AND course_enrollments)
         const { error: subscriptionError } = await adminSupabase.rpc(
