@@ -43,6 +43,29 @@ export async function middleware(request: NextRequest) {
   if (!needsAuth) {
     return NextResponse.next();
   }
+  
+  // Skip payment enforcement immediately after successful payment (bypass enrollment check)
+  const justPaid = request.nextUrl.searchParams.get("payment_success") === "true" ||
+                   request.nextUrl.searchParams.get("upgraded") === "true";
+  
+  if (justPaid && pathname === "/dashboard") {
+    console.log("[Middleware] Bypassing enrollment check - user just completed payment");
+    // Continue with auth session management but skip enrollment enforcement
+    const response = NextResponse.next({ request });
+    const supabase = createServerClient(
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        cookies: {
+          getAll: () => request.cookies.getAll(),
+          setAll: (cookies) => cookies.forEach(({ name, value, ...options }) => response.cookies.set(name, value, options)),
+        },
+      }
+    );
+    await supabase.auth.getSession();
+    return response;
+  }
+
   // Create a response that we can attach refreshed auth cookies to.
   const response = NextResponse.next({ request });
 
