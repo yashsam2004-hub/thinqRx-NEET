@@ -18,6 +18,7 @@ import {
   Info,
 } from "lucide-react";
 import type { MockTest } from "@/types/mock-test";
+import { Navigation } from "@/components/Navigation";
 
 interface InstructionsClientProps {
   mockTest: MockTest;
@@ -69,18 +70,12 @@ export default function InstructionsClient({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50">
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
+      <Navigation />
       <div className="mx-auto max-w-5xl px-6 py-10">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/mock-tests">
-            <Button variant="outline" size="sm" className="mb-4 gap-2 border-slate-300 text-slate-700 hover:bg-slate-50">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Practice Tests
-            </Button>
-          </Link>
-
-          <Badge className="mb-4 bg-blue-100 text-blue-700 border-0">
+          <Badge className="mb-4 bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-0">
             {mockTest.exam_type}
           </Badge>
           <h1 className="text-4xl font-bold text-slate-800 mb-2">

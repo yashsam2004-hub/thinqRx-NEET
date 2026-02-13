@@ -15,11 +15,10 @@ import {
   Target,
   BarChart3,
   BookOpen,
-  ArrowLeft,
-  Home,
   Eye,
   Lightbulb,
 } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import type { MockTest, MockTestAttempt, MockTestQuestion, QuestionResponse, SubjectPerformance } from "@/types/mock-test";
 
 interface ResultsClientProps {
@@ -84,31 +83,12 @@ export default function ResultsClient({
   const weaknesses = subjectPerformance.filter(s => s.accuracy < 60).map(s => s.subject);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/20 to-slate-50">
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
+      <Navigation />
       <div className="mx-auto max-w-7xl px-6 py-10">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-4 mb-6">
-            <Link href="/mock-tests">
-              <Button variant="outline" size="sm" className="gap-2 border-slate-300 text-slate-700 hover:bg-slate-50">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Practice Tests
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="gap-2 text-slate-600 hover:text-slate-900">
-                Dashboard
-              </Button>
-            </Link>
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2 text-slate-600 hover:text-slate-900">
-                <Home className="h-4 w-4" />
-                Home
-              </Button>
-            </Link>
-          </div>
-
-          <Badge className="mb-4 bg-blue-100 text-blue-700 border-0">
+          <Badge className="mb-4 bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-0">
             Test Completed
           </Badge>
           <h1 className="text-4xl font-bold text-slate-800 mb-2">

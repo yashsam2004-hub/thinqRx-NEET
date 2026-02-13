@@ -47,7 +47,7 @@ export default async function SubjectTopicsPage({
 
   if (!subject) {
     return (
-      <div className="min-h-screen bg-white dark:bg-slate-950">
+      <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
         <Navigation />
         <div className="mx-auto w-full max-w-4xl px-6 py-10">
           <div className="text-center py-16">
@@ -58,8 +58,7 @@ export default async function SubjectTopicsPage({
             <p className="text-slate-600 dark:text-slate-300 mb-6">The subject you're looking for doesn't exist or has been removed.</p>
             <Link href="/subjects">
               <Button variant="outline" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Subjects
+                Go to Subjects
               </Button>
             </Link>
           </div>
@@ -69,17 +68,9 @@ export default async function SubjectTopicsPage({
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
       <Navigation />
       <div className="mx-auto w-full max-w-6xl px-6 py-10">
-      <div className="mb-8">
-        <Link href="/subjects">
-          <Button variant="ghost" className="mb-4 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Subjects
-          </Button>
-        </Link>
-      </div>
 
       <header className="mb-12">
         <Badge className="mb-4 bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-950/70 dark:border-purple-800 flex items-center gap-1.5 w-fit">

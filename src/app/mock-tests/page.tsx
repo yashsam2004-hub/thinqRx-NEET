@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Navigation } from "@/components/Navigation";
 
 export default async function MockTestsPage() {
   const supabase = await createSupabaseServerClient();
@@ -94,16 +95,10 @@ export default async function MockTestsPage() {
 
   return (
     <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
+      <Navigation />
       <div className="mx-auto max-w-7xl px-6 py-10">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard">
-            <Button variant="ghost" className="mb-4 flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </Button>
-          </Link>
-
           <div className="flex items-center justify-between mb-6">
             <div>
               <Badge className="mb-4 bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-950/70 flex items-center gap-1.5 w-fit border-0">
@@ -350,8 +345,7 @@ export default async function MockTestsPage() {
             <p className="text-slate-600 dark:text-slate-300 mb-6">Mock tests will be added soon by the admin</p>
             <Link href="/dashboard">
               <Button variant="outline" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
+                Go to Dashboard
               </Button>
             </Link>
           </Card>

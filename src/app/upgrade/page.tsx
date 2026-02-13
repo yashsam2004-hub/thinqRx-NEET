@@ -13,7 +13,6 @@ import {
   Crown,
   Zap,
   CheckCircle2,
-  ArrowLeft,
   Loader2,
   CreditCard,
   Shield,
@@ -22,6 +21,7 @@ import {
   Rocket,
   Sparkles,
 } from "lucide-react";
+import { Navigation } from "@/components/Navigation";
 import type { Plan } from "@/lib/plans";
 import { getFeaturesList, formatValidity } from "@/lib/plans";
 
@@ -195,17 +195,11 @@ export default function UpgradePage() {
   const subscriptions = plans.filter((p) => p.plan_category === "subscription");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-12 px-6">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <Navigation />
+      <div className="mx-auto max-w-5xl py-12 px-6">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="mb-6 gap-2 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </Button>
-          </Link>
-
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-3">
               Upgrade Your Plan

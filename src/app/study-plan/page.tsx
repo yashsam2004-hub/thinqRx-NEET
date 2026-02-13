@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/enrollments";
 import StudyPlanDashboard from "@/components/StudyPlanDashboard";
 import Link from "next/link";
+import { Navigation } from "@/components/Navigation";
 
 export default async function StudyPlanPage() {
   const supabase = await createSupabaseServerClient();
@@ -28,7 +29,9 @@ export default async function StudyPlanPage() {
   // Check if user has Pro plan
   if (userPlan !== "pro") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-6 py-16">
+      <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
+        <Navigation />
+        <div className="flex items-center justify-center px-6 py-16">
         <div className="max-w-2xl text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 mb-6">
             <svg
@@ -67,9 +70,15 @@ export default async function StudyPlanPage() {
             Upgrade to Pro
           </Link>
         </div>
+        </div>
       </div>
     );
   }
 
-  return <StudyPlanDashboard />;
+  return (
+    <div className="min-h-screen bg-[#E6F4F2] dark:bg-[#0F172A]">
+      <Navigation />
+      <StudyPlanDashboard />
+    </div>
+  );
 }

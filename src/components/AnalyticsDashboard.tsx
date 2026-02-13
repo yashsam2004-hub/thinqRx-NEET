@@ -104,23 +104,7 @@ export default function AnalyticsDashboard() {
   // UX FIX: Show upgrade prompt if premium is required (server enforced)
   if (isPremiumRequired) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 p-6">
-        {/* Navigation */}
-        <div className="max-w-7xl mx-auto mb-8 flex items-center gap-4">
-          <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Dashboard
-            </Button>
-          </Link>
-          <Link href="/">
-            <Button variant="outline" size="sm" className="gap-2">
-              <Home className="h-4 w-4" />
-              Home
-            </Button>
-          </Link>
-        </div>
-
+      <div className="p-6">
         <div className="flex items-center justify-center min-h-[60vh] px-6">
           <div className="max-w-2xl text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-amber-600 to-amber-500 mb-6">
@@ -189,30 +173,16 @@ export default function AnalyticsDashboard() {
   const hasMockTests = mockTestAnalytics && mockTestAnalytics.totalMockTests > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 py-10 px-6">
+    <div className="py-10 px-6">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
         <div>
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Link href="/dashboard">
-                <Button variant="outline" size="sm" className="gap-2 border-slate-300 text-slate-700 hover:bg-slate-50">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back to Dashboard
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button variant="ghost" size="sm" className="gap-2 text-slate-600 hover:text-slate-900">
-                  <Home className="h-4 w-4" />
-                  Home
-                </Button>
-              </Link>
-            </div>
+          <div className="flex items-center justify-end mb-6">
             <Button
               onClick={fetchAnalytics}
               variant="outline"
               size="sm"
-              className="gap-2 border-blue-300 text-blue-700 hover:bg-blue-50"
+              className="gap-2 border-blue-300 text-blue-700 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
               disabled={loading}
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
