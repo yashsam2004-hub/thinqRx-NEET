@@ -300,20 +300,6 @@ export async function POST(req: NextRequest) {
 
     // 10. Use admin client for privileged operations
     const adminSupabase = createSupabaseAdminClient();
-    
-    // DEBUG: Test if admin client has proper permissions
-    console.log('[Razorpay] Testing admin client permissions...');
-    const { data: testData, error: testError } = await adminSupabase
-      .from('profiles')
-      .select('id, email')
-      .eq('id', user.id)
-      .single();
-    
-    if (testError) {
-      console.error('[Razorpay] Admin client test FAILED:', testError);
-    } else {
-      console.log('[Razorpay] Admin client test SUCCESS - can read profiles');
-    }
 
     // 11. Update payment record
     const { error: updatePaymentError } = await adminSupabase
@@ -362,7 +348,7 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    console.log('[Razorpay] Subscription updated successfully via RPC function');
+    console.log('[Verify] Subscription updated successfully via RPC');
 
     // 14. Success! Log and return
     console.log(`[Razorpay] ✅ Payment verified and subscription activated`, {

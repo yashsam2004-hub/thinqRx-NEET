@@ -22,7 +22,7 @@ const isBuildTime =
   process.env.NEXT_PHASE === "phase-export";
 
 function isProtectedPath(pathname: string) {
-  const protectedPrefixes = ["/subjects", "/topics", "/test", "/analysis", "/admin", "/dashboard", "/analytics", "/study-plan", "/mock-tests"];
+  const protectedPrefixes = ["/subjects", "/topics", "/test", "/analysis", "/admin", "/dashboard", "/analytics", "/study-plan", "/mock-tests", "/upgrade"];
   return protectedPrefixes.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
@@ -157,49 +157,30 @@ export async function middleware(request: NextRequest) {
         const validUntil = new Date(activeEnrollment.valid_until);
         
         if (now > validUntil) {
-          console.log("[Middleware] User subscription expired:", user.email);
-          // Update enrollment status to expired
+          console.log("[Middleware] Subscription expired:", user.email);
           await supabase
             .from("course_enrollments")
             .update({ status: "expired" })
             .eq("user_id", user.id)
             .eq("status", "active");
 
-          const url = request.nextUrl.clone();
-          url.pathname = "/upgrade";
-          url.searchParams.set("expired", "true");
-          return NextResponse.redirect(url);
+          // Only redirect to /upgrade if they're NOT already on /upgrade
+          if (pathname !== "/upgrade") {
+            const url = request.nextUrl.clone();
+            url.pathname = "/upgrade";
+            url.searchParams.set("expired", "true");
+            return NextResponse.redirect(url);
+          }
         }
       }
 
-      const hasPaidPlan = enrollments?.some((e: any) => 
-        (e.plan === "plus" || e.plan === "pro") && e.status === "active"
-      );
-      const hasFreePlan = enrollments?.some((e: any) => 
-        e.plan === "free" && e.status === "active"
-      );
-
-      // Skip payment check if user just completed payment (give time for enrollment to propagate)
-      const justCompletedPayment = request.nextUrl.searchParams.get("payment_success") === "true" ||
-                                    request.nextUrl.searchParams.get("upgraded") === "true";
-
-      // If user has Plus/Pro plan intention but no active enrollment, redirect to payment
-      if (!hasPaidPlan && !hasFreePlan && user.email_confirmed_at && !justCompletedPayment) {
-        // Check user metadata for selected plan
-        const { data: { user: fullUser } } = await supabase.auth.getUser();
-        const selectedPlan = fullUser?.user_metadata?.selected_plan;
-        
-        if (selectedPlan === "plus" || selectedPlan === "pro") {
-          console.log("[Middleware] User needs to complete payment for:", selectedPlan);
-          const url = request.nextUrl.clone();
-          url.pathname = "/upgrade";
-          url.searchParams.set("plan", selectedPlan);
-          url.searchParams.set("required", "true");
-          return NextResponse.redirect(url);
-        }
-      }
+      // NOTE: We no longer check user_metadata.selected_plan.
+      // The old logic caused redirect loops after payment because user_metadata
+      // wasn't always cleared. Now, we simply allow access if the user has ANY
+      // enrollment (free, plus, or pro). If a user has no enrollment at all,
+      // they're a newly registered user and will get one via the signup flow.
     } catch (err) {
-      console.error("[Middleware] Error checking enrollment status:", err);
+      console.error("[Middleware] Error checking enrollment:", err);
       // Don't block access if enrollment check fails
     }
   }

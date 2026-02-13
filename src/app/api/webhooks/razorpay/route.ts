@@ -176,24 +176,33 @@ export async function POST(req: NextRequest) {
         // Calculate subscription validity
         const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
 
-        // Update subscription
-        const { error: subscriptionError } = await adminSupabase
-          .from('profiles')
-          .update({
-            subscription_plan: payment.plan_name,
-            subscription_status: 'active',
-            subscription_end_date: validUntil.toISOString(),
-            billing_cycle: payment.billing_cycle,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', payment.user_id);
+        // Update subscription using RPC function (updates BOTH profiles AND course_enrollments)
+        const { error: subscriptionError } = await adminSupabase.rpc(
+          'update_user_subscription',
+          {
+            p_user_id: payment.user_id,
+            p_plan_name: payment.plan_name,
+            p_billing_cycle: payment.billing_cycle,
+            p_valid_until: validUntil.toISOString(),
+          }
+        );
 
         if (subscriptionError) {
-          console.error('[Razorpay Webhook] Failed to update subscription:', subscriptionError);
-          return NextResponse.json({ received: true }, { status: 500 });
+          console.error('[Webhook] RPC update_user_subscription failed:', subscriptionError);
+          // Fallback: try direct profile update
+          await adminSupabase
+            .from('profiles')
+            .update({
+              subscription_plan: payment.plan_name,
+              subscription_status: 'active',
+              subscription_end_date: validUntil.toISOString(),
+              billing_cycle: payment.billing_cycle,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', payment.user_id);
         }
 
-        console.log(`[Razorpay Webhook] ✅ Subscription activated via webhook`, {
+        console.log(`[Webhook] Subscription activated`, {
           user_id: payment.user_id,
           plan: payment.plan_name,
           billing_cycle: payment.billing_cycle,

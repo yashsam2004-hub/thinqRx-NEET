@@ -74,8 +74,18 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       }
 
       // Parse enrollment data
+      // CRITICAL: DB stores lowercase ('free','plus','pro') but context uses capitalized
+      const planRaw = (enrollment.plan || 'free').toLowerCase();
+      const planMap: Record<string, 'Free' | 'Plus' | 'Pro'> = {
+        free: 'Free',
+        plus: 'Plus',
+        pro: 'Pro',
+        PLUS: 'Plus',
+        PRO: 'Pro',
+        FREE: 'Free',
+      };
       const subscriptionData: SubscriptionData = {
-        plan: (enrollment.plan || 'Free') as 'Free' | 'Plus' | 'Pro',
+        plan: planMap[planRaw] || 'Free',
         status: (enrollment.status || 'inactive') as 'active' | 'inactive' | 'expired' | 'cancelled',
         endDate: enrollment.valid_until ? new Date(enrollment.valid_until) : null,
         billingCycle: enrollment.billing_cycle as 'MONTHLY' | 'ANNUAL' | null,

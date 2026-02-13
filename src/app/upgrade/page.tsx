@@ -32,6 +32,15 @@ interface PricingPlan {
   validity_days: number | null;
 }
 
+interface DbPlan {
+  id: string;
+  name: string;
+  price: number;
+  validity_days: number;
+  features: any;
+  is_active: boolean;
+}
+
 export default function UpgradePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -91,32 +100,38 @@ export default function UpgradePage() {
               setCurrentPlan(enrollment.plan);
             }
 
-            // Fetch pricing
-            const { data: pricingData } = await supabase
-              .from("course_pricing")
+            // SINGLE SOURCE OF TRUTH: Fetch pricing from `plans` table
+            const { data: plansData } = await supabase
+              .from("plans")
               .select("*")
-              .eq("course_id", courses.id);
+              .in("id", ["plus", "pro"])
+              .eq("is_active", true);
 
-            if (pricingData) {
+            if (plansData && plansData.length > 0) {
               const pricingMap: Record<string, PricingPlan> = {};
-              pricingData.forEach((p: PricingPlan) => {
-                pricingMap[p.plan] = {
-                  plan: p.plan,
-                  monthly_price: p.monthly_price,
-                  annual_price: p.annual_price,
-                  features: p.features || [],
-                  limitations: p.limitations || [],
+              plansData.forEach((p: DbPlan) => {
+                const featuresList = Array.isArray(p.features) 
+                  ? p.features 
+                  : p.features?.best_for 
+                    ? [p.features.best_for] 
+                    : [];
+                pricingMap[p.id] = {
+                  plan: p.id,
+                  monthly_price: p.price,
+                  annual_price: Math.round(p.price * 12 * 0.8), // 20% annual discount
+                  features: featuresList,
+                  limitations: [],
                   validity_days: p.validity_days,
                 };
               });
               setPricing(pricingMap);
             } else {
-              // Fallback to default pricing if database fetch fails
+              console.error("[Upgrade] No plans found in DB, using fallback");
               setPricing({
                 plus: {
                   plan: "plus",
                   monthly_price: 199,
-                  annual_price: 1910,
+                  annual_price: Math.round(199 * 12 * 0.8),
                   features: ["AI-Powered Study Notes", "Practice Tests", "Performance Analytics"],
                   limitations: [],
                   validity_days: 365,
@@ -124,7 +139,7 @@ export default function UpgradePage() {
                 pro: {
                   plan: "pro",
                   monthly_price: 299,
-                  annual_price: 2870,
+                  annual_price: Math.round(299 * 12 * 0.8),
                   features: ["Everything in Plus", "Unlimited AI Notes", "Unlimited Practice Tests", "Priority Support"],
                   limitations: [],
                   validity_days: 365,
@@ -144,23 +159,23 @@ export default function UpgradePage() {
         const errorMessage = error instanceof Error ? error.message : "Failed to load pricing information";
         toast.error(errorMessage);
         
-        // Set fallback pricing even on error
+        // Set fallback pricing even on error (must match DB plans table)
         setPricing({
           plus: {
             plan: "plus",
             monthly_price: 199,
-            annual_price: 1910,
+            annual_price: Math.round(199 * 12 * 0.8),
             features: ["AI-Powered Study Notes", "Practice Tests", "Performance Analytics"],
             limitations: [],
-            validity_days: 365,
+            validity_days: 30,
           },
           pro: {
             plan: "pro",
             monthly_price: 299,
-            annual_price: 2870,
+            annual_price: Math.round(299 * 12 * 0.8),
             features: ["Everything in Plus", "Unlimited AI Notes", "Unlimited Practice Tests", "Priority Support"],
             limitations: [],
-            validity_days: 365,
+            validity_days: 30,
           },
         });
       } finally {
