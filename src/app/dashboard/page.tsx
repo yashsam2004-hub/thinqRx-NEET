@@ -557,6 +557,26 @@ export default async function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* Footer with Support Email */}
+      <footer className="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6 pb-8">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              Need help?{" "}
+              <a 
+                href="mailto:info@thinqrx.in" 
+                className="font-medium text-teal-600 dark:text-teal-400 hover:underline"
+              >
+                info@thinqrx.in
+              </a>
+            </p>
+            <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
+              © {new Date().getFullYear()} ThinqRx. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
