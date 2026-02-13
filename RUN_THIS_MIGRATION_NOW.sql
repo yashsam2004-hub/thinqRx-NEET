@@ -18,13 +18,17 @@ CREATE TABLE IF NOT EXISTS public.user_devices (
   UNIQUE(user_id, device_fingerprint)
 );
 
--- Indexes for performance
-CREATE INDEX idx_user_devices_user_id ON public.user_devices(user_id);
-CREATE INDEX idx_user_devices_fingerprint ON public.user_devices(device_fingerprint);
-CREATE INDEX idx_user_devices_active ON public.user_devices(user_id, is_active);
+-- Indexes for performance (safe to re-run)
+CREATE INDEX IF NOT EXISTS idx_user_devices_user_id ON public.user_devices(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_devices_fingerprint ON public.user_devices(device_fingerprint);
+CREATE INDEX IF NOT EXISTS idx_user_devices_active ON public.user_devices(user_id, is_active);
 
--- Enable RLS
+-- Enable RLS (safe to re-run)
 ALTER TABLE public.user_devices ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist (safe to re-run)
+DROP POLICY IF EXISTS "Users can view their own devices" ON public.user_devices;
+DROP POLICY IF EXISTS "Service role can manage all devices" ON public.user_devices;
 
 -- Users can view their own devices (for future device management UI)
 CREATE POLICY "Users can view their own devices"
