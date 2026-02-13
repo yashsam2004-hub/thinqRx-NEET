@@ -205,7 +205,7 @@ export default async function DashboardPage() {
               : "from-teal-500 to-teal-600";
 
             return (
-              <Card className={`mb-8 p-6 border-2 ${cardStyle}`}>
+              <Card className={`mb-8 p-6 border-2 rounded-2xl ${cardStyle}`}>
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-4">
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${iconBg} shadow-lg text-white`}>
@@ -271,7 +271,7 @@ export default async function DashboardPage() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <Card className="p-6 border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Card className="p-6 border-2 rounded-2xl border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <div className="flex items-center gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 shadow-lg">
                   <Target className="h-7 w-7 text-white" />
@@ -285,7 +285,7 @@ export default async function DashboardPage() {
               </div>
             </Card>
 
-            <Card className="p-6 border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Card className="p-6 border-2 rounded-2xl border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-white dark:from-emerald-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <div className="flex items-center gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700 shadow-lg">
                   <TrendingUp className="h-7 w-7 text-white" />
@@ -299,7 +299,7 @@ export default async function DashboardPage() {
               </div>
             </Card>
 
-            <Card className="p-6 border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Card className="p-6 border-2 rounded-2xl border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-white dark:from-purple-950/30 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <div className="flex items-center gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 shadow-lg">
                   <ClipboardList className="h-7 w-7 text-white" />
@@ -397,12 +397,10 @@ export default async function DashboardPage() {
         {/* Quick Actions Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Study Material Card */}
-          <Card className="p-8 border-2 border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
-            {/* Decorative elements */}
+          <Card className="flex flex-col p-8 border-2 rounded-2xl border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-400/10 to-transparent rounded-full -mr-16 -mt-16" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-sky-400/10 to-transparent rounded-full -ml-12 -mb-12" />
             
-            <div className="relative">
+            <div className="relative flex flex-col flex-1">
               <div className="flex items-start justify-between mb-6">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/50 dark:to-sky-900/50 group-hover:scale-110 transition-transform">
                   <BookOpen className="h-10 w-10 text-sky-600 dark:text-sky-400" />
@@ -413,44 +411,44 @@ export default async function DashboardPage() {
                 </Badge>
               </div>
 
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">
-              Study Material
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 mb-6">
-              Browse subjects, explore topics, and access AI-generated notes for focused learning
-            </p>
+              <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">
+                Study Material
+              </h2>
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
+                Browse subjects, explore topics, and access AI-generated notes for focused learning
+              </p>
 
-            <div className="space-y-3 mb-8">
-              <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
-                <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
-                <span>AI-powered notes and explanations</span>
+              <div className="space-y-3 flex-1">
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                  <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
+                  <span>AI-powered notes and explanations</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                  <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
+                  <span>Organized by subjects and topics</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                  <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
+                  <span>Visual aids and chemical structures</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
-                <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
-                <span>Organized by subjects and topics</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
-                <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
-                <span>Visual aids and chemical structures</span>
-              </div>
-            </div>
 
-            <Link href="/subjects">
-              <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 shadow-lg hover:shadow-xl transition-all">
-                <BookOpen className="h-5 w-5" />
-                Quick Revision
-              </Button>
-            </Link>
+              <div className="mt-8">
+                <Link href="/subjects">
+                  <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <BookOpen className="h-5 w-5" />
+                    Quick Revision
+                  </Button>
+                </Link>
+              </div>
             </div>
           </Card>
 
           {/* Mock Tests Card */}
-          <Card className="p-8 border-2 border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
-            {/* Decorative elements */}
+          <Card className="flex flex-col p-8 border-2 rounded-2xl border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-400/10 to-transparent rounded-full -mr-16 -mt-16" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-sky-400/10 to-transparent rounded-full -ml-12 -mb-12" />
             
-            <div className="relative">
+            <div className="relative flex flex-col flex-1">
               <div className="flex items-start justify-between mb-6">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/50 dark:to-sky-900/50 group-hover:scale-110 transition-transform">
                   <ClipboardList className="h-10 w-10 text-sky-600 dark:text-sky-400" />
@@ -464,11 +462,11 @@ export default async function DashboardPage() {
               <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">
                 Full-Length Practice Tests
               </h2>
-              <p className="text-slate-600 dark:text-slate-300 mb-8">
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
                 Build exam confidence with comprehensive CBT-style practice tests for pharma competitive exams
               </p>
 
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 flex-1">
                 <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
                   <span>Real CBT exam experience</span>
@@ -483,30 +481,30 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              {mockTestsCount && mockTestsCount > 0 ? (
-                <Link href="/mock-tests">
-                  <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 shadow-lg hover:shadow-xl transition-all">
-                    <ClipboardList className="h-5 w-5" />
-                    Practice Mock Tests
-                  </Button>
-                </Link>
-              ) : (
-                <div className="text-center py-6 px-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border-2 border-dashed border-slate-300 dark:border-slate-700">
-                  <ClipboardList className="h-8 w-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tests Coming Soon</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">We're preparing comprehensive practice tests</p>
-                </div>
-              )}
+              <div className="mt-8">
+                {mockTestsCount && mockTestsCount > 0 ? (
+                  <Link href="/mock-tests">
+                    <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                      <ClipboardList className="h-5 w-5" />
+                      Practice Mock Tests
+                    </Button>
+                  </Link>
+                ) : (
+                  <div className="text-center py-6 px-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border-2 border-dashed border-slate-300 dark:border-slate-700">
+                    <ClipboardList className="h-8 w-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tests Coming Soon</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">We&apos;re preparing comprehensive practice tests</p>
+                  </div>
+                )}
+              </div>
             </div>
           </Card>
 
           {/* Analytics Card */}
-          <Card className="p-8 border-2 border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
-            {/* Decorative elements */}
+          <Card className="flex flex-col p-8 border-2 rounded-2xl border-sky-200 dark:border-sky-800 bg-gradient-to-br from-sky-50/50 via-white to-white dark:from-sky-950/30 dark:via-slate-800/50 dark:to-slate-800/50 hover:shadow-xl transition-all duration-300 group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-400/10 to-transparent rounded-full -mr-16 -mt-16" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-sky-400/10 to-transparent rounded-full -ml-12 -mb-12" />
             
-            <div className="relative">
+            <div className="relative flex flex-col flex-1">
               <div className="flex items-start justify-between mb-6">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/50 dark:to-sky-900/50 group-hover:scale-110 transition-transform">
                   <BarChart3 className="h-10 w-10 text-sky-600 dark:text-sky-400" />
@@ -524,7 +522,7 @@ export default async function DashboardPage() {
                 Track your progress with AI-powered insights and personalized recommendations
               </p>
 
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 flex-1">
                 <div className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <CheckCircle2 className="h-5 w-5 text-sky-600 dark:text-sky-400 flex-shrink-0" />
                   <span>Mock test performance tracking</span>
@@ -539,20 +537,22 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              {totalAttempts > 0 ? (
-                <Link href="/analytics">
-                  <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 shadow-lg hover:shadow-xl transition-all">
-                    <BarChart3 className="h-5 w-5" />
-                    Analyze Performance
-                  </Button>
-                </Link>
-              ) : (
-                <div className="text-center py-6 px-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border-2 border-dashed border-slate-300 dark:border-slate-700">
-                  <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">No Data Yet</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Take tests to see your analytics</p>
-                </div>
-              )}
+              <div className="mt-8">
+                {totalAttempts > 0 ? (
+                  <Link href="/analytics">
+                    <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white flex items-center justify-center gap-2 py-6 text-base font-semibold border-0 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                      <BarChart3 className="h-5 w-5" />
+                      Analyze Performance
+                    </Button>
+                  </Link>
+                ) : (
+                  <div className="text-center py-6 px-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border-2 border-dashed border-slate-300 dark:border-slate-700">
+                    <BarChart3 className="h-8 w-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">No Data Yet</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Take tests to see your analytics</p>
+                  </div>
+                )}
+              </div>
             </div>
           </Card>
         </div>

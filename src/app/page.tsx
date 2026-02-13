@@ -158,7 +158,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <Card className="p-8 md:p-10 bg-white dark:bg-slate-800/50 border-2 rounded-xl border-[#E5E7EB] dark:border-slate-700">
+            <Card className="p-8 md:p-10 bg-white dark:bg-slate-800/50 border-2 rounded-2xl border-[#E5E7EB] dark:border-slate-700 shadow-sm">
               <ul className="space-y-8">
                 <li className="flex items-start gap-4">
                   <div className="p-2 rounded-lg mt-1 bg-[#E6F4F2] dark:bg-teal-950/50">
@@ -223,7 +223,7 @@ export default function HomePage() {
 
             <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {/* Study Material Card */}
-              <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 rounded-xl border-[#E5E7EB] dark:border-slate-700">
+              <Card className="flex flex-col p-8 bg-white dark:bg-slate-800/50 border-2 rounded-2xl border-[#E5E7EB] dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-teal-200 dark:hover:border-teal-800 transition-all">
                 <div className="mb-6">
                   <div className="inline-flex p-4 rounded-xl mb-6 bg-[#E6F4F2] dark:bg-teal-950/50">
                     <BookOpen className="h-10 w-10 text-[#0F766E] dark:text-teal-400" />
@@ -231,12 +231,12 @@ export default function HomePage() {
                   <h3 className="text-xl md:text-2xl font-bold mb-3 text-slate-900 dark:text-slate-100">
                     Study Material
                   </h3>
-                  <p className="text-base leading-relaxed mb-6 text-slate-600 dark:text-slate-300">
+                  <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
                     AI-generated notes covering all four GPAT subjects, aligned with the PCI syllabus
                   </p>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 flex-1">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5 text-[#0F766E] dark:text-teal-400" />
                     <span className="text-sm text-slate-500 dark:text-slate-400">Covers Pharmaceutics, Pharmaceutical Chemistry, Pharmacology, and Pharmacognosy</span>
@@ -255,16 +255,18 @@ export default function HomePage() {
                   </li>
                 </ul>
 
-                <Link href="/subjects">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg bg-[#0F766E] hover:bg-[#115E59]">
-                    View Study Material
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                <div className="mt-8">
+                  <Link href="/subjects">
+                    <Button className="w-full text-white border-0 py-5 rounded-xl bg-[#0F766E] hover:bg-[#115E59]">
+                      View Study Material
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
               </Card>
 
               {/* Practice Tests Card */}
-              <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 rounded-xl border-[#E5E7EB] dark:border-slate-700">
+              <Card className="flex flex-col p-8 bg-white dark:bg-slate-800/50 border-2 rounded-2xl border-[#E5E7EB] dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-teal-200 dark:hover:border-teal-800 transition-all">
                 <div className="mb-6">
                   <div className="inline-flex p-4 rounded-xl mb-6 bg-[#FEF3E7] dark:bg-amber-950/50">
                     <ClipboardList className="h-10 w-10 text-[#F4C430] dark:text-amber-400" />
@@ -272,12 +274,12 @@ export default function HomePage() {
                   <h3 className="text-xl md:text-2xl font-bold mb-3 text-slate-900 dark:text-slate-100">
                     Practice Tests
                   </h3>
-                  <p className="text-base leading-relaxed mb-6 text-slate-600 dark:text-slate-300">
+                  <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
                     Full-length practice tests designed according to GPAT exam format
                   </p>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 flex-1">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5 text-[#0F766E] dark:text-teal-400" />
                     <span className="text-sm text-slate-500 dark:text-slate-400">125 multiple-choice questions per test</span>
@@ -296,16 +298,18 @@ export default function HomePage() {
                   </li>
                 </ul>
 
-                <Link href="/mock-tests">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg bg-[#0F766E] hover:bg-[#115E59]">
-                    View Practice Tests
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                <div className="mt-8">
+                  <Link href="/mock-tests">
+                    <Button className="w-full text-white border-0 py-5 rounded-xl bg-[#0F766E] hover:bg-[#115E59]">
+                      View Practice Tests
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
               </Card>
 
               {/* Analytics Card */}
-              <Card className="p-8 bg-white dark:bg-slate-800/50 border-2 rounded-xl border-[#E5E7EB] dark:border-slate-700">
+              <Card className="flex flex-col p-8 bg-white dark:bg-slate-800/50 border-2 rounded-2xl border-[#E5E7EB] dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-teal-200 dark:hover:border-teal-800 transition-all">
                 <div className="mb-6">
                   <div className="inline-flex p-4 rounded-xl mb-6 bg-[#E6F4F2] dark:bg-teal-950/50">
                     <BarChart3 className="h-10 w-10 text-[#0F766E] dark:text-teal-400" />
@@ -313,12 +317,12 @@ export default function HomePage() {
                   <h3 className="text-xl md:text-2xl font-bold mb-3 text-slate-900 dark:text-slate-100">
                     Performance Tracking
                   </h3>
-                  <p className="text-base leading-relaxed mb-6 text-slate-600 dark:text-slate-300">
+                  <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
                     Track your test scores and identify topics that need more practice
                   </p>
                 </div>
 
-                <ul className="space-y-3 mb-8">
+                <ul className="space-y-3 flex-1">
                   <li className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5 text-[#0F766E] dark:text-teal-400" />
                     <span className="text-sm text-slate-500 dark:text-slate-400">View your test history and scores</span>
@@ -337,12 +341,14 @@ export default function HomePage() {
                   </li>
                 </ul>
 
-                <Link href="/analytics">
-                  <Button className="w-full text-white border-0 py-5 rounded-lg bg-[#0F766E] hover:bg-[#115E59]">
-                    View Analytics
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                <div className="mt-8">
+                  <Link href="/analytics">
+                    <Button className="w-full text-white border-0 py-5 rounded-xl bg-[#0F766E] hover:bg-[#115E59]">
+                      View Analytics
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                </div>
               </Card>
             </div>
           </div>
@@ -361,7 +367,7 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-6">
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 md:p-8 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold bg-[#0F766E]">
@@ -379,7 +385,7 @@ export default function HomePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 md:p-8 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold bg-[#0F766E]">
@@ -397,7 +403,7 @@ export default function HomePage() {
                 </div>
               </Card>
 
-              <Card className="p-6 md:p-8 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 md:p-8 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <div className="flex items-start gap-4 md:gap-6">
                   <div className="flex-shrink-0">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold bg-[#0F766E]">
@@ -431,7 +437,7 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
                   GPAT Aspirants
                 </h3>
@@ -440,7 +446,7 @@ export default function HomePage() {
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
                   Pharmacy Students
                 </h3>
@@ -449,7 +455,7 @@ export default function HomePage() {
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
                   Self-Study Learners
                 </h3>
@@ -458,7 +464,7 @@ export default function HomePage() {
                 </p>
               </Card>
 
-              <Card className="p-6 border-2 rounded-xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700">
+              <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
                   Working Professionals
                 </h3>
