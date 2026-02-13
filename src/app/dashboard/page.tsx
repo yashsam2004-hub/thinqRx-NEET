@@ -243,59 +243,91 @@ export default async function DashboardPage() {
             </div>
           </div>
 
-          {/* Subscription Status Card */}
-          {enrollments && enrollments.length > 0 && enrollments[0] && (
-            <Card className="mb-8 p-6 border-2 border-teal-200 dark:border-teal-800 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-950/30 dark:to-sky-950/30">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 shadow-lg">
-                    {getPlanIcon(enrollments[0].plan)}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
-                      {enrollments[0].plan.charAt(0).toUpperCase() + enrollments[0].plan.slice(1)} Plan
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                      <Calendar className="h-4 w-4" />
-                      {enrollments[0].valid_until ? (
-                        <>
-                          Valid until {new Date(enrollments[0].valid_until).toLocaleDateString()}
-                          {(() => {
-                            const now = new Date();
-                            const validUntil = new Date(enrollments[0].valid_until);
-                            const daysLeft = Math.ceil((validUntil.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                            
-                            if (daysLeft <= 0) {
-                              return <Badge className="ml-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 border-0">Expired</Badge>;
-                            } else if (daysLeft <= 7) {
-                              return <Badge className="ml-2 bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-0">Expires in {daysLeft} days</Badge>;
-                            } else if (daysLeft <= 30) {
-                              return <Badge className="ml-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-0">{daysLeft} days left</Badge>;
-                            }
-                            return null;
-                          })()}
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-                          <span className="font-semibold text-green-600 dark:text-green-400">Lifetime Access</span>
-                        </>
-                      )}
+          {/* Subscription Status Card - Always visible */}
+          {(() => {
+            const enrollment = enrollments?.[0];
+            const currentPlan = enrollment?.plan || "free";
+            const planLabel = currentPlan.charAt(0).toUpperCase() + currentPlan.slice(1);
+            const isFree = currentPlan === "free";
+            const isPro = currentPlan === "pro";
+
+            // Border/bg colors per plan
+            const cardStyle = isPro
+              ? "border-purple-200 dark:border-purple-800 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30"
+              : currentPlan === "plus"
+              ? "border-sky-200 dark:border-sky-800 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-950/30 dark:to-blue-950/30"
+              : "border-teal-200 dark:border-teal-800 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-950/30 dark:to-sky-950/30";
+
+            const iconBg = isPro
+              ? "from-purple-500 to-pink-500"
+              : currentPlan === "plus"
+              ? "from-sky-400 to-sky-500"
+              : "from-teal-500 to-teal-600";
+
+            return (
+              <Card className={`mb-8 p-6 border-2 ${cardStyle}`}>
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-xl bg-gradient-to-br ${iconBg} shadow-lg text-white`}>
+                      {getPlanIcon(currentPlan)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                          {planLabel} Plan
+                        </h3>
+                        <Badge className={`border-0 text-xs ${
+                          isPro ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300" :
+                          currentPlan === "plus" ? "bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300" :
+                          "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                        }`}>
+                          {enrollment?.status === "active" ? "Active" : isFree ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <Calendar className="h-4 w-4" />
+                        {isFree ? (
+                          <span>Free access with basic features</span>
+                        ) : enrollment?.valid_until ? (
+                          <>
+                            Valid until {new Date(enrollment.valid_until).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            {(() => {
+                              const now = new Date();
+                              const validUntil = new Date(enrollment.valid_until);
+                              const daysLeft = Math.ceil((validUntil.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+                              if (daysLeft <= 0) {
+                                return <Badge className="ml-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 border-0">Expired</Badge>;
+                              } else if (daysLeft <= 7) {
+                                return <Badge className="ml-2 bg-orange-100 dark:bg-orange-900/50 text-orange-700 dark:text-orange-300 border-0">Expires in {daysLeft} days</Badge>;
+                              } else if (daysLeft <= 30) {
+                                return <Badge className="ml-2 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border-0">{daysLeft} days left</Badge>;
+                              }
+                              return <Badge className="ml-2 bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 border-0">{daysLeft} days left</Badge>;
+                            })()}
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                            <span className="font-semibold text-green-600 dark:text-green-400">Lifetime Access</span>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+
+                  {!isPro && (
+                    <Link href="/upgrade">
+                      <Button className="bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white border-0 gap-2">
+                        <Crown className="h-4 w-4" />
+                        {isFree ? "Upgrade to Premium" : "Upgrade Plan"}
+                      </Button>
+                    </Link>
+                  )}
                 </div>
-                
-                {enrollments[0].plan !== "pro" && (
-                  <Link href="/upgrade">
-                    <Button className="bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white border-0 gap-2">
-                      <Crown className="h-4 w-4" />
-                      Upgrade Plan
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </Card>
-          )}
+              </Card>
+            );
+          })()}
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">

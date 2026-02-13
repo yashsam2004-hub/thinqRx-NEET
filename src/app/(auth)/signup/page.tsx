@@ -8,53 +8,38 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { 
-  Sparkles, 
-  Zap, 
-  Crown, 
-  CheckCircle2, 
-  FileText,
+import {
+  Sparkles,
+  CheckCircle2,
   GraduationCap,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Home,
 } from "lucide-react";
-
-interface PricingPlan {
-  plan: string;
-  monthly_price: number;
-  annual_price: number;
-}
 
 export default function SignupPage() {
   const router = useRouter();
-  
+
   // Form fields
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [selectedPlan, setSelectedPlan] = React.useState<"free" | "plus" | "pro">("free");
-  const [billingCycle, setBillingCycle] = React.useState<"monthly" | "annual">("monthly");
-  
+
   // Data
   const [gpatCourseId, setGpatCourseId] = React.useState<string>("");
-  const [pricing, setPricing] = React.useState<Record<string, PricingPlan>>({});
-  
+
   // Loading states
   const [loading, setLoading] = React.useState(false);
   const [loadingData, setLoadingData] = React.useState(true);
 
-  // Fetch GPAT course and pricing
+  // Fetch GPAT course ID
   React.useEffect(() => {
     async function fetchData() {
       try {
         const supabase = createSupabaseBrowserClient();
-        
-        // Fetch GPAT course (should be the only active one)
+
         const { data: coursesData } = await supabase
           .from("courses")
           .select("id")
@@ -64,27 +49,9 @@ export default function SignupPage() {
 
         if (coursesData) {
           setGpatCourseId(coursesData.id);
-          
-          // Fetch pricing for GPAT
-          const { data: pricingData } = await supabase
-            .from("course_pricing")
-            .select("*")
-            .eq("course_id", coursesData.id);
-
-          if (pricingData) {
-            const pricingMap: Record<string, PricingPlan> = {};
-            pricingData.forEach((p: PricingPlan) => {
-              pricingMap[p.plan] = {
-                plan: p.plan,
-                monthly_price: p.monthly_price,
-                annual_price: p.annual_price,
-              };
-            });
-            setPricing(pricingMap);
-          }
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching course:", error);
         toast.error("Failed to load course information");
       } finally {
         setLoadingData(false);
@@ -94,24 +61,9 @@ export default function SignupPage() {
     fetchData();
   }, []);
 
-  const getPrice = () => {
-    if (selectedPlan === "free") return 0;
-    const planPricing = pricing[selectedPlan];
-    if (!planPricing) return 0;
-    return billingCycle === "annual" ? planPricing.annual_price : planPricing.monthly_price;
-  };
-
-  const getPlanIcon = (plan: string) => {
-    switch (plan) {
-      case "pro": return <Crown className="h-5 w-5" />;
-      case "plus": return <Zap className="h-5 w-5" />;
-      default: return <Sparkles className="h-5 w-5" />;
-    }
-  };
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (!name.trim()) {
       toast.error("Please enter your name");
       return;
@@ -134,7 +86,6 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      // Use server-side API for reliable signup
       const signupResponse = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -143,17 +94,14 @@ export default function SignupPage() {
           password,
           name,
           courseId: gpatCourseId,
-          plan: selectedPlan,
-          billingCycle: billingCycle,
+          plan: "free",
+          billingCycle: "monthly",
         }),
       });
-
-      console.log("Signup response status:", signupResponse.status, signupResponse.statusText);
 
       let signupData;
       try {
         signupData = await signupResponse.json();
-        console.log("Signup response data:", signupData);
       } catch (parseError) {
         console.error("Failed to parse response:", parseError);
         toast.error("Server error. Please try again.");
@@ -161,8 +109,6 @@ export default function SignupPage() {
       }
 
       if (!signupResponse.ok || !signupData.ok) {
-        console.error("Signup error:", signupData);
-        
         if (signupData.message && signupData.message.includes("already")) {
           toast.error("This email is already registered. Please login instead.");
         } else {
@@ -171,29 +117,10 @@ export default function SignupPage() {
         return;
       }
 
-      // Check if email verification is required
       if (signupData.requiresEmailVerification) {
-        toast.success(
-          `Account created successfully! Please verify your email to continue.`,
-          { duration: 10000 }
-        );
-        
-        // Check if payment is required (paid plans)
-        if (signupData.requiresPayment) {
-          toast.info(
-            `After verifying your email, you'll need to complete payment to activate your ${selectedPlan.toUpperCase()} plan.`,
-            { duration: 10000 }
-          );
-          
-          setTimeout(() => {
-            router.push(
-              `/login?message=Please verify your email first. Check your inbox for the verification link.&email=${encodeURIComponent(email)}`
-            );
-          }, 3000);
-          return;
-        }
-
-        // FREE plan success - enrollment created but email verification required
+        toast.success("Account created! Please verify your email to continue.", {
+          duration: 10000,
+        });
         setTimeout(() => {
           router.push(
             `/login?message=Please verify your email first. Check your inbox for the verification link.&email=${encodeURIComponent(email)}`
@@ -202,16 +129,6 @@ export default function SignupPage() {
         return;
       }
 
-      // Account created - check if payment required
-      if (signupData.requiresPayment) {
-        toast.success(`Account created successfully! Please complete payment to activate your ${selectedPlan.toUpperCase()} plan.`);
-        setTimeout(() => {
-          router.push(`/login?email=${encodeURIComponent(email)}`);
-        }, 2000);
-        return;
-      }
-
-      // Free account - direct to login
       toast.success("Account created successfully! You can now sign in.");
       setTimeout(() => {
         router.push(`/login?email=${encodeURIComponent(email)}`);
@@ -226,301 +143,152 @@ export default function SignupPage() {
 
   if (loadingData) {
     return (
-      <div className="mx-auto flex min-h-[calc(100vh-1px)] max-w-6xl items-center justify-center px-6 py-16">
-        <Card className="w-full max-w-2xl p-12 text-center dark:bg-slate-800/50 dark:border-slate-700">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-6 py-16">
+        <Card className="w-full max-w-md p-12 text-center dark:bg-slate-800/50 dark:border-slate-700">
           <Loader2 className="h-12 w-12 animate-spin text-teal-600 dark:text-teal-400 mx-auto mb-4" />
-          <p className="text-slate-600 dark:text-slate-300">Loading course information...</p>
+          <p className="text-slate-600 dark:text-slate-300">Loading...</p>
         </Card>
       </div>
     );
   }
 
-  const totalPrice = getPrice();
-  const annualSavings = selectedPlan !== "free" && pricing[selectedPlan]
-    ? Math.round(((pricing[selectedPlan].monthly_price * 12) - pricing[selectedPlan].annual_price) / (pricing[selectedPlan].monthly_price * 12) * 100)
-    : 20;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 py-16 px-6">
-      <div className="mx-auto max-w-4xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Create Your ThinqRx Account</h1>
-          <p className="text-lg text-slate-600 dark:text-slate-300">Choose your plan and start preparing for GPAT</p>
+    <div className="min-h-screen bg-gradient-to-br from-teal-50/30 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center py-16 px-6">
+      {/* Home Icon */}
+      <Link
+        href="/"
+        className="fixed top-6 left-6 p-2 rounded-lg bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 hover:border-teal-300 dark:hover:border-teal-500 transition-all shadow-sm"
+        aria-label="Home"
+      >
+        <Home className="h-5 w-5 text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400" />
+      </Link>
+
+      <Card className="w-full max-w-md p-8 bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-slate-200 dark:border-slate-700 shadow-2xl">
+        {/* Header */}
+        <div className="mb-6 text-center">
+          <div className="mb-4 flex justify-center">
+            <div className="rounded-full bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 p-3 shadow-lg">
+              <GraduationCap className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            Create Your Account
+          </h1>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Start preparing for GPAT with ThinqRx - it's free
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Form */}
-          <Card className="lg:col-span-2 p-8 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50">
-            <form onSubmit={onSubmit} className="space-y-6">
-              {/* Personal Information */}
-              <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-teal-600 dark:text-teal-400" />
-                  Personal Information
-                </h2>
-                
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="dark:text-slate-200">Full Name *</Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="dark:text-slate-200">Email Address *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="your.email@example.com"
-                      autoComplete="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password" className="dark:text-slate-200">Password *</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="Create a strong password (min 6 characters)"
-                      autoComplete="new-password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                    />
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Minimum 6 characters required</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="dark:text-slate-200">Confirm Password *</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="Re-enter your password"
-                      autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      minLength={6}
-                    />
-                    {confirmPassword && password !== confirmPassword && (
-                      <p className="text-xs text-red-600 flex items-center gap-1">
-                        <AlertCircle className="h-3 w-3" />
-                        Passwords do not match
-                      </p>
-                    )}
-                    {confirmPassword && password === confirmPassword && (
-                      <p className="text-xs text-green-600 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        Passwords match
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Plan Selection */}
-              <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Choose Your Plan</h2>
-                
-                {/* Payment Info Alert */}
-                {(selectedPlan === "plus" || selectedPlan === "pro") && (
-                  <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-200 dark:border-amber-800 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-                      <div className="text-sm">
-                        <p className="font-semibold text-amber-900 dark:text-amber-300 mb-1">Payment Required</p>
-                        <p className="text-amber-800 dark:text-amber-400">
-                          You'll need to complete payment to activate your {selectedPlan.toUpperCase()} plan. 
-                          After account creation, you'll be prompted to complete payment.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <RadioGroup value={selectedPlan} onValueChange={(value: any) => setSelectedPlan(value)} className="space-y-3">
-                  {/* Free Plan */}
-                  <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "free" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
-                    <RadioGroupItem value="free" id="free" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Sparkles className="h-4 w-4 text-slate-600 dark:text-slate-300" />
-                        <span className="font-bold text-slate-900 dark:text-white">Free</span>
-                        <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">₹0</Badge>
-                      </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-300">Basic access to get started</p>
-                    </div>
-                  </label>
-
-                  {/* Plus Plan */}
-                  {pricing.plus && (
-                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "plus" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
-                      <RadioGroupItem value="plus" id="plus" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Zap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                          <span className="font-bold text-slate-900 dark:text-white">Plus</span>
-                          <Badge className="bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300">
-                            ₹{billingCycle === "annual" ? pricing.plus.annual_price : pricing.plus.monthly_price}
-                            <span className="text-xs ml-1">/{billingCycle === "annual" ? "year" : "month"}</span>
-                          </Badge>
-                          <Badge variant="outline" className="text-xs border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">Payment Required</Badge>
-                        </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">More features and practice tests</p>
-                      </div>
-                    </label>
-                  )}
-
-                  {/* Pro Plan */}
-                  {pricing.pro && (
-                    <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedPlan === "pro" ? "border-amber-500 bg-amber-50 dark:bg-amber-950/30" : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"}`}>
-                      <RadioGroupItem value="pro" id="pro" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <Crown className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                          <span className="font-bold text-slate-900 dark:text-white">Pro</span>
-                          <Badge className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300">
-                            ₹{billingCycle === "annual" ? pricing.pro.annual_price : pricing.pro.monthly_price}
-                            <span className="text-xs ml-1">/{billingCycle === "annual" ? "year" : "month"}</span>
-                          </Badge>
-                          <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs">Most Popular</Badge>
-                          <Badge variant="outline" className="text-xs border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300">Payment Required</Badge>
-                        </div>
-                        <p className="text-sm text-slate-600 dark:text-slate-300">Unlimited access to everything</p>
-                      </div>
-                    </label>
-                  )}
-                </RadioGroup>
-              </div>
-
-              {/* Billing Cycle */}
-              {selectedPlan !== "free" && (
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Billing Cycle</h2>
-                  
-                  <RadioGroup value={billingCycle} onValueChange={(value: any) => setBillingCycle(value)} className="grid grid-cols-2 gap-4">
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "monthly" ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md" : "border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-600"}`}>
-                      <RadioGroupItem value="monthly" id="monthly" />
-                      <div>
-                        <div className="font-bold text-slate-900 dark:text-white">Monthly</div>
-                        <div className="text-sm text-slate-600 dark:text-slate-300">Pay monthly</div>
-                      </div>
-                    </label>
-
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${billingCycle === "annual" ? "border-green-500 bg-green-50 dark:bg-green-950/30" : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"}`}>
-                      <RadioGroupItem value="annual" id="annual" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <div className="font-bold text-slate-900 dark:text-white">Annual</div>
-                          <Badge className="bg-green-600 text-white text-xs">Save {annualSavings}%</Badge>
-                        </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-300">Pay yearly</div>
-                      </div>
-                    </label>
-                  </RadioGroup>
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <Button 
-                className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white py-6 text-lg font-bold shadow-xl border-0" 
-                type="submit" 
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                    Creating Account...
-                  </>
-                ) : (
-                  <>
-                    {getPlanIcon(selectedPlan)}
-                    <span className="ml-2">Create Account & Enroll</span>
-                  </>
-                )}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
-              Already have an account?{" "}
-              <Link className="text-teal-600 dark:text-teal-400 font-semibold hover:underline" href="/login">
-                Sign in
-              </Link>
+        {/* Free plan info */}
+        <div className="mb-6 p-4 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 rounded-lg">
+          <div className="flex items-center gap-3">
+            <Sparkles className="h-5 w-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-semibold text-teal-900 dark:text-teal-300">
+                Free Plan Included
+              </p>
+              <p className="text-teal-800 dark:text-teal-400">
+                Get started with basic access. You can upgrade to Plus or Pro anytime from your dashboard.
+              </p>
             </div>
-          </Card>
-
-          {/* Order Summary */}
-          <Card className="p-6 border-2 border-slate-200 dark:border-slate-700 dark:bg-slate-800/50 h-fit sticky top-6">
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Registration Summary</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Exam</p>
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                  <p className="font-semibold text-slate-900 dark:text-white">GPAT</p>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Access to all GPAT preparation content</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Plan</p>
-                <div className="flex items-center gap-2">
-                  {getPlanIcon(selectedPlan)}
-                  <p className="font-semibold text-slate-900 dark:text-white capitalize">{selectedPlan}</p>
-                </div>
-              </div>
-
-              {selectedPlan !== "free" && (
-                <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Billing</p>
-                  <p className="font-semibold text-slate-900 dark:text-white capitalize">{billingCycle}</p>
-                </div>
-              )}
-
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-slate-600 dark:text-slate-300">Subtotal</p>
-                  <p className="font-semibold dark:text-white">₹{totalPrice}</p>
-                </div>
-                
-                {selectedPlan !== "free" && billingCycle === "annual" && (
-                  <div className="flex items-center justify-between text-sm text-green-600 dark:text-green-400 mb-2">
-                    <p>Annual Discount</p>
-                    <p>-{annualSavings}%</p>
-                  </div>
-                )}
-                
-                <div className="flex items-center justify-between text-lg font-bold text-slate-900 dark:text-white mt-4">
-                  <p>Total</p>
-                  <p>₹{totalPrice}</p>
-                </div>
-              </div>
-
-              {selectedPlan !== "free" && (
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-                  <div className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
-                    <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                    <p>Invoice will be sent to your email after registration</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Card>
+          </div>
         </div>
-      </div>
+
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name" className="dark:text-slate-200">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Enter your full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email" className="dark:text-slate-200">Email Address</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="your.email@example.com"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password" className="dark:text-slate-200">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="Min 6 characters"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword" className="dark:text-slate-200">Confirm Password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              placeholder="Re-enter your password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              minLength={6}
+            />
+            {confirmPassword && password !== confirmPassword && (
+              <p className="text-xs text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Passwords do not match
+              </p>
+            )}
+            {confirmPassword && password === confirmPassword && (
+              <p className="text-xs text-green-600 flex items-center gap-1">
+                <CheckCircle2 className="h-3 w-3" />
+                Passwords match
+              </p>
+            )}
+          </div>
+
+          <Button
+            className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white py-6 text-base font-semibold shadow-lg border-0"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Creating Account...
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4 mr-2" />
+                Create Free Account
+              </>
+            )}
+          </Button>
+        </form>
+
+        <div className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
+          Already have an account?{" "}
+          <Link
+            className="text-teal-600 dark:text-teal-400 font-semibold hover:underline"
+            href="/login"
+          >
+            Sign in
+          </Link>
+        </div>
+      </Card>
     </div>
   );
 }
-
-

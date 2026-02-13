@@ -4,53 +4,51 @@ import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
-  console.log("=== SIGNUP API CALLED ===");
-  
+  console.log("[Signup] API called");
+
   try {
-    // SECURITY: Use centralized admin client (never expose service role to client)
     const supabaseAdmin = createSupabaseAdminClient();
-    
+
     const body = await request.json();
-    console.log("Request body:", body);
-    
-    const { email, password, name, courseId, plan, billingCycle } = body;
+    const { email, password, name, courseId } = body;
 
-    console.log("Signup API called:", { email, courseId, plan, billingCycle });
+    console.log("[Signup] Request:", { email, courseId });
 
-    if (!email || !password || !courseId || !plan) {
+    if (!email || !password || !courseId) {
       return NextResponse.json(
         { ok: false, error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    // Step 1: Create auth user with email auto-confirmed (no verification required)
-    const { data: authData, error: authError} = await supabaseAdmin.auth.admin.createUser({
+    // CRITICAL: All new users register as FREE. Upgrades happen after login via /upgrade page.
+    const plan = "free";
+
+    // Step 1: Create auth user with email auto-confirmed
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: true, // Auto-confirm email (no verification needed)
+      email_confirm: true,
       user_metadata: {
         name: name || email,
-        selected_plan: plan, // Store selected plan for payment redirect
-        billing_cycle: billingCycle,
       },
     });
 
     if (authError || !authData.user) {
-      console.error("Auth creation error:", authError);
+      console.error("[Signup] Auth creation error:", authError);
       return NextResponse.json(
-        { 
-          ok: false, 
+        {
+          ok: false,
           error: "AUTH_FAILED",
-          message: authError?.message || "Failed to create auth user"
+          message: authError?.message || "Failed to create auth user",
         },
         { status: 400 }
       );
     }
 
-    console.log("Auth user created:", authData.user.id);
+    console.log("[Signup] Auth user created:", authData.user.id);
 
-    // Step 2: Ensure profile exists (retry logic for reliability)
+    // Step 2: Ensure profile exists
     let profileCreated = false;
     let retries = 0;
     const maxRetries = 3;
@@ -63,44 +61,40 @@ export async function POST(request: Request) {
         .single();
 
       if (existingProfile) {
-        console.log("Profile already exists (created by trigger)");
+        console.log("[Signup] Profile already exists");
         profileCreated = true;
         break;
       }
 
-      // Try to create profile with explicit 'student' role (NEVER admin!)
-      // SECURITY: New users always get 'student' role. Admin role must be set manually in Supabase.
       const { error: profileError } = await supabaseAdmin
         .from("profiles")
         .insert({
           id: authData.user.id,
           email: email,
-          role: 'student', // EXPLICIT: Always 'student', never 'admin'
+          role: "student",
           created_at: new Date().toISOString(),
         });
 
       if (!profileError) {
-        console.log("Profile created successfully");
+        console.log("[Signup] Profile created");
         profileCreated = true;
-      } else if (profileError.code === '23505') {
-        // Duplicate key - profile was created by trigger
-        console.log("Profile exists (race condition with trigger)");
+      } else if (profileError.code === "23505") {
+        console.log("[Signup] Profile exists (race condition)");
         profileCreated = true;
       } else {
-        console.error(`Profile creation attempt ${retries + 1} failed:`, profileError);
+        console.error(`[Signup] Profile attempt ${retries + 1} failed:`, profileError);
         retries++;
-        
         if (retries < maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise((resolve) => setTimeout(resolve, 500));
         }
       }
     }
 
     if (!profileCreated) {
-      console.error("Failed to create profile after retries");
+      console.error("[Signup] Failed to create profile after retries");
       return NextResponse.json(
-        { 
-          ok: false, 
+        {
+          ok: false,
           error: "PROFILE_CREATION_FAILED",
           message: "Failed to create user profile. Please contact support.",
         },
@@ -108,68 +102,49 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("Signup completed successfully");
+    // Step 3: Create FREE enrollment immediately
+    console.log("[Signup] Creating free enrollment...");
 
-    // PAID PLAN: User account created, but enrollment requires payment
-    if (plan !== "free") {
-      console.log(`Paid plan selected (${plan}). Payment required before enrollment.`);
-      
-      return NextResponse.json({
-        ok: true,
-        userId: authData.user.id,
-        email: email,
-        requiresPayment: true,
-        requiresEmailVerification: false,
-        plan: plan,
-        billingCycle: billingCycle,
-        message: "Account created successfully! You can now sign in and complete payment to activate your plan.",
-      });
-    }
-
-    // FREE PLAN: Create enrollment immediately
-    console.log("Free plan selected. Creating enrollment...");
-    
     const { data: enrollmentResult, error: enrollmentError } = await supabaseAdmin.rpc(
-      'create_course_enrollment',
+      "create_course_enrollment",
       {
         p_user_id: authData.user.id,
         p_course_id: courseId,
         p_plan: plan,
-        p_billing_cycle: billingCycle || "monthly",
+        p_billing_cycle: "monthly",
       }
     );
 
     if (enrollmentError) {
-      console.error("Enrollment error:", enrollmentError);
+      console.error("[Signup] Enrollment error:", enrollmentError);
       return NextResponse.json(
-        { 
-          ok: false, 
+        {
+          ok: false,
           error: "ENROLLMENT_FAILED",
           message: "User created but enrollment failed. Please contact support.",
-          userId: authData.user.id
+          userId: authData.user.id,
         },
         { status: 500 }
       );
     }
 
-    const result = typeof enrollmentResult === 'string' 
-      ? JSON.parse(enrollmentResult) 
-      : enrollmentResult;
+    const result =
+      typeof enrollmentResult === "string" ? JSON.parse(enrollmentResult) : enrollmentResult;
 
     if (!result.success) {
-      console.error("Enrollment failed:", result);
+      console.error("[Signup] Enrollment failed:", result);
       return NextResponse.json(
-        { 
-          ok: false, 
+        {
+          ok: false,
           error: result.error,
           message: result.message,
-          userId: authData.user.id
+          userId: authData.user.id,
         },
         { status: 400 }
       );
     }
 
-    console.log("Signup completed successfully");
+    console.log("[Signup] Complete - free account created:", authData.user.id);
 
     return NextResponse.json({
       ok: true,
@@ -179,19 +154,13 @@ export async function POST(request: Request) {
       requiresEmailVerification: false,
       message: "Account created successfully! You can now sign in.",
     });
-
   } catch (error: any) {
-    console.error("=== SIGNUP API ERROR ===");
-    console.error("Error details:", error);
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-    
+    console.error("[Signup] Error:", error.message);
     return NextResponse.json(
-      { 
-        ok: false, 
+      {
+        ok: false,
         error: "SERVER_ERROR",
         message: error.message || "Failed to create account",
-        details: error.toString()
       },
       { status: 500 }
     );
