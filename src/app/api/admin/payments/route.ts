@@ -74,20 +74,20 @@ export async function GET() {
       userEmail: profileMap.get(payment.user_id)?.email || "Unknown",
     }));
 
-    // Calculate stats
+    // Calculate stats (handle both 'status' and 'payment_status' fields)
     const totalRevenue = payments
-      .filter(p => p.payment_status === "completed")
+      .filter(p => (p.status || p.payment_status) === "completed")
       .reduce((sum, p) => sum + parseFloat(p.amount.toString()), 0);
 
     const pendingRevenue = payments
-      .filter(p => p.payment_status === "pending")
+      .filter(p => (p.status || p.payment_status) === "pending")
       .reduce((sum, p) => sum + parseFloat(p.amount.toString()), 0);
 
     const stats = {
       totalPayments: payments.length,
-      completedPayments: payments.filter(p => p.payment_status === "completed").length,
-      pendingPayments: payments.filter(p => p.payment_status === "pending").length,
-      failedPayments: payments.filter(p => p.payment_status === "failed").length,
+      completedPayments: payments.filter(p => (p.status || p.payment_status) === "completed").length,
+      pendingPayments: payments.filter(p => (p.status || p.payment_status) === "pending").length,
+      failedPayments: payments.filter(p => (p.status || p.payment_status) === "failed").length,
       totalRevenue,
       pendingRevenue,
     };

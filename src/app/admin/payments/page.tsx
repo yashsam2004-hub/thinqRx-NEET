@@ -32,14 +32,19 @@ interface Payment {
   userEmail: string;
   amount: number;
   currency: string;
-  payment_method: string;
-  payment_status: string;
-  plan: string;
-  billing_cycle: string;
-  transaction_id: string | null;
-  notes: string | null;
+  payment_method?: string;
+  payment_status?: string;
+  status?: string; // Database uses 'status' field
+  plan_name?: string;
+  plan?: string;
+  billing_cycle?: string;
+  transaction_id?: string | null;
+  razorpay_order_id?: string | null;
+  razorpay_payment_id?: string | null;
+  notes?: string | null;
   created_at: string;
-  enrollment: {
+  completed_at?: string | null;
+  enrollment?: {
     plan: string;
     billing_cycle: string;
     courses: {
@@ -93,18 +98,23 @@ export default function AdminPaymentsPage() {
   // Filter payments
   const filteredPayments = React.useMemo(() => {
     return payments.filter((payment) => {
+      const paymentStatus = payment.status || payment.payment_status || 'unknown';
+      const planName = payment.plan_name || payment.plan || '';
+      
       const matchesSearch =
         !searchQuery ||
         payment.userEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment.transaction_id?.toLowerCase().includes(searchQuery.toLowerCase());
+        payment.transaction_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        payment.razorpay_order_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        payment.razorpay_payment_id?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus =
         selectedStatus === "all" ||
-        payment.payment_status.toLowerCase() === selectedStatus.toLowerCase();
+        paymentStatus.toLowerCase() === selectedStatus.toLowerCase();
 
       const matchesPlan =
         selectedPlan === "all" ||
-        payment.plan.toLowerCase() === selectedPlan.toLowerCase();
+        planName.toLowerCase() === selectedPlan.toLowerCase();
 
       return matchesSearch && matchesStatus && matchesPlan;
     });
@@ -350,69 +360,91 @@ export default function AdminPaymentsPage() {
           ) : (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Date</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">User</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Amount</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Plan</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Method</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900">Transaction ID</th>
+                <tr className="border-b-2 border-slate-300 bg-slate-50 dark:bg-slate-800">
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Date & Time</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">User</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Amount</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Plan</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Status</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-slate-900 dark:text-slate-100">Razorpay IDs</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredPayments.map((payment) => (
-                  <tr key={payment.id} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(payment.created_at).toLocaleDateString()}
-                        <span className="text-xs text-slate-400">
-                          {new Date(payment.created_at).toLocaleTimeString()}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-slate-400" />
-                        <div>
-                          <p className="text-sm font-medium text-slate-900">{payment.userEmail}</p>
-                          <p className="text-xs text-slate-500 font-mono">{payment.user_id.slice(0, 8)}...</p>
+                {filteredPayments.map((payment, index) => {
+                  const paymentStatus = payment.status || payment.payment_status || 'unknown';
+                  const planName = payment.plan_name || payment.plan || 'N/A';
+                  
+                  return (
+                    <tr 
+                      key={payment.id} 
+                      className={`border-b border-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+                        index % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-800/30'
+                      }`}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                            <Calendar className="h-4 w-4" />
+                            {new Date(payment.created_at).toLocaleDateString('en-IN')}
+                          </div>
+                          <span className="text-xs text-slate-500">
+                            {new Date(payment.created_at).toLocaleTimeString('en-IN')}
+                          </span>
                         </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
-                        <p className="text-lg font-bold text-emerald-600">₹{payment.amount.toLocaleString('en-IN')}</p>
-                        {payment.billing_cycle && (
-                          <span className="text-xs text-slate-500">/{payment.billing_cycle === "annual" ? "year" : "month"}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      {getPlanBadge(payment.plan)}
-                    </td>
-                    <td className="px-4 py-3">
-                      {getStatusBadge(payment.payment_status)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <CreditCard className="h-4 w-4" />
-                        {payment.payment_method || "N/A"}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="text-xs font-mono text-slate-600">
-                        {payment.transaction_id || (
-                          <span className="text-slate-400 italic">No transaction ID</span>
-                        )}
-                      </div>
-                      {payment.notes && (
-                        <p className="text-xs text-slate-500 mt-1">{payment.notes}</p>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-slate-400" />
+                          <div>
+                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{payment.userEmail}</p>
+                            <p className="text-xs text-slate-500 font-mono">{payment.user_id.slice(0, 8)}...</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <p className="text-lg font-bold text-emerald-600">₹{payment.amount.toLocaleString('en-IN')}</p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-col gap-1">
+                          {getPlanBadge(planName)}
+                          {payment.billing_cycle && (
+                            <span className="text-xs text-slate-500 capitalize">
+                              {payment.billing_cycle.replace('_', ' ')}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        {getStatusBadge(paymentStatus)}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="space-y-1">
+                          {payment.razorpay_order_id && (
+                            <div className="text-xs">
+                              <span className="text-slate-500">Order:</span>{' '}
+                              <span className="font-mono text-slate-700 dark:text-slate-300">
+                                {payment.razorpay_order_id}
+                              </span>
+                            </div>
+                          )}
+                          {payment.razorpay_payment_id && (
+                            <div className="text-xs">
+                              <span className="text-slate-500">Payment:</span>{' '}
+                              <span className="font-mono text-slate-700 dark:text-slate-300">
+                                {payment.razorpay_payment_id}
+                              </span>
+                            </div>
+                          )}
+                          {!payment.razorpay_order_id && !payment.razorpay_payment_id && (
+                            <span className="text-xs text-slate-400 italic">No IDs</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           )}
@@ -421,16 +453,28 @@ export default function AdminPaymentsPage() {
 
       {/* Summary Footer */}
       {filteredPayments.length > 0 && (
-        <Card className="p-4 bg-slate-50">
-          <div className="flex items-center justify-between text-sm">
-            <p className="text-slate-600">
-              Showing <span className="font-semibold text-slate-900">{filteredPayments.length}</span> of{" "}
-              <span className="font-semibold text-slate-900">{payments.length}</span> payments
-            </p>
-            <p className="text-slate-600">
-              Total filtered: <span className="font-bold text-emerald-600">
+        <Card className="p-4 bg-slate-50 dark:bg-slate-800">
+          <div className="flex items-center justify-between text-sm flex-wrap gap-4">
+            <div className="flex items-center gap-6">
+              <p className="text-slate-600 dark:text-slate-300">
+                Showing <span className="font-semibold text-slate-900 dark:text-slate-100">{filteredPayments.length}</span> of{" "}
+                <span className="font-semibold text-slate-900 dark:text-slate-100">{payments.length}</span> payments
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
+                Completed: <span className="font-semibold text-green-600">
+                  {filteredPayments.filter(p => (p.status || p.payment_status) === "completed").length}
+                </span>
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
+                Pending: <span className="font-semibold text-yellow-600">
+                  {filteredPayments.filter(p => (p.status || p.payment_status) === "pending").length}
+                </span>
+              </p>
+            </div>
+            <p className="text-slate-600 dark:text-slate-300">
+              Total Revenue: <span className="font-bold text-emerald-600 text-lg">
                 ₹{filteredPayments
-                  .filter(p => p.payment_status === "completed")
+                  .filter(p => (p.status || p.payment_status) === "completed")
                   .reduce((sum, p) => sum + p.amount, 0)
                   .toLocaleString('en-IN')}
               </span>
