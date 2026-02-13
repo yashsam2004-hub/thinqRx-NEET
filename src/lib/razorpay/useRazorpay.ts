@@ -240,11 +240,58 @@ export function useRazorpay(): UseRazorpayReturn {
         return;
       }
 
-      // 4. Open Razorpay checkout
+      // 4. Start polling for QR/UPI payments (runs in background)
+      let pollInterval: NodeJS.Timeout | null = null;
+      let pollTimeout: NodeJS.Timeout | null = null;
+      const orderId = orderData.order_id;
+      
+      const stopPolling = () => {
+        if (pollInterval) clearInterval(pollInterval);
+        if (pollTimeout) clearTimeout(pollTimeout);
+      };
+      
+      const checkPaymentStatus = async () => {
+        try {
+          console.log('[Razorpay] Polling payment status for order:', orderId);
+          const statusResponse = await fetch(`/api/payments/status?order_id=${orderId}`);
+          
+          if (statusResponse.ok) {
+            const statusData = await statusResponse.json();
+            console.log('[Razorpay] Poll result:', statusData);
+            
+            if (statusData.status === 'paid') {
+              console.log('[Razorpay] ✅ QR/UPI payment detected! Auto-verifying...');
+              stopPolling();
+              
+              // Create mock response for handler
+              const mockResponse: RazorpaySuccessResponse = {
+                razorpay_order_id: orderId,
+                razorpay_payment_id: statusData.payment_id,
+                razorpay_signature: '', // Webhook will handle verification
+              };
+              
+              // Trigger the success handler
+              options.handler(mockResponse);
+            }
+          }
+        } catch (pollError) {
+          console.error('[Razorpay] Poll error (non-critical):', pollError);
+        }
+      };
+      
+      // Poll every 3 seconds for 10 minutes
+      pollInterval = setInterval(checkPaymentStatus, 3000);
+      pollTimeout = setTimeout(() => {
+        stopPolling();
+        console.log('[Razorpay] Polling stopped after 10 minutes');
+      }, 600000); // 10 minutes
+      
+      // 5. Open Razorpay checkout
       const razorpay = new window.Razorpay(options);
       
       razorpay.on('payment.failed', function (response: any) {
         console.error('[Razorpay] Payment failed:', response.error);
+        stopPolling(); // Stop polling on failure
         toast.error(`Payment failed: ${response.error.description}`, {
           duration: 5000,
         });
