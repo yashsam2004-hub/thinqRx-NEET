@@ -155,13 +155,13 @@ export default function AdminUsersPage() {
   React.useEffect(() => {
     loadEnrollments();
     
-    // Set up realtime subscription for enrollments
+    // Set up realtime subscription for enrollments AND profiles
     const setupRealtimeSubscription = async () => {
       const { createSupabaseBrowserClient } = await import("@/lib/supabase/client");
       const supabase = createSupabaseBrowserClient();
       
       const channel = supabase
-        .channel("admin-enrollments")
+        .channel("admin-users")
         .on(
           "postgres_changes",
           {
@@ -170,7 +170,28 @@ export default function AdminUsersPage() {
             table: "course_enrollments",
           },
           () => {
-            // Reload enrollments when changes occur
+            loadEnrollments();
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "profiles",
+          },
+          () => {
+            loadEnrollments();
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "payments",
+          },
+          () => {
             loadEnrollments();
           }
         )
@@ -260,7 +281,7 @@ export default function AdminUsersPage() {
       e.validUntil ? new Date(e.validUntil).toLocaleDateString() : "Lifetime",
       e.totalAttempts.toString(),
       e.notesGenerated.toString(),
-      e.paymentAmount ? `₹${(e.paymentAmount / 100).toFixed(2)}` : "N/A",
+      e.paymentAmount ? `₹${Math.round(e.paymentAmount)}` : "N/A",
       e.paymentDate ? new Date(e.paymentDate).toLocaleDateString() : "N/A",
     ]);
 
@@ -419,6 +440,7 @@ export default function AdminUsersPage() {
               <SelectContent>
                 <SelectItem value="all">All Statuses</SelectItem>
                 <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="registered">Registered</SelectItem>
                 <SelectItem value="expired">Expired</SelectItem>
                 <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
@@ -451,7 +473,7 @@ export default function AdminUsersPage() {
             <div className="text-center py-8 text-slate-600">Loading users...</div>
           ) : filteredEnrollments.length === 0 ? (
             <div className="text-center py-8 text-slate-600">
-              No enrollments found matching your filters
+              No users found matching your filters
             </div>
           ) : (
             <table className="w-full">
@@ -521,7 +543,7 @@ export default function AdminUsersPage() {
                         <div className="text-sm">
                           <div className="flex items-center gap-1 font-semibold text-green-600">
                             <IndianRupee className="h-3 w-3" />
-                            {(enrollment.paymentAmount / 100).toFixed(2)}
+                            {Math.round(enrollment.paymentAmount)}
                           </div>
                           <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
                             <Calendar className="h-3 w-3" />

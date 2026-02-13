@@ -26,151 +26,136 @@ export async function GET() {
   }
 
   // Check admin role
-  const { data: profile } = await supabase
+  const { data: adminProfile } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", auth.user.id)
     .maybeSingle();
 
-  if (profile?.role !== "admin") {
+  if (adminProfile?.role !== "admin") {
     return NextResponse.json({ ok: false, error: "FORBIDDEN" }, { status: 403 });
   }
 
   try {
-    // Get all enrollments WITHOUT joins (to avoid RLS recursion)
-    const { data: enrollments, error } = await supabase
-      .from("course_enrollments")
-      .select("user_id, course_id, plan, status, created_at, valid_until")
+    // 1. Get ALL profiles (this is the source of truth for registered users)
+    const { data: allProfiles, error: profilesError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, email, status, subscription_plan, subscription_status, subscription_end_date, role, created_at")
       .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error fetching enrollments:", error);
+    if (profilesError) {
+      console.error("Error fetching profiles:", profilesError);
       return NextResponse.json(
-        { ok: false, error: "FETCH_FAILED", message: error.message, details: error },
+        { ok: false, error: "FETCH_FAILED", message: profilesError.message },
         { status: 500 }
       );
     }
 
-    // Get courses separately
-    const courseIds = [...new Set(enrollments.map((e) => e.course_id))];
-    const { data: courses } = await supabase
-      .from("courses")
-      .select("id, name, code")
-      .in("id", courseIds);
+    // 2. Get all enrollments
+    const { data: enrollments } = await supabaseAdmin
+      .from("course_enrollments")
+      .select("user_id, course_id, plan, status, created_at, valid_until")
+      .order("created_at", { ascending: false });
+
+    // 3. Get courses
+    const courseIds = [...new Set((enrollments || []).map((e) => e.course_id))];
+    const { data: courses } = courseIds.length > 0
+      ? await supabaseAdmin.from("courses").select("id, name, code").in("id", courseIds)
+      : { data: [] };
     
     const courseMap = new Map(courses?.map(c => [c.id, { name: c.name, code: c.code }]) || []);
 
-    // Get unique user IDs
-    const userIds = [...new Set(enrollments.map((e) => e.user_id))];
-    
-    // Fetch user emails and status from profiles table (faster and more reliable)
-    const { data: profiles } = await supabaseAdmin
-      .from("profiles")
-      .select("id, email, status")
-      .in("id", userIds);
-    
-    const profileMap = new Map(profiles?.map(p => [p.id, { email: p.email, status: p.status }]) || []);
-    
-    // Fetch additional user metadata from auth (names, etc.)
-    const userMap = new Map<string, { email: string; name: string | null }>();
-    
-    for (const userId of userIds) {
-      const profileEmail = profileMap.get(userId);
-      
+    // 4. Build enrollment map (user_id -> best enrollment)
+    const enrollmentMap = new Map<string, typeof enrollments extends (infer T)[] | null ? T : never>();
+    (enrollments || []).forEach((e) => {
+      const existing = enrollmentMap.get(e.user_id);
+      // Keep the most recent or active enrollment
+      if (!existing || e.status === "active" || new Date(e.created_at) > new Date(existing.created_at)) {
+        enrollmentMap.set(e.user_id, e);
+      }
+    });
+
+    // 5. Get all user IDs
+    const allUserIds = allProfiles.map(p => p.id);
+
+    // 6. Fetch auth metadata (names) for all users
+    const userMetaMap = new Map<string, { email: string; name: string | null }>();
+    for (const userId of allUserIds) {
       try {
         const { data: userData } = await supabaseAdmin.auth.admin.getUserById(userId);
-        
         if (userData?.user) {
-          userMap.set(userId, {
-            email: String(userData.user.email || profileEmail?.email || "Unknown"),
+          userMetaMap.set(userId, {
+            email: String(userData.user.email || "Unknown"),
             name: userData.user.user_metadata?.full_name || 
                   userData.user.user_metadata?.name || null,
           });
-        } else {
-          // Fallback to profile email
-          userMap.set(userId, { 
-            email: String(profileEmail?.email || "Unknown"), 
-            name: null 
-          });
         }
       } catch (err) {
-        console.error(`Error fetching user ${userId}:`, err);
-        // Fallback to profile email
-        userMap.set(userId, { 
-          email: String(profileEmail?.email || "Unknown"), 
-          name: null 
-        });
+        // Fallback — profile email already available
       }
     }
 
-    // Get activity stats for each user
-    const { data: notesCounts, error: notesError } = await supabase
-      .from("ai_notes")
-      .select("user_id")
-      .in("user_id", userIds);
+    // 7. Get activity stats
+    const { data: notesCounts } = allUserIds.length > 0
+      ? await supabaseAdmin.from("ai_notes").select("user_id").in("user_id", allUserIds)
+      : { data: [] };
 
-    const { data: attemptsCounts, error: attemptsError } = await supabase
-      .from("user_attempts")
-      .select("user_id")
-      .in("user_id", userIds);
+    const { data: attemptsCounts } = allUserIds.length > 0
+      ? await supabaseAdmin.from("user_attempts").select("user_id").in("user_id", allUserIds)
+      : { data: [] };
 
-    // Get payment information for each user (most recent successful payment)
-    const { data: payments } = await supabase
-      .from("payments")
-      .select("user_id, amount, razorpay_payment_id, created_at, status")
-      .in("user_id", userIds)
-      .eq("status", "completed")
-      .order("created_at", { ascending: false });
+    // 8. Get payment info (most recent completed payment per user)
+    const { data: payments } = allUserIds.length > 0
+      ? await supabaseAdmin
+          .from("payments")
+          .select("user_id, amount, created_at, status")
+          .in("user_id", allUserIds)
+          .eq("status", "completed")
+          .order("created_at", { ascending: false })
+      : { data: [] };
 
-    // Map stats by user
+    // Build maps
     const notesMap = new Map<string, number>();
+    (notesCounts || []).forEach((n) => {
+      notesMap.set(n.user_id, (notesMap.get(n.user_id) || 0) + 1);
+    });
+
     const attemptsMap = new Map<string, number>();
+    (attemptsCounts || []).forEach((a) => {
+      attemptsMap.set(a.user_id, (attemptsMap.get(a.user_id) || 0) + 1);
+    });
+
     const paymentsMap = new Map<string, { amount: number; date: string }>();
+    (payments || []).forEach((p) => {
+      if (!paymentsMap.has(p.user_id)) {
+        paymentsMap.set(p.user_id, { amount: p.amount, date: p.created_at });
+      }
+    });
 
-    if (!notesError && notesCounts) {
-      notesCounts.forEach((note) => {
-        notesMap.set(note.user_id, (notesMap.get(note.user_id) || 0) + 1);
-      });
-    }
+    // 9. Build enriched list — one row per user (using best enrollment if exists)
+    const enrichedEnrollments = allProfiles.map((profile) => {
+      const authMeta = userMetaMap.get(profile.id);
+      const enrollment = enrollmentMap.get(profile.id);
+      const course = enrollment ? courseMap.get(enrollment.course_id) : null;
+      const payment = paymentsMap.get(profile.id);
 
-    if (!attemptsError && attemptsCounts) {
-      attemptsCounts.forEach((attempt) => {
-        attemptsMap.set(attempt.user_id, (attemptsMap.get(attempt.user_id) || 0) + 1);
-      });
-    }
-
-    // Store most recent payment for each user
-    if (payments) {
-      payments.forEach((payment) => {
-        if (!paymentsMap.has(payment.user_id)) {
-          paymentsMap.set(payment.user_id, {
-            amount: payment.amount,
-            date: payment.created_at,
-          });
-        }
-      });
-    }
-
-    // Combine data
-    const enrichedEnrollments = enrollments.map((enrollment) => {
-      const user = userMap.get(enrollment.user_id);
-      const course = courseMap.get(enrollment.course_id);
-      const profile = profileMap.get(enrollment.user_id);
-      const payment = paymentsMap.get(enrollment.user_id);
+      // Determine plan: from enrollment if exists, else from profile, else "free"
+      const plan = enrollment?.plan || profile.subscription_plan || "free";
+      const status = enrollment?.status || (profile.subscription_status === "active" ? "active" : "registered");
 
       return {
-        userId: enrollment.user_id,
-        email: user?.email || "Unknown",
-        name: user?.name || null,
-        courseName: course?.name || "Unknown",
-        courseCode: course?.code || "Unknown",
-        plan: enrollment.plan,
-        status: enrollment.status,
-        userStatus: profile?.status || "active",
-        enrolledAt: enrollment.created_at,
-        validUntil: enrollment.valid_until,
-        totalAttempts: attemptsMap.get(enrollment.user_id) || 0,
-        notesGenerated: notesMap.get(enrollment.user_id) || 0,
+        userId: profile.id,
+        email: authMeta?.email || profile.email || "Unknown",
+        name: authMeta?.name || null,
+        courseName: course?.name || (enrollment ? "Unknown" : "—"),
+        courseCode: course?.code || (enrollment ? "Unknown" : "—"),
+        plan,
+        status,
+        userStatus: profile.status || "active",
+        enrolledAt: enrollment?.created_at || profile.created_at,
+        validUntil: enrollment?.valid_until || profile.subscription_end_date || null,
+        totalAttempts: attemptsMap.get(profile.id) || 0,
+        notesGenerated: notesMap.get(profile.id) || 0,
         paymentAmount: payment?.amount || null,
         paymentDate: payment?.date || null,
       };
