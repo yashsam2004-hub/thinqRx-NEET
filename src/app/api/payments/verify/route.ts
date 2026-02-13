@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { z } from 'zod';
+import Razorpay from 'razorpay';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
@@ -214,8 +215,11 @@ export async function POST(req: NextRequest) {
     // 7. ✅ Signature verified! Proceed with payment processing
     console.log('[Razorpay] ✅ Signature verified successfully');
 
-    // 8. Fetch payment details from database
-    const { data: payment, error: paymentError } = await supabase
+    // CRITICAL: Use admin client for ALL database operations (bypasses RLS)
+    const adminSupabase = createSupabaseAdminClient();
+
+    // 8. Fetch payment details from database using ADMIN client (bypasses RLS)
+    const { data: payment, error: paymentError } = await adminSupabase
       .from('payments')
       .select('*')
       .eq('razorpay_order_id', razorpay_order_id)
@@ -234,63 +238,103 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!payment) {
-      console.error('[Razorpay] Payment record not found in database:', {
-        order_id: razorpay_order_id,
-        user_id: user.id,
-      });
+    // Determine plan details — either from DB payment or from Razorpay order notes
+    let planName: string;
+    let billingCycle: string;
+    let amount: number;
+    let paymentId: string | undefined;
+
+    if (payment) {
+      // Payment record found in DB
+      planName = payment.plan_name;
+      billingCycle = payment.billing_cycle;
+      amount = payment.amount;
+      paymentId = payment.id;
+      console.log('[Razorpay] Found payment record in DB:', { planName, billingCycle, amount });
+    } else {
+      // FALLBACK: Payment record not found — fetch plan details from Razorpay order
+      console.warn('[Razorpay] Payment record NOT found in DB, fetching from Razorpay API');
       
-      // FALLBACK: If payment record not found (DB insert failed during order creation),
-      // create it now using admin client since signature is verified
-      console.log('[Razorpay] Creating missing payment record (fallback)');
-      
-      const adminSupabase = createSupabaseAdminClient();
-      
-      // We don't have all payment details, so we'll need to fetch from Razorpay or use defaults
-      // For now, create a minimal record - this is a workaround for the DB insert issue
-      const { data: createdPayment, error: createError } = await adminSupabase
-        .from('payments')
-        .insert({
+      try {
+        const keyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+        
+        if (!keyId || !keySecret) {
+          throw new Error('Razorpay credentials missing');
+        }
+        
+        const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
+        const order = await razorpay.orders.fetch(razorpay_order_id);
+        
+        // Extract plan details from order notes (set during create-order)
+        const notes = order.notes as Record<string, string> | undefined;
+        planName = (notes?.plan || 'PLUS').toUpperCase();
+        billingCycle = notes?.billing_cycle || 'MONTHLY';
+        amount = Math.round((order.amount as number) / 100); // Razorpay returns paise
+        
+        console.log('[Razorpay] Got plan info from Razorpay order:', { planName, billingCycle, amount, notes });
+        
+        // Create the missing payment record
+        const { data: createdPayment, error: createError } = await adminSupabase
+          .from('payments')
+          .insert({
+            user_id: user.id,
+            razorpay_order_id: razorpay_order_id,
+            razorpay_payment_id: razorpay_payment_id,
+            plan_name: planName,
+            billing_cycle: billingCycle,
+            amount: amount,
+            currency: 'INR',
+            status: 'completed',
+            completed_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+        
+        if (createError) {
+          console.error('[Razorpay] Failed to create fallback payment record:', createError);
+          // Don't return error — still proceed with subscription activation
+        } else {
+          paymentId = createdPayment?.id;
+          console.log('[Razorpay] ✅ Created fallback payment record');
+        }
+      } catch (rzpError: any) {
+        console.error('[Razorpay] Failed to fetch order from Razorpay:', rzpError?.message);
+        // Last resort defaults — at least activate SOMETHING
+        planName = 'PLUS';
+        billingCycle = 'MONTHLY';
+        amount = 0;
+        
+        // Try to create a minimal payment record
+        await adminSupabase.from('payments').insert({
           user_id: user.id,
-          razorpay_order_id: razorpay_order_id,
-          razorpay_payment_id: razorpay_payment_id,
-          plan_name: 'PLUS', // Default - update based on amount if possible
-          billing_cycle: 'MONTHLY', // Default
-          amount: 0, // Will be updated by webhook
+          razorpay_order_id,
+          razorpay_payment_id,
+          plan_name: planName,
+          billing_cycle: billingCycle,
+          amount,
           currency: 'INR',
           status: 'completed',
           completed_at: new Date().toISOString(),
           created_at: new Date().toISOString(),
-        })
-        .select()
-        .single();
-      
-      if (createError || !createdPayment) {
-        console.error('[Razorpay] Failed to create fallback payment record:', createError);
-        return NextResponse.json(
-          { 
-            error: 'Payment record not found',
-            message: 'Payment was successful but database record is missing. Please contact support with your payment ID.',
-            payment_id: razorpay_payment_id,
-          },
-          { status: 404 }
-        );
+        });
       }
-      
-      // Use the created payment record
-      console.log('[Razorpay] ✅ Created fallback payment record');
-      // Continue processing with the created record, but set reasonable defaults
-      // Skip subscription activation in this case - let webhook handle it
-      return NextResponse.json({
-        success: true,
-        message: 'Payment verified (processing subscription)',
-        payment_id: razorpay_payment_id,
-      });
     }
 
     // 9. Check for duplicate processing (idempotency)
-    if (payment.status === 'completed') {
-      console.log('[Razorpay] Payment already processed:', razorpay_payment_id);
+    if (payment?.status === 'completed') {
+      console.log('[Razorpay] Payment already completed, ensuring subscription is active');
+      
+      // ALWAYS ensure subscription is activated even for already-completed payments
+      const validUntil = calculateValidUntil(billingCycle as 'MONTHLY' | 'ANNUAL');
+      await adminSupabase.rpc('update_user_subscription', {
+        p_user_id: user.id,
+        p_plan_name: planName,
+        p_billing_cycle: billingCycle,
+        p_valid_until: validUntil.toISOString(),
+      });
+      
       return NextResponse.json({
         success: true,
         message: 'Payment already processed',
@@ -298,38 +342,34 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 10. Use admin client for privileged operations
-    const adminSupabase = createSupabaseAdminClient();
+    // 10. Update payment record to completed (if we have a record)
+    if (paymentId) {
+      const { error: updatePaymentError } = await adminSupabase
+        .from('payments')
+        .update({
+          razorpay_payment_id,
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', paymentId);
 
-    // 11. Update payment record
-    const { error: updatePaymentError } = await adminSupabase
-      .from('payments')
-      .update({
-        razorpay_payment_id,
-        status: 'completed',
-        completed_at: new Date().toISOString(),
-      })
-      .eq('id', payment.id);
-
-    if (updatePaymentError) {
-      console.error('[Razorpay] Failed to update payment:', updatePaymentError);
-      return NextResponse.json(
-        { error: 'Failed to update payment status' },
-        { status: 500 }
-      );
+      if (updatePaymentError) {
+        console.error('[Razorpay] Failed to update payment:', updatePaymentError);
+        // Don't return error — proceed with subscription activation
+      }
     }
 
-    // 12. Calculate subscription validity
-    const validUntil = calculateValidUntil(payment.billing_cycle as 'MONTHLY' | 'ANNUAL');
+    // 11. Calculate subscription validity
+    const validUntil = calculateValidUntil(billingCycle as 'MONTHLY' | 'ANNUAL');
 
-    // 13. Update subscription using RPC function (bypasses RLS completely with SECURITY DEFINER)
-    console.log('[Razorpay] Attempting to update subscription for user:', user.id);
+    // 12. ALWAYS activate subscription using RPC (SECURITY DEFINER bypasses RLS)
+    console.log('[Razorpay] Activating subscription for user:', user.id, { planName, billingCycle });
     const { error: subscriptionError } = await adminSupabase.rpc(
       'update_user_subscription',
       {
         p_user_id: user.id,
-        p_plan_name: payment.plan_name,
-        p_billing_cycle: payment.billing_cycle,
+        p_plan_name: planName,
+        p_billing_cycle: billingCycle,
         p_valid_until: validUntil.toISOString(),
       }
     );
@@ -342,20 +382,37 @@ export async function POST(req: NextRequest) {
         details: subscriptionError.details,
         hint: subscriptionError.hint,
       });
-      return NextResponse.json(
-        { error: 'Failed to activate subscription', details: subscriptionError.message },
-        { status: 500 }
-      );
+      
+      // FALLBACK: Try direct profile update if RPC fails
+      console.log('[Razorpay] Trying direct profile update as fallback...');
+      const { error: directError } = await adminSupabase
+        .from('profiles')
+        .update({
+          subscription_plan: planName,
+          subscription_status: 'active',
+          subscription_end_date: validUntil.toISOString(),
+          billing_cycle: billingCycle,
+        })
+        .eq('id', user.id);
+      
+      if (directError) {
+        console.error('[Razorpay] Direct profile update also failed:', directError);
+        return NextResponse.json(
+          { error: 'Failed to activate subscription', details: subscriptionError.message },
+          { status: 500 }
+        );
+      }
+      console.log('[Razorpay] ✅ Direct profile update succeeded as fallback');
+    } else {
+      console.log('[Verify] Subscription updated successfully via RPC');
     }
-    
-    console.log('[Verify] Subscription updated successfully via RPC');
 
-    // 14. Success! Log and return
+    // 13. Success! Log and return
     console.log(`[Razorpay] ✅ Payment verified and subscription activated`, {
       user_id: user.id,
       user_email: user.email,
-      plan: payment.plan_name,
-      billing_cycle: payment.billing_cycle,
+      plan: planName,
+      billing_cycle: billingCycle,
       valid_until: validUntil.toISOString(),
       payment_id: razorpay_payment_id,
     });
@@ -364,8 +421,8 @@ export async function POST(req: NextRequest) {
       success: true,
       message: 'Payment verified and subscription activated',
       subscription: {
-        plan: payment.plan_name,
-        billing_cycle: payment.billing_cycle,
+        plan: planName,
+        billing_cycle: billingCycle,
         valid_until: validUntil.toISOString(),
         status: 'active',
       },
