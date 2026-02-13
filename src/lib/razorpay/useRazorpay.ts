@@ -173,31 +173,28 @@ export function useRazorpay(): UseRazorpayReturn {
               throw new Error(errorData.error || 'Payment verification failed');
             }
 
-            const verifyData = await verifyResponse.json();
-            console.log('[Razorpay] Verification response:', verifyData);
-
             // 5. Success!
             console.log('[Razorpay] ✅ Payment verified successfully');
             
-            // 5.5. Force session refresh to update enrollment data
+            // 5.5. Force session and enrollment refresh
             try {
               const supabase = createSupabaseBrowserClient();
-              await supabase.auth.refreshSession();
-              console.log('[Razorpay] Session refreshed - enrollment data should be updated');
+              const { data: refreshData } = await supabase.auth.refreshSession();
+              console.log('[Razorpay] Session refreshed:', !!refreshData.session);
+              
+              // Wait a moment for server-side data to propagate
+              await new Promise(resolve => setTimeout(resolve, 1000));
             } catch (refreshError) {
               console.error('[Razorpay] Session refresh failed (non-critical):', refreshError);
             }
             
-            toast.success('Payment successful! Redirecting to dashboard...', {
+            toast.success('Payment successful! Your subscription is now active.', {
               duration: 3000,
             });
 
-            // 6. Redirect to dashboard with cache bust to force fresh data load
-            setTimeout(() => {
-              console.log('[Razorpay] Redirecting to dashboard...');
-              // Add cache bust parameter and force full reload
-              window.location.href = '/dashboard?payment_success=true&t=' + Date.now();
-            }, 2500);
+            // 6. Immediate redirect with full page reload to clear all cached data
+            console.log('[Razorpay] Redirecting to dashboard...');
+            window.location.replace('/dashboard?upgraded=true&t=' + Date.now());
 
           } catch (verifyError: any) {
             console.error('[Razorpay] Verification failed:', verifyError);

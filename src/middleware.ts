@@ -168,8 +168,12 @@ export async function middleware(request: NextRequest) {
         e.plan === "free" && e.status === "active"
       );
 
+      // Skip payment check if user just completed payment (give time for enrollment to propagate)
+      const justCompletedPayment = request.nextUrl.searchParams.get("payment_success") === "true" ||
+                                    request.nextUrl.searchParams.get("upgraded") === "true";
+
       // If user has Plus/Pro plan intention but no active enrollment, redirect to payment
-      if (!hasPaidPlan && !hasFreePlan && user.email_confirmed_at) {
+      if (!hasPaidPlan && !hasFreePlan && user.email_confirmed_at && !justCompletedPayment) {
         // Check user metadata for selected plan
         const { data: { user: fullUser } } = await supabase.auth.getUser();
         const selectedPlan = fullUser?.user_metadata?.selected_plan;
