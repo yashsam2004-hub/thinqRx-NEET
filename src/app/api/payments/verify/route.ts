@@ -108,7 +108,8 @@ function verifyRazorpaySignature(
 }
 
 /**
- * Calculate subscription validity based on billing cycle
+ * Calculate subscription validity based on plan's validity_days from database
+ * DEPRECATED: Use fetchPlanDetails instead
  */
 function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
   const now = new Date();
@@ -117,6 +118,33 @@ function calculateValidUntil(billingCycle: 'MONTHLY' | 'ANNUAL'): Date {
   } else {
     now.setDate(now.getDate() + 365); // 365 days (1 year)
   }
+  return now;
+}
+
+/**
+ * Fetch plan details from database (single source of truth)
+ */
+async function fetchPlanDetails(planId: string, adminSupabase: any) {
+  const { data: plan, error } = await adminSupabase
+    .from('plans')
+    .select('id, name, price, validity_days')
+    .eq('id', planId)
+    .maybeSingle();
+  
+  if (error || !plan) {
+    console.error('[Razorpay] Failed to fetch plan details:', error);
+    return null;
+  }
+  
+  return plan;
+}
+
+/**
+ * Calculate valid_until date based on plan's validity_days
+ */
+function calculateValidUntilFromDays(validityDays: number): Date {
+  const now = new Date();
+  now.setDate(now.getDate() + validityDays);
   return now;
 }
 
@@ -363,7 +391,13 @@ export async function POST(req: NextRequest) {
       console.log('[Razorpay] Payment already completed, ensuring subscription is active');
       
       // ALWAYS ensure subscription is activated even for already-completed payments
-      const validUntil = calculateValidUntil(billingCycle as 'MONTHLY' | 'ANNUAL');
+      // Fetch plan details from database to get correct validity
+      const planDetails = await fetchPlanDetails(planName.toLowerCase(), adminSupabase);
+      const validityDays = planDetails?.validity_days || 31; // fallback to 31 days
+      const validUntil = calculateValidUntilFromDays(validityDays);
+      
+      console.log('[Razorpay] Using plan validity:', { planName, validityDays, validUntil: validUntil.toISOString() });
+      
       await adminSupabase.rpc('update_user_subscription', {
         p_user_id: user.id,
         p_plan_name: planName,
@@ -395,8 +429,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 11. Calculate subscription validity
-    const validUntil = calculateValidUntil(billingCycle as 'MONTHLY' | 'ANNUAL');
+    // 11. Calculate subscription validity from plans table (single source of truth)
+    const planDetails = await fetchPlanDetails(planName.toLowerCase(), adminSupabase);
+    const validityDays = planDetails?.validity_days || 31; // fallback to 31 days if plan not found
+    const validUntil = calculateValidUntilFromDays(validityDays);
+    
+    console.log('[Razorpay] Calculated validity from plan:', { 
+      planName, 
+      planId: planDetails?.id,
+      validityDays, 
+      validUntil: validUntil.toISOString() 
+    });
 
     // 12. ALWAYS activate subscription using RPC (SECURITY DEFINER bypasses RLS)
     console.log('[Razorpay] Activating subscription for user:', user.id, { planName, billingCycle });
