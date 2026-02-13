@@ -493,7 +493,7 @@ export default function HomePage() {
             <div className="mt-8 text-center">
               <p className="text-slate-600 dark:text-slate-300">
                 Need help?{" "}
-                <a href="mailto:support@thinqrx.com" className="hover:underline font-medium text-[#0F766E] dark:text-teal-400">
+                <a href="mailto:info@thinqrx.in" className="hover:underline font-medium text-[#0F766E] dark:text-teal-400">
                   Contact support
                 </a>
               </p>
@@ -549,10 +549,15 @@ export default function HomePage() {
                 </p>
               </div>
 
-              {/* Links */}
+              {/* Contact */}
               <div>
-                <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">Quick Links</h3>
+                <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">Contact Us</h3>
                 <ul className="space-y-2 text-sm">
+                  <li>
+                    <a href="mailto:info@thinqrx.in" className="hover:underline text-slate-500 dark:text-slate-400">
+                      info@thinqrx.in
+                    </a>
+                  </li>
                   <li>
                     <Link href="/pricing" className="hover:underline text-slate-500 dark:text-slate-400">
                       Pricing
@@ -562,11 +567,6 @@ export default function HomePage() {
                     <Link href="/about" className="hover:underline text-slate-500 dark:text-slate-400">
                       About Us
                     </Link>
-                  </li>
-                  <li>
-                    <a href="mailto:support@thinqrx.com" className="hover:underline text-slate-500 dark:text-slate-400">
-                      Contact Support
-                    </a>
                   </li>
                 </ul>
               </div>
