@@ -135,8 +135,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`[CreateOrder] Order created: ${order.id}, ₹${amountInINR}`);
 
-    // 10. Store pending payment
-    const { error: dbError } = await supabase
+    // 10. Store pending payment using ADMIN client (bypasses RLS to ensure record is created)
+    const { error: dbError } = await adminSupabase
       .from('payments')
       .insert({
         user_id: user.id,
@@ -154,6 +154,20 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error('[CreateOrder] DB insert failed (non-fatal):', dbError.message);
+      // FALLBACK: Try with regular client if admin fails for any reason
+      await supabase.from('payments').insert({
+        user_id: user.id,
+        razorpay_order_id: order.id,
+        plan_name: plan.id.toUpperCase(),
+        billing_cycle: cycle,
+        amount: amountInINR,
+        currency: 'INR',
+        status: 'pending',
+        created_at: new Date().toISOString(),
+        razorpay_payment_id: null,
+        completed_at: null,
+        notes: null,
+      });
     }
 
     // 11. Return order details

@@ -193,23 +193,59 @@ export async function POST(req: NextRequest) {
     );
 
     if (!isValid) {
-      // Log failed verification attempt (security audit)
-      console.error('[Razorpay] ❌ SIGNATURE VERIFICATION FAILED', {
+      // Signature failed — but payment may be genuine. 
+      // FALLBACK: Verify directly with Razorpay API before rejecting.
+      console.warn('[Razorpay] ⚠️ Signature verification failed, checking with Razorpay API...', {
         user_id: user.id,
         user_email: user.email,
         order_id: razorpay_order_id,
         payment_id: razorpay_payment_id,
-        timestamp: new Date().toISOString(),
       });
 
-      return NextResponse.json(
-        { 
-          error: 'Payment verification failed', 
-          message: 'Signature mismatch. Please contact support if payment was deducted.',
-          details: 'Invalid signature - possible tampering detected'
-        },
-        { status: 400 }
-      );
+      try {
+        const rzpKeyId = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+        if (!rzpKeyId) throw new Error('Missing RAZORPAY_KEY_ID');
+        
+        const razorpay = new Razorpay({ key_id: rzpKeyId, key_secret: keySecret });
+        const rzpPayment = await razorpay.payments.fetch(razorpay_payment_id);
+        
+        console.log('[Razorpay] API payment status:', {
+          id: rzpPayment.id,
+          status: rzpPayment.status,
+          order_id: rzpPayment.order_id,
+          amount: rzpPayment.amount,
+          captured: rzpPayment.status === 'captured',
+        });
+
+        // Only proceed if payment is actually captured AND matches our order
+        if (rzpPayment.status === 'captured' && rzpPayment.order_id === razorpay_order_id) {
+          console.log('[Razorpay] ✅ Payment confirmed via API fallback — proceeding with activation');
+          // Continue to the normal activation flow below
+        } else {
+          console.error('[Razorpay] ❌ Payment NOT captured or order mismatch via API', {
+            status: rzpPayment.status,
+            orderMatch: rzpPayment.order_id === razorpay_order_id,
+          });
+          return NextResponse.json(
+            { 
+              error: 'Payment verification failed', 
+              message: 'Payment not captured. Please contact support if payment was deducted.',
+              payment_id: razorpay_payment_id,
+            },
+            { status: 400 }
+          );
+        }
+      } catch (apiError: any) {
+        console.error('[Razorpay] ❌ Both signature and API verification failed:', apiError?.message);
+        return NextResponse.json(
+          { 
+            error: 'Payment verification failed', 
+            message: 'Could not verify payment. Please contact support with your payment ID.',
+            payment_id: razorpay_payment_id,
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // 7. ✅ Signature verified! Proceed with payment processing
