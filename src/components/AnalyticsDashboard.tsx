@@ -121,16 +121,16 @@ export default function AnalyticsDashboard() {
               </svg>
             </div>
             <h1 className="text-4xl font-bold text-slate-900 mb-4">
-              Pro Feature
+              Premium Feature
             </h1>
             <p className="text-xl text-slate-600 mb-8">
-              AI-powered analytics is available exclusively for Pro members
+              Advanced analytics require a premium plan. Choose the plan that fits your needs.
             </p>
             <Link
-              href="/upgrade"
+              href="/pricing"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white font-semibold rounded-xl shadow-lg transition-all"
             >
-              Upgrade Now
+              View Plans
               <svg
                 className="h-5 w-5"
                 fill="none"

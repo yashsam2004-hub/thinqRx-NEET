@@ -20,7 +20,12 @@ import {
   TrendingUp,
   Ban,
   CheckCircle,
-  IndianRupee
+  IndianRupee,
+  Target,
+  Rocket,
+  Sparkles,
+  Zap,
+  Crown
 } from "lucide-react";
 
 // Block User Button Component
@@ -92,6 +97,13 @@ interface Course {
   code: string;
 }
 
+interface Plan {
+  id: string;
+  name: string;
+  price: number;
+  plan_category: string;
+}
+
 interface UserEnrollment {
   userId: string;
   email: string;
@@ -112,6 +124,7 @@ interface UserEnrollment {
 export default function AdminUsersPage() {
   const [enrollments, setEnrollments] = React.useState<UserEnrollment[]>([]);
   const [courses, setCourses] = React.useState<Course[]>([]);
+  const [plans, setPlans] = React.useState<Plan[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCourse, setSelectedCourse] = React.useState<string>("all");
@@ -132,6 +145,22 @@ export default function AdminUsersPage() {
       }
     };
     loadCourses();
+  }, []);
+
+  // Load plans
+  React.useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        const res = await fetch("/api/pricing");
+        if (res.ok) {
+          const data = await res.json();
+          setPlans(data.plans || []);
+        }
+      } catch (error) {
+        toast.error("Failed to load plans");
+      }
+    };
+    loadPlans();
   }, []);
 
   // Load enrollments
@@ -232,16 +261,84 @@ export default function AdminUsersPage() {
     });
   }, [enrollments, searchQuery, selectedCourse, selectedPlan, selectedStatus, courses]);
 
-  // Statistics
+  // Statistics - dynamically compute based on actual plans
   const stats = React.useMemo(() => {
-    return {
+    const base: { total: number; active: number; [key: string]: number } = {
       total: filteredEnrollments.length,
       active: filteredEnrollments.filter((e) => e.status === "active").length,
-      free: filteredEnrollments.filter((e) => e.plan === "free").length,
-      plus: filteredEnrollments.filter((e) => e.plan === "plus").length,
-      pro: filteredEnrollments.filter((e) => e.plan === "pro").length,
     };
-  }, [filteredEnrollments]);
+    
+    // Compute counts for each plan dynamically
+    plans.forEach((plan) => {
+      base[plan.id] = filteredEnrollments.filter((e) => e.plan === plan.id).length;
+    });
+    
+    return base;
+  }, [filteredEnrollments, plans]);
+
+  const getPlanIcon = (planId: string) => {
+    const icons: Record<string, any> = {
+      'free': Sparkles,
+      'plus': Zap,
+      'pro': Crown,
+      'gpat_last_minute': Target,
+      'gpat_2027_full': Rocket,
+    };
+    return icons[planId] || Award;
+  };
+
+  const getPlanCardStyle = (planId: string) => {
+    const styles: Record<string, { border: string; bg: string; iconBg: string; iconColor: string; textColor: string; boldColor: string }> = {
+      'free': { 
+        border: 'border-2', 
+        bg: '', 
+        iconBg: 'bg-slate-100', 
+        iconColor: 'text-slate-600',
+        textColor: 'text-slate-600',
+        boldColor: 'text-slate-900'
+      },
+      'plus': { 
+        border: 'border-2 border-blue-200', 
+        bg: 'bg-blue-50', 
+        iconBg: 'bg-blue-100', 
+        iconColor: 'text-blue-600',
+        textColor: 'text-blue-700',
+        boldColor: 'text-blue-900'
+      },
+      'pro': { 
+        border: 'border-2 border-purple-200', 
+        bg: 'bg-purple-50', 
+        iconBg: 'bg-purple-100', 
+        iconColor: 'text-purple-600',
+        textColor: 'text-purple-700',
+        boldColor: 'text-purple-900'
+      },
+      'gpat_last_minute': { 
+        border: 'border-2 border-indigo-200', 
+        bg: 'bg-indigo-50', 
+        iconBg: 'bg-indigo-100', 
+        iconColor: 'text-indigo-600',
+        textColor: 'text-indigo-700',
+        boldColor: 'text-indigo-900'
+      },
+      'gpat_2027_full': { 
+        border: 'border-2 border-pink-200', 
+        bg: 'bg-pink-50', 
+        iconBg: 'bg-pink-100', 
+        iconColor: 'text-pink-600',
+        textColor: 'text-pink-700',
+        boldColor: 'text-pink-900'
+      },
+    };
+    return styles[planId] || { 
+      border: 'border-2', 
+      bg: '', 
+      iconBg: 'bg-gray-100', 
+      iconColor: 'text-gray-600',
+      textColor: 'text-gray-600',
+      boldColor: 'text-gray-900'
+    };
+  };
 
   const getPlanBadgeColor = (plan: string) => {
     switch (plan.toLowerCase()) {
@@ -251,6 +348,10 @@ export default function AdminUsersPage() {
         return "bg-blue-100 text-blue-700 border-blue-200";
       case "free":
         return "bg-slate-100 text-slate-700 border-slate-200";
+      case "gpat_last_minute":
+        return "bg-indigo-100 text-indigo-700 border-indigo-200";
+      case "gpat_2027_full":
+        return "bg-pink-100 text-pink-700 border-pink-200";
       default:
         return "bg-gray-100 text-gray-700 border-gray-200";
     }
@@ -341,41 +442,25 @@ export default function AdminUsersPage() {
           </div>
         </Card>
 
-        <Card className="p-4 border-2">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-slate-100 p-2">
-              <BookOpen className="h-5 w-5 text-slate-600" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-600">Free</p>
-              <p className="text-2xl font-bold text-slate-900">{stats.free}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 border-2 border-blue-200 bg-blue-50">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-blue-100 p-2">
-              <Award className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm text-blue-700">Plus</p>
-              <p className="text-2xl font-bold text-blue-900">{stats.plus}</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-4 border-2 border-purple-200 bg-purple-50">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-purple-100 p-2">
-              <Award className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm text-purple-700">Pro</p>
-              <p className="text-2xl font-bold text-purple-900">{stats.pro}</p>
-            </div>
-          </div>
-        </Card>
+        {plans.map((plan) => {
+          const Icon = getPlanIcon(plan.id);
+          const style = getPlanCardStyle(plan.id);
+          const count = stats[plan.id] || 0;
+          
+          return (
+            <Card key={plan.id} className={`p-4 ${style.border} ${style.bg}`}>
+              <div className="flex items-center gap-3">
+                <div className={`rounded-full ${style.iconBg} p-2`}>
+                  <Icon className={`h-5 w-5 ${style.iconColor}`} />
+                </div>
+                <div>
+                  <p className={`text-sm ${style.textColor} capitalize`}>{plan.name}</p>
+                  <p className={`text-2xl font-bold ${style.boldColor}`}>{count}</p>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Filters */}
@@ -424,9 +509,11 @@ export default function AdminUsersPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Plans</SelectItem>
-                <SelectItem value="free">Free</SelectItem>
-                <SelectItem value="plus">Plus</SelectItem>
-                <SelectItem value="pro">Pro</SelectItem>
+                {plans.map((plan) => (
+                  <SelectItem key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

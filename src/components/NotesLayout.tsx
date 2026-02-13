@@ -365,16 +365,10 @@ export default function NotesLayout({
                   {/* Rate limit actions */}
                   {error.includes("limit") && (
                     <div className="mt-4 flex gap-3">
-                      <Link href="/upgrade">
-                        <Button size="sm" className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 flex items-center gap-2">
+                      <Link href="/pricing">
+                        <Button size="sm" className="bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 flex items-center gap-2">
                           <Crown className="h-4 w-4" />
-                          Upgrade to Plus
-                        </Button>
-                      </Link>
-                      <Link href="/upgrade">
-                        <Button size="sm" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex items-center gap-2">
-                          <Zap className="h-4 w-4" />
-                          Upgrade to Pro
+                          View Plans
                         </Button>
                       </Link>
                     </div>
@@ -408,119 +402,20 @@ export default function NotesLayout({
                   {/* CTA Section */}
                   <div className="text-center mb-8">
                     <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-                      Choose your plan and complete payment to unlock all features
+                      Choose your plan to unlock premium AI-powered study notes
                     </p>
-                    <Link href="/upgrade">
+                    <Link href="/pricing">
                       <Button size="lg" className="bg-gradient-to-r from-teal-600 to-amber-600 hover:from-teal-700 hover:to-amber-700 text-white font-bold px-12 py-6 text-lg shadow-2xl hover:shadow-amber-500/25">
-                        Upgrade Now & Pay
+                        View All Plans
                       </Button>
                     </Link>
                   </div>
 
                   {/* Or view detailed plans */}
                   <div className="text-center mb-6">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">Or view detailed plan comparison below</p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6 mb-8">
-                    {/* Plus Plan */}
-                    <Card className="p-6 border-2 border-teal-200 hover:border-teal-400 transition-all hover:shadow-lg bg-white">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 rounded-lg bg-teal-100">
-                          <Zap className="h-6 w-6 text-teal-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900">Plus Plan</h3>
-                          <p className="text-teal-600 font-semibold">₹199/month</p>
-                        </div>
-                      </div>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center">
-                            <span className="text-teal-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Unlimited AI-powered notes</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center">
-                            <span className="text-teal-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Practice tests with feedback</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center">
-                            <span className="text-teal-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">All GPAT topics covered</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-teal-100 flex items-center justify-center">
-                            <span className="text-teal-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Progress tracking</span>
-                        </li>
-                      </ul>
-                      <Link href="/upgrade" className="block mt-6">
-                        <Button size="lg" className="w-full bg-gradient-to-r from-teal-600 to-teal-500 hover:from-teal-700 hover:to-teal-600 text-white font-bold shadow-xl py-6">
-                          Choose Plus → Pay ₹199
-                        </Button>
-                      </Link>
-                    </Card>
-
-                    {/* Pro Plan - Most Popular */}
-                    <Card className="p-6 border-2 border-amber-300 hover:border-amber-400 transition-all hover:shadow-xl bg-gradient-to-br from-amber-50 to-white relative overflow-hidden">
-                      {/* Popular Badge */}
-                      <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                        MOST POPULAR
-                      </div>
-                      
-                      <div className="flex items-center gap-3 mb-4 mt-2">
-                        <div className="p-2 rounded-lg bg-gradient-to-br from-amber-100 to-amber-200">
-                          <Crown className="h-6 w-6 text-amber-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-slate-900">Pro Plan</h3>
-                          <p className="text-amber-600 font-semibold">₹499/month</p>
-                        </div>
-                      </div>
-                      <ul className="space-y-3">
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
-                            <span className="text-amber-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700 font-medium">Everything in Plus, plus:</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
-                            <span className="text-amber-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Full-length mock tests (125 questions)</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
-                            <span className="text-amber-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Detailed analytics & insights</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
-                            <span className="text-amber-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Priority support</span>
-                        </li>
-                        <li className="flex items-start gap-2 text-sm">
-                          <div className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center">
-                            <span className="text-amber-600 text-xs">✓</span>
-                          </div>
-                          <span className="text-slate-700">Early access to new features</span>
-                        </li>
-                      </ul>
-                      <Link href="/upgrade" className="block mt-6">
-                        <Button size="lg" className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-bold shadow-xl py-6 animate-pulse">
-                          Choose Pro → Pay ₹499
-                        </Button>
-                      </Link>
-                    </Card>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      All plans include AI-powered study notes, practice tests, and performance tracking
+                    </p>
                   </div>
 
                   {/* Trust Indicators */}
