@@ -64,21 +64,9 @@ export async function POST(req: NextRequest) {
     }
 
     // 5. Calculate amount from DB price
-    // For subscription plans, support annual billing (20% discount)
-    // For exam packs (one_time), use the price directly
-    let amountInINR: number;
-    const cycle = billingCycle.toUpperCase();
-
-    if (plan.plan_category === 'exam_pack' || cycle === 'ONE_TIME') {
-      // Exam packs: flat price, no billing cycle
-      amountInINR = plan.price;
-    } else if (cycle === 'ANNUAL') {
-      amountInINR = Math.round(plan.price * 12 * 0.8); // 20% annual discount
-    } else {
-      // MONTHLY
-      amountInINR = plan.price;
-    }
-
+    // All plans are one-time payments with validity set by admin
+    const amountInINR = plan.price;
+    const cycle = 'ONE_TIME'; // All plans are one-time purchase
     const amountInPaise = amountInINR * 100;
 
     // 6. Validate environment variables

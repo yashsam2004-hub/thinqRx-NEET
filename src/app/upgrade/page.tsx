@@ -140,16 +140,9 @@ export default function UpgradePage() {
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId);
 
-  // Determine billing cycle: exam_packs are one-time, subscriptions are monthly/annual
-  const isExamPack = selectedPlan?.plan_category === "exam_pack";
-  const [billingCycle, setBillingCycle] = React.useState<"monthly" | "annual">("monthly");
-
   const getDisplayPrice = () => {
     if (!selectedPlan) return 0;
-    if (isExamPack) return selectedPlan.price;
-    return billingCycle === "annual"
-      ? Math.round(selectedPlan.price * 12 * 0.8)
-      : selectedPlan.price;
+    return selectedPlan.price;
   };
 
   const handleProceedToPayment = async () => {
@@ -171,8 +164,8 @@ export default function UpgradePage() {
 
     try {
       await initiatePayment({
-        planId: selectedPlan.id.toUpperCase(),
-        billingCycle: isExamPack ? "ONE_TIME" : billingCycle.toUpperCase(),
+        planId: selectedPlan.id,
+        billingCycle: "ONE_TIME",
         userEmail: user.email,
         userName: user.user_metadata?.full_name || user.email?.split("@")[0],
       });
@@ -284,10 +277,10 @@ export default function UpgradePage() {
               </div>
             )}
 
-            {/* Monthly Subscription Plans */}
+            {/* Subscription Plans */}
             {subscriptions.length > 0 && (
               <div className="mb-8">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Monthly Subscriptions</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Subscription Plans</h2>
                 <div className="space-y-3">
                   {subscriptions.filter((p) => p.price > 0).map((plan) => {
                     const isOwned = currentPlan === plan.id;
@@ -311,7 +304,7 @@ export default function UpgradePage() {
                           <div className="flex items-center gap-2 mb-1 flex-wrap">
                             <span className="font-bold text-lg text-slate-900 dark:text-white">{plan.name}</span>
                             <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-0">
-                              ₹{plan.price}/month
+                              ₹{plan.price}
                             </Badge>
                             {plan.id === "pro" && (
                               <Badge className="bg-gradient-to-r from-amber-500 to-amber-600 text-white text-xs border-0">
@@ -345,45 +338,6 @@ export default function UpgradePage() {
               </div>
             )}
 
-            {/* Billing Cycle (only for subscription plans) */}
-            {selectedPlan && !isExamPack && (
-              <div className="mb-6">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Billing Cycle</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setBillingCycle("monthly")}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
-                      billingCycle === "monthly"
-                        ? "border-teal-500 bg-teal-50 dark:bg-teal-950/30 shadow-md"
-                        : "border-slate-200 dark:border-slate-700 hover:border-teal-300"
-                    }`}
-                  >
-                    <div className="font-bold text-slate-900 dark:text-white">Monthly</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-300">₹{selectedPlan.price}/month</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setBillingCycle("annual")}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
-                      billingCycle === "annual"
-                        ? "border-green-500 bg-green-50 dark:bg-green-950/30 shadow-md"
-                        : "border-slate-200 dark:border-slate-700 hover:border-green-300"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-900 dark:text-white">Annual</span>
-                      <Badge className="bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-xs border-0">
-                        Save 20%
-                      </Badge>
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-300">
-                      ₹{Math.round(selectedPlan.price * 12 * 0.8)}/year
-                    </div>
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* Payment Button */}
             <Button
@@ -425,21 +379,10 @@ export default function UpgradePage() {
                     <span className="font-bold text-slate-900 dark:text-white">{selectedPlan.name}</span>
                   </div>
 
-                  {!isExamPack && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-600 dark:text-slate-300">Billing</span>
-                      <span className="font-semibold text-slate-900 dark:text-white capitalize">{billingCycle}</span>
-                    </div>
-                  )}
-
-                  {!isExamPack && billingCycle === "annual" && (
-                    <div className="flex items-center justify-between text-green-600 dark:text-green-400">
-                      <span>Savings</span>
-                      <span className="font-semibold">
-                        ₹{selectedPlan.price * 12 - Math.round(selectedPlan.price * 12 * 0.8)}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 dark:text-slate-300">Validity</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">{formatValidity(selectedPlan.validity_days)}</span>
+                  </div>
 
                   <div className="pt-4 border-t-2 border-slate-200 dark:border-slate-700">
                     <div className="flex items-center justify-between">
@@ -449,7 +392,7 @@ export default function UpgradePage() {
                       </span>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 text-right">
-                      {isExamPack ? "One-time payment" : billingCycle === "annual" ? "Billed annually" : "Billed monthly"}
+                      One-time payment
                     </p>
                   </div>
                 </div>
@@ -484,7 +427,7 @@ export default function UpgradePage() {
                   <Link href="/pricing">
                     <Button variant="outline" size="sm">Compare Plans</Button>
                   </Link>
-                  <a href="mailto:support@thinqrx.com">
+                  <a href="mailto:info@thinqrx.in">
                     <Button variant="outline" size="sm">Contact Support</Button>
                   </a>
                 </div>

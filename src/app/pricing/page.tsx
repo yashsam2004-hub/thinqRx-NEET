@@ -192,10 +192,10 @@ export default async function PricingPage() {
         {subscriptionPlans.length > 0 && (
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2 text-center">
-              📚 Monthly Subscription Plans
+              📚 Subscription Plans
             </h2>
             <p className="text-center text-slate-600 dark:text-slate-300 mb-8">
-              Flexible monthly options for continuous learning
+              Flexible options for continuous learning
             </p>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3 max-w-7xl mx-auto">
               {subscriptionPlans.map((plan) => {
@@ -221,7 +221,6 @@ export default async function PricingPage() {
                     <div className="mb-6">
                       <div className="flex items-baseline gap-2 mb-2">
                         <span className="text-5xl font-extrabold text-slate-900 dark:text-white">₹{plan.price}</span>
-                        {plan.price > 0 && <span className="ml-1 text-sm text-slate-600 dark:text-slate-300">/month</span>}
                       </div>
                       <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-950/30 px-2 py-1 rounded mb-2">
                         ✓ {formatValidity(plan.validity_days)}

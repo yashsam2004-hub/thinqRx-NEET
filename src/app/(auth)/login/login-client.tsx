@@ -80,29 +80,35 @@ export function LoginClient() {
     e.preventDefault();
     setLoading(true);
     try {
-      const supabase = createSupabaseBrowserClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      // Call login API with device limit enforcement
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
-      if (error) {
-        toast.error(error.message);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle device limit error specifically
+        if (data.error === 'device_limit_exceeded') {
+          toast.error(data.message || 'Maximum 2 devices allowed. Please contact support at info@thinqrx.in to reset your devices.', { 
+            duration: 10000 
+          });
+        } else {
+          toast.error(data.error || data.message || 'Login failed');
+        }
         return;
       }
+
+      // Login successful
+      // Best-effort: if this email is allowlisted, sync profiles.role='admin' server-side
+      await fetch("/api/auth/sync-admin", { method: "POST" }).catch(() => {});
       
-      // Wait for session to be established
-      if (data.session) {
-        // Best-effort: if this email is allowlisted, sync profiles.role='admin' server-side.
-        await fetch("/api/auth/sync-admin", { method: "POST" }).catch(() => {});
-        
-        // PERFORMANCE FIX: Removed artificial 300ms delay
-        // Session cookies are set synchronously, no delay needed
-        
-        toast.success("Welcome back!");
-        
-        // Use window.location for full page reload to ensure clean state
-        window.location.href = next;
-      }
+      toast.success("Welcome back!");
+      
+      // Use window.location for full page reload to ensure clean state
+      window.location.href = next;
     } catch (err) {
       console.error("Login error:", err);
       toast.error("An error occurred during login");

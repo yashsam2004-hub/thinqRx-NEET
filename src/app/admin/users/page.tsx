@@ -25,7 +25,8 @@ import {
   Rocket,
   Sparkles,
   Zap,
-  Crown
+  Crown,
+  Smartphone
 } from "lucide-react";
 
 // Block User Button Component
@@ -87,6 +88,54 @@ function BlockUserButton({ userId, userEmail, currentStatus, onStatusChange }: {
           Block
         </>
       )}
+    </Button>
+  );
+}
+
+// Reset Devices Button Component
+function ResetDevicesButton({ userId, userEmail }: {
+  userId: string;
+  userEmail: string;
+}) {
+  const [loading, setLoading] = React.useState(false);
+  
+  const handleResetDevices = async () => {
+    const confirmMessage = `Are you sure you want to reset all devices for ${userEmail}? They will need to login again on all devices.`;
+    
+    if (!confirm(confirmMessage)) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/reset-devices`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        toast.success(data.message || "Devices reset successfully");
+      } else {
+        toast.error(data.error || "Failed to reset devices");
+      }
+    } catch (error) {
+      toast.error("Failed to reset devices");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <Button
+      onClick={handleResetDevices}
+      disabled={loading}
+      size="sm"
+      variant="outline"
+      className="gap-2"
+      title="Reset all registered devices for this user"
+    >
+      <Smartphone className="h-3 w-3" />
+      Reset Devices
     </Button>
   );
 }
@@ -654,12 +703,18 @@ export default function AdminUsersPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <BlockUserButton 
-                        userId={enrollment.userId}
-                        userEmail={enrollment.email}
-                        currentStatus={enrollment.userStatus || 'active'}
-                        onStatusChange={() => loadEnrollments()}
-                      />
+                      <div className="flex flex-col gap-2">
+                        <BlockUserButton 
+                          userId={enrollment.userId}
+                          userEmail={enrollment.email}
+                          currentStatus={enrollment.userStatus || 'active'}
+                          onStatusChange={() => loadEnrollments()}
+                        />
+                        <ResetDevicesButton
+                          userId={enrollment.userId}
+                          userEmail={enrollment.email}
+                        />
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2 text-sm text-slate-600">
