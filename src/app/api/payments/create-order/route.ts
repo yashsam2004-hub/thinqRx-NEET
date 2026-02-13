@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       .insert({
         user_id: user.id,
         razorpay_order_id: order.id,
-        plan_name: plan.id.toUpperCase(),
+        plan_name: plan.id,  // Store plan ID as-is (no case conversion)
         billing_cycle: cycle,
         amount: amountInINR,
         currency: 'INR',
@@ -158,7 +158,7 @@ export async function POST(req: NextRequest) {
       await supabase.from('payments').insert({
         user_id: user.id,
         razorpay_order_id: order.id,
-        plan_name: plan.id.toUpperCase(),
+        plan_name: plan.id,  // Store plan ID as-is (no case conversion)
         billing_cycle: cycle,
         amount: amountInINR,
         currency: 'INR',

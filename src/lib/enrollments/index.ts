@@ -121,14 +121,16 @@ export async function getUserPlan(
 }
 
 /**
- * Check if user can access premium content (Plus/Pro plans)
+ * Check if user can access premium content (any paid plan)
+ * Includes: plus, pro, and all exam packs
  */
 export async function canAccessPremiumContent(
   userId: string,
   courseId: string
 ): Promise<boolean> {
   const plan = await getUserPlan(userId, courseId);
-  return plan === "plus" || plan === "pro";
+  // Any plan except "free" grants premium access
+  return plan !== "free";
 }
 
 /**
