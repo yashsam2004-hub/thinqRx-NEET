@@ -164,8 +164,8 @@ export async function POST(req: NextRequest) {
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = validation.data;
 
-    // 3. CRITICAL: Validate all required data is present and non-empty
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    // 3. CRITICAL: Validate order ID and payment ID (signature can be empty for QR/UPI payments)
+    if (!razorpay_order_id || !razorpay_payment_id) {
       console.error('[Razorpay] Missing verification data', {
         hasOrderId: !!razorpay_order_id,
         hasPaymentId: !!razorpay_payment_id,
@@ -175,6 +175,11 @@ export async function POST(req: NextRequest) {
         { error: 'Missing payment verification data. Please try again or contact support.' },
         { status: 400 }
       );
+    }
+
+    // Log if signature is missing (QR/UPI payment flow)
+    if (!razorpay_signature) {
+      console.log('[Razorpay] No signature provided - will use API fallback for QR/UPI payment');
     }
 
     // 4. CRITICAL: Validate environment variable - MUST use RAZORPAY_KEY_SECRET
