@@ -84,8 +84,8 @@ async function testOpenAI() {
       ],
       response_format: { type: 'json_object' },
       ...(model.startsWith('gpt-5') 
-        ? { max_completion_tokens: 50 } 
-        : { max_tokens: 50 }),
+        ? { max_completion_tokens: 50 } // GPT-5: no temperature, use max_completion_tokens
+        : { max_tokens: 50, temperature: 0.7 }), // Other models: support temperature and max_tokens
     });
     
     console.log('   ✅ Completion successful!');

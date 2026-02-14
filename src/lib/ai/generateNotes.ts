@@ -72,14 +72,18 @@ export async function generateNotes(params: {
         { role: "user", content: prompt },
       ],
       response_format: { type: "json_object" },
-      temperature: 0.7, // Slightly more creative for revision notes
     };
     
-    // Add max tokens parameter based on model
+    // Add parameters based on model
     if (isGPT5) {
+      // GPT-5 models only support default temperature (1)
+      // Do not set temperature parameter
       completionParams.max_completion_tokens = 16000; // GPT-5 supports up to 128K output tokens
+    } else {
+      // Other models support custom temperature
+      completionParams.temperature = 0.7; // Slightly more creative for revision notes
     }
-    // For other models, we let OpenAI decide the output length
+    // For non-GPT-5 models, we let OpenAI decide the output length
     
     completion = await Promise.race([
       client.chat.completions.create(completionParams),
@@ -144,12 +148,15 @@ export async function generateNotes(params: {
             { role: "user", content: fallbackPrompt },
           ],
           response_format: { type: "json_object" },
-          temperature: 0.7,
         };
         
-        // Add appropriate max tokens for fallback
+        // Add appropriate parameters for fallback
         if (isGPT5) {
+          // GPT-5 only supports default temperature
           fallbackParams.max_completion_tokens = 16000;
+        } else {
+          // Other models support custom temperature
+          fallbackParams.temperature = 0.7;
         }
         
         completion = await Promise.race([
