@@ -91,9 +91,14 @@ isPaid: boolean // True for any paid plan (not free)
   - Mock Test Access (checkbox)
   - Premium Content Access (checkbox)
   - Regenerate Notes (checkbox)
-- Access summary card showing current limits
+  - Explanations Type (dropdown: none/partial/full)
+  - Analytics Type (dropdown: none/basic/advanced)
+  - "Best For" display text (custom text)
+  - Validity display text (optional override)
+- Live pricing page preview showing how features will display
+- Enhanced access summary showing all feature settings
 - Info guide explaining access rules
-- Changes take effect immediately after saving
+- Changes take effect immediately after saving and appear on pricing page
 
 ### 8. Admin API Cache Clearing (`src/app/api/admin/plans/route.ts`)
 
@@ -162,11 +167,13 @@ The `plans` table `features` JSONB column now controls access:
 ## Benefits
 
 1. **No Hardcoding**: All plan logic driven by database
-2. **Admin Control**: Change limits without code deployment
+2. **Admin Control**: Change limits AND pricing page display without code deployment
 3. **Scalable**: Add new plans without touching code
 4. **Maintainable**: Single source of truth for plan features
 5. **Fast**: 5-minute cache prevents excessive DB queries
 6. **Flexible**: Supports any plan configuration
+7. **Live Preview**: See exactly how features will appear on pricing page
+8. **Professional Display**: Auto-formatted with icons and emojis
 
 ## Files Changed
 
@@ -179,8 +186,9 @@ The `plans` table `features` JSONB column now controls access:
 - `src/app/mock-tests/page.tsx` - Dynamic mock test access
 - `src/lib/enrollments/index.ts` - Dynamic premium checks
 - `src/components/PremiumGuard.tsx` - Broader plan support
-- `src/app/admin/plans/page.tsx` - Enhanced features editor
+- `src/app/admin/plans/page.tsx` - Enhanced features editor with display settings
 - `src/app/api/admin/plans/route.ts` - Cache clearing
+- `src/lib/plans.ts` - Dynamic feature list generation with icons
 
 ## Migration Notes
 

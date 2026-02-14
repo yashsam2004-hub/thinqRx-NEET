@@ -14,7 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Save, X, Edit, Eye, EyeOff, Info } from "lucide-react";
+import { ArrowLeft, Save, X, Edit, Eye, EyeOff, Info, Sparkles } from "lucide-react";
+import { getFeaturesList } from "@/lib/plans";
 import Link from "next/link";
 
 interface Plan {
@@ -353,6 +354,92 @@ export default function AdminPlansPage() {
                         </Label>
                       </div>
                     </div>
+
+                    {/* Display Text Editor */}
+                    <div className="border-t pt-6 mt-6">
+                      <Label className="text-base font-semibold mb-4">Pricing Page Display</Label>
+                      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                        Customize how this plan appears on the pricing page
+                      </p>
+
+                      <div className="grid gap-4">
+                        <div>
+                          <Label className="text-sm">Explanations Type</Label>
+                          <select
+                            value={editForm.features?.explanations || 'none'}
+                            onChange={(e) => setEditForm({ 
+                              ...editForm, 
+                              features: { 
+                                ...editForm.features, 
+                                explanations: e.target.value 
+                              } 
+                            })}
+                            className="mt-2 w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm"
+                          >
+                            <option value="none">None</option>
+                            <option value="partial">Partial</option>
+                            <option value="full">Full & Detailed</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm">Analytics Type</Label>
+                          <select
+                            value={editForm.features?.analytics || 'none'}
+                            onChange={(e) => setEditForm({ 
+                              ...editForm, 
+                              features: { 
+                                ...editForm.features, 
+                                analytics: e.target.value 
+                              } 
+                            })}
+                            className="mt-2 w-full rounded-md border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2 text-sm"
+                          >
+                            <option value="none">None</option>
+                            <option value="basic">Basic</option>
+                            <option value="advanced">Advanced</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm">"Best For" Display Text</Label>
+                          <Input
+                            value={editForm.features?.best_for || ''}
+                            onChange={(e) => setEditForm({ 
+                              ...editForm, 
+                              features: { 
+                                ...editForm.features, 
+                                best_for: e.target.value 
+                              } 
+                            })}
+                            className="mt-2"
+                            placeholder="e.g., Students with 2-3 months left for GPAT"
+                          />
+                          <p className="text-xs text-slate-500 mt-1">
+                            Shows as "✅ Best for: [your text]" on pricing cards
+                          </p>
+                        </div>
+
+                        <div>
+                          <Label className="text-sm">Validity Display Text (optional)</Label>
+                          <Input
+                            value={editForm.features?.validity || ''}
+                            onChange={(e) => setEditForm({ 
+                              ...editForm, 
+                              features: { 
+                                ...editForm.features, 
+                                validity: e.target.value 
+                              } 
+                            })}
+                            className="mt-2"
+                            placeholder="Auto-generated from validity_days if empty"
+                          />
+                          <p className="text-xs text-slate-500 mt-1">
+                            Leave empty to auto-generate from validity days
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <Button
@@ -432,8 +519,8 @@ export default function AdminPlansPage() {
                     
                     {/* Access Summary */}
                     <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                      <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Quick Access Summary</h4>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                      <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-3">Quick Access Summary</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                         <div>
                           <span className="text-blue-700 dark:text-blue-400">AI Notes:</span>
                           <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
@@ -458,6 +545,49 @@ export default function AdminPlansPage() {
                             {plan.features?.can_access_premium_content !== false ? '✓' : '✗'}
                           </span>
                         </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Explanations:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.explanations || 'none'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Analytics:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.analytics || 'none'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Regenerate:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.regenerate_notes ? '✓' : '✗'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Best For:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200 truncate block">
+                            {plan.features?.best_for || '-'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Pricing Page Preview */}
+                    <div className="mt-4 p-4 bg-teal-50 dark:bg-teal-950/20 rounded-lg border border-teal-200 dark:border-teal-800">
+                      <h4 className="text-sm font-semibold text-teal-900 dark:text-teal-300 mb-3 flex items-center gap-2">
+                        <Sparkles className="h-4 w-4" />
+                        Pricing Page Preview
+                      </h4>
+                      <p className="text-xs text-teal-700 dark:text-teal-400 mb-3">
+                        How features will appear on the pricing page:
+                      </p>
+                      <div className="space-y-1.5">
+                        {getFeaturesList(plan.features).map((feature, idx) => (
+                          <div key={idx} className="text-xs text-slate-700 dark:text-slate-300 flex items-start gap-2">
+                            <span className="text-teal-600 dark:text-teal-400">✓</span>
+                            <span>{feature}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
