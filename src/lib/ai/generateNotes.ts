@@ -46,6 +46,9 @@ export async function generateNotes(params: {
     console.log("📋 Master prompt built for", params.subjectName, "with", params.outline.length, "sections");
   }
 
+  // GPT-5 models use max_completion_tokens, older models use max_tokens
+  const isGPT5 = model.startsWith('gpt-5');
+  
   let completion;
   
   
@@ -56,9 +59,6 @@ export async function generateNotes(params: {
     
     // OpenAI SDK has built-in retries (maxRetries: 2) and 5-minute timeout
     // We add an additional timeout wrapper for safety (6 minutes = SDK timeout + buffer)
-    
-    // GPT-5 models use max_completion_tokens, older models use max_tokens
-    const isGPT5 = model.startsWith('gpt-5');
     const completionParams: any = {
       model,
       messages: [
