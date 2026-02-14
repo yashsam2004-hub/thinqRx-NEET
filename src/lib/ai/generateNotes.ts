@@ -76,18 +76,36 @@ export async function generateNotes(params: {
     console.error("❌ OpenAI API call failed:", err.message);
     console.error("❌ Full error object:", JSON.stringify(error, null, 2));
     
-    // Check if it's a model error
+    // Check if it's a model access error
     const errorStr = err.message.toLowerCase();
     const isModelError = errorStr.includes("model") || 
                         errorStr.includes("not found") || 
                         errorStr.includes("does not exist") ||
                         errorStr.includes("invalid");
     
-    if (isModelError) {
-      console.error(`❌ Model error detected! Model '${model}' may not exist or you don't have access.`);
-      console.error(`❌ Available models: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo`);
+    const isPermissionError = errorStr.includes("permission") ||
+                             errorStr.includes("access") ||
+                             errorStr.includes("tier") ||
+                             errorStr.includes("quota") ||
+                             errorStr.includes("rate limit");
+    
+    // Special handling for GPT-5 models
+    if (model.startsWith("gpt-5") && (isModelError || isPermissionError)) {
+      console.error(`❌ GPT-5 model access error! Model '${model}' requires a paid OpenAI API tier.`);
+      console.error(`❌ GPT-5 mini is NOT available on free tier API keys.`);
+      console.error(`❌ Solutions:`);
+      console.error(`   1. Upgrade your OpenAI API to Tier 1+ (add $5+ to your OpenAI account)`);
+      console.error(`   2. OR change OPENAI_MODEL to 'gpt-4o-mini' (works on free tier)`);
       throw new Error(
-        `OpenAI model '${model}' is not accessible. Please check: (1) Model exists, (2) Your API key has access to it. Try using 'gpt-4o-mini' instead.`
+        `GPT-5 mini requires a paid OpenAI API tier. Either: (1) Add credits to your OpenAI account, or (2) Switch to 'gpt-4o-mini' in your .env.local and Vercel settings.`
+      );
+    }
+    
+    if (isModelError || isPermissionError) {
+      console.error(`❌ Model access error! Model '${model}' may not exist or you don't have access.`);
+      console.error(`❌ Try: gpt-4o-mini, gpt-4o, gpt-4-turbo, gpt-4, gpt-3.5-turbo`);
+      throw new Error(
+        `OpenAI model '${model}' is not accessible. Check: (1) Model name is correct, (2) Your API key has access. Try 'gpt-4o-mini' instead.`
       );
     }
     

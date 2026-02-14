@@ -20,6 +20,9 @@ export function getOpenAIModel() {
   
   // Known working models as of Feb 2026
   const knownModels = [
+    "gpt-5",           // GPT-5 (requires Tier 1+)
+    "gpt-5-mini",      // GPT-5 Mini (requires Tier 1+, released Aug 2025)
+    "gpt-5-nano",      // GPT-5 Nano (budget option)
     "gpt-4o",
     "gpt-4o-mini",
     "gpt-4-turbo",
@@ -30,14 +33,15 @@ export function getOpenAIModel() {
     "o1-preview"
   ];
   
-  // If user specified a model not in our known list, allow it but warn
-  // (in case they have beta access to new models like gpt-5-mini)
-  if (!knownModels.includes(model)) {
-    console.warn(`⚠️ Using unverified model '${model}' (not in known models list)`);
-    console.warn(`⚠️ If this fails, try switching to: ${knownModels.slice(0, 3).join(', ')}`);
+  // Special models that require paid API tier
+  const paidTierModels = ["gpt-5", "gpt-5-mini", "gpt-5-nano", "o1-mini", "o1-preview"];
+  
+  if (paidTierModels.includes(model)) {
+    console.log(`💎 Using premium model '${model}' (requires paid OpenAI API tier)`);
+  } else {
+    console.log(`✅ Using OpenAI model: ${model}`);
   }
   
-  console.log(`✅ Using OpenAI model: ${model}`);
   return model;
 }
 
