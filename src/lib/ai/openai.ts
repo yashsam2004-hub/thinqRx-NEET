@@ -18,20 +18,23 @@ export function getOpenAIClient() {
 export function getOpenAIModel() {
   const model = env.OPENAI_MODEL ?? "gpt-4o-mini";
   
-  // Validate model name
-  const validModels = [
+  // Known working models as of Feb 2026
+  const knownModels = [
     "gpt-4o",
     "gpt-4o-mini",
     "gpt-4-turbo",
     "gpt-4",
     "gpt-3.5-turbo",
-    "gpt-3.5-turbo-16k"
+    "gpt-3.5-turbo-16k",
+    "o1-mini",
+    "o1-preview"
   ];
   
-  if (!validModels.includes(model)) {
-    console.warn(`⚠️ Invalid OpenAI model '${model}'. Valid models: ${validModels.join(', ')}`);
-    console.warn(`⚠️ Falling back to 'gpt-4o-mini'`);
-    return "gpt-4o-mini";
+  // If user specified a model not in our known list, allow it but warn
+  // (in case they have beta access to new models like gpt-5-mini)
+  if (!knownModels.includes(model)) {
+    console.warn(`⚠️ Using unverified model '${model}' (not in known models list)`);
+    console.warn(`⚠️ If this fails, try switching to: ${knownModels.slice(0, 3).join(', ')}`);
   }
   
   console.log(`✅ Using OpenAI model: ${model}`);

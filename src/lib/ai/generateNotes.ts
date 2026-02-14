@@ -74,6 +74,22 @@ export async function generateNotes(params: {
   } catch (error) {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error("❌ OpenAI API call failed:", err.message);
+    console.error("❌ Full error object:", JSON.stringify(error, null, 2));
+    
+    // Check if it's a model error
+    const errorStr = err.message.toLowerCase();
+    const isModelError = errorStr.includes("model") || 
+                        errorStr.includes("not found") || 
+                        errorStr.includes("does not exist") ||
+                        errorStr.includes("invalid");
+    
+    if (isModelError) {
+      console.error(`❌ Model error detected! Model '${model}' may not exist or you don't have access.`);
+      console.error(`❌ Available models: gpt-4o, gpt-4o-mini, gpt-4-turbo, gpt-4, gpt-3.5-turbo`);
+      throw new Error(
+        `OpenAI model '${model}' is not accessible. Please check: (1) Model exists, (2) Your API key has access to it. Try using 'gpt-4o-mini' instead.`
+      );
+    }
     
     // If Quick Revision failed and it's not an auth/network issue, try fallback
     if (useQuickRevision && !err.message.includes("API key") && !err.message.includes("ENOTFOUND") && !err.message.includes("fetch failed")) {
@@ -103,6 +119,7 @@ export async function generateNotes(params: {
         console.log("✅ Fallback to Master prompt successful");
       } catch (fallbackError) {
         console.error("❌ Both Quick Revision and Master prompt failed");
+        console.error("❌ Fallback error:", fallbackError);
         // Will throw original error below
       }
     }
