@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getUserPlan } from "@/lib/enrollments";
+import { hasMockTestAccess } from "@/lib/plans/features";
 import { 
   ClipboardList, 
   ArrowRight,
@@ -39,6 +40,9 @@ export default async function MockTestsPage() {
 
   // Get user's plan
   const userPlan = courseId ? await getUserPlan(user.id, courseId) : "free";
+  
+  // Check if user's plan has mock test access (dynamic from DB)
+  const hasMockAccess = await hasMockTestAccess(userPlan);
 
   // Get mock tests
   const { data: mockTests } = await supabase
@@ -74,13 +78,15 @@ export default async function MockTestsPage() {
   ).size;
 
   const canAccessTest = (testId: string) => {
-    // Free users: NO access
+    // Use dynamic mock test access from plan features
+    // Rules:
+    // - free: NO access
+    // - plus: Can attempt 2 tests only (special case)
+    // - All other paid plans (pro, gpat_last_minute, gpat_2027_full, etc.): FULL access
+    
     if (userPlan === "free") return false;
     
-    // Pro users: ALL tests
-    if (userPlan === "pro") return true;
-    
-    // Plus users: Can attempt 2 tests only
+    // Plus users: Special limit of 2 tests
     if (userPlan === "plus") {
       // Can access if they haven't reached the 2-test limit yet
       if (uniqueTestsAttempted < 2) return true;
@@ -90,7 +96,8 @@ export default async function MockTestsPage() {
       return hasAttemptedThisTest;
     }
     
-    return false;
+    // All other paid plans: Use dynamic access check from plan features
+    return hasMockAccess;
   };
 
   return (
@@ -171,7 +178,7 @@ export default async function MockTestsPage() {
                   {userPlan === "free" && (
                     <>
                       <p className="text-sm text-slate-700 dark:text-slate-300 mb-4">
-                        Practice tests are available for Plus and Pro members. Upgrade to start practicing!
+                        Practice tests are available for paid members. Upgrade to start practicing!
                       </p>
                       <Link href="/upgrade">
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 border-0">
@@ -187,20 +194,20 @@ export default async function MockTestsPage() {
                         <strong>Mock Tests:</strong> {uniqueTestsAttempted} / 2 used
                       </p>
                       <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
-                        Plus members can attempt 2 practice tests. Upgrade to Pro for unlimited access to all tests.
+                        Plus members can attempt 2 practice tests. Upgrade for unlimited access to all tests.
                       </p>
                       <Link href="/upgrade">
                         <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 border-0">
                           <Sparkles className="h-4 w-4" />
-                          Upgrade to Pro
+                          Upgrade Plan
                         </Button>
                       </Link>
                     </>
                   )}
-                  {userPlan === "pro" && (
+                  {hasMockAccess && userPlan !== "plus" && (
                     <p className="text-sm text-slate-700 dark:text-slate-300 flex items-center gap-2">
                       <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                      Unlimited access to all practice tests ✨
+                      Full access to all practice tests ✨
                     </p>
                   )}
                 </div>
@@ -246,7 +253,7 @@ export default async function MockTestsPage() {
                     {!hasAccess && (
                       <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 border-0 flex items-center gap-1">
                         <Lock className="h-3 w-3" />
-                        Pro
+                        Paid
                       </Badge>
                     )}
                   </div>
@@ -329,7 +336,7 @@ export default async function MockTestsPage() {
                         ? "Upgrade to access" 
                         : plusLimitReached 
                         ? "Plus: 2 tests used" 
-                        : "Upgrade to Pro"}
+                        : "Upgrade plan"}
                     </button>
                   )}
                 </Card>

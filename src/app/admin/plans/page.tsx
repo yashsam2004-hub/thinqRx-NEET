@@ -11,9 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { ArrowLeft, Save, X, Edit, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Save, X, Edit, Eye, EyeOff, Info } from "lucide-react";
 import Link from "next/link";
 
 interface Plan {
@@ -64,6 +65,7 @@ export default function AdminPlansPage() {
       validity_days: plan.validity_days,
       description: plan.description,
       display_order: plan.display_order,
+      features: plan.features, // Include features for editing
     });
   }
 
@@ -238,6 +240,121 @@ export default function AdminPlansPage() {
                     </div>
                   </div>
 
+                  {/* Features Editor */}
+                  <div className="border-t pt-6 mt-6">
+                    <Label className="text-base font-semibold mb-4 flex items-center gap-2">
+                      <Info className="h-4 w-4" />
+                      Plan Features & Access Control
+                    </Label>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                      Configure what this plan can access. -1 = unlimited, 0 = none, N = daily/monthly limit
+                    </p>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm">AI Notes Limit (per day)</Label>
+                        <Input
+                          type="number"
+                          value={editForm.features?.ai_notes_limit ?? -1}
+                          onChange={(e) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              ai_notes_limit: parseInt(e.target.value) || 0 
+                            } 
+                          })}
+                          className="mt-2"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">-1 for unlimited</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm">Practice Tests Limit (per day)</Label>
+                        <Input
+                          type="number"
+                          value={editForm.features?.practice_tests_limit ?? -1}
+                          onChange={(e) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              practice_tests_limit: parseInt(e.target.value) || 0 
+                            } 
+                          })}
+                          className="mt-2"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">-1 for unlimited</p>
+                      </div>
+
+                      <div>
+                        <Label className="text-sm">Mock Tests Limit (per month)</Label>
+                        <Input
+                          type="number"
+                          value={editForm.features?.mock_tests_limit ?? 0}
+                          onChange={(e) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              mock_tests_limit: parseInt(e.target.value) || 0 
+                            } 
+                          })}
+                          className="mt-2"
+                        />
+                        <p className="text-xs text-slate-500 mt-1">-1 for unlimited, 0 for none</p>
+                      </div>
+
+                      <div className="flex items-center space-x-2 mt-6">
+                        <Checkbox
+                          id={`mock-access-${plan.id}`}
+                          checked={editForm.features?.mock_tests_access ?? false}
+                          onCheckedChange={(checked) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              mock_tests_access: checked as boolean 
+                            } 
+                          })}
+                        />
+                        <Label htmlFor={`mock-access-${plan.id}`} className="text-sm cursor-pointer">
+                          Enable Mock Test Access
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2 mt-6">
+                        <Checkbox
+                          id={`premium-access-${plan.id}`}
+                          checked={editForm.features?.can_access_premium_content ?? false}
+                          onCheckedChange={(checked) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              can_access_premium_content: checked as boolean 
+                            } 
+                          })}
+                        />
+                        <Label htmlFor={`premium-access-${plan.id}`} className="text-sm cursor-pointer">
+                          Can Access Premium Content
+                        </Label>
+                      </div>
+
+                      <div className="flex items-center space-x-2 mt-6">
+                        <Checkbox
+                          id={`regenerate-${plan.id}`}
+                          checked={editForm.features?.regenerate_notes ?? false}
+                          onCheckedChange={(checked) => setEditForm({ 
+                            ...editForm, 
+                            features: { 
+                              ...editForm.features, 
+                              regenerate_notes: checked as boolean 
+                            } 
+                          })}
+                        />
+                        <Label htmlFor={`regenerate-${plan.id}`} className="text-sm cursor-pointer">
+                          Can Regenerate Notes
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+
                   <Button
                     onClick={() => saveChanges(plan.id)}
                     className="w-full text-white border-0 gap-2 bg-[#0F766E] hover:bg-[#115E59]"
@@ -307,10 +424,41 @@ export default function AdminPlansPage() {
                         <summary className="cursor-pointer text-sm font-medium text-slate-600 hover:text-teal-600">
                           View Features JSON →
                         </summary>
-                        <pre className="mt-2 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs overflow-auto">
+                        <pre className="mt-2 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs overflow-auto max-h-60">
                           {JSON.stringify(plan.features, null, 2)}
                         </pre>
                       </details>
+                    </div>
+                    
+                    {/* Access Summary */}
+                    <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Quick Access Summary</h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">AI Notes:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.ai_notes_limit === -1 ? '∞' : plan.features?.ai_notes_limit || 0}/day
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Practice:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.practice_tests_limit === -1 ? '∞' : plan.features?.practice_tests_limit || 0}/day
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Mock Tests:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.mock_tests_access ? '✓' : '✗'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-blue-700 dark:text-blue-400">Premium:</span>
+                          <span className="ml-1 font-semibold text-blue-900 dark:text-blue-200">
+                            {plan.features?.can_access_premium_content !== false ? '✓' : '✗'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -348,17 +496,32 @@ export default function AdminPlansPage() {
           ))}
         </div>
 
-        {/* Info Card */}
-        <Card className="mt-8 p-6 border-2 border-[#E5E7EB] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-800/50">
-          <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">
-            Plan Display Order Guide
-          </h3>
-          <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-            <li><strong>1</strong> - Hero plan (highlighted on pricing page)</li>
-            <li><strong>2-4</strong> - Secondary plans</li>
-            <li><strong>5+</strong> - De-emphasized plans</li>
-          </ul>
-        </Card>
+        {/* Info Cards */}
+        <div className="grid md:grid-cols-2 gap-6 mt-8">
+          <Card className="p-6 border-2 border-[#E5E7EB] dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-800/50">
+            <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">
+              Plan Display Order Guide
+            </h3>
+            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li><strong>1</strong> - Hero plan (highlighted on pricing page)</li>
+              <li><strong>2-4</strong> - Secondary plans</li>
+              <li><strong>5+</strong> - De-emphasized plans</li>
+            </ul>
+          </Card>
+
+          <Card className="p-6 border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/20">
+            <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Info className="h-4 w-4 text-blue-600" />
+              Access Rules
+            </h3>
+            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li><strong>Free Plan:</strong> Limited access (5 notes/day, 3 tests/day, no mock tests)</li>
+              <li><strong>Plus Plan:</strong> Unlimited notes/tests, but NO mock tests</li>
+              <li><strong>Other Paid Plans:</strong> Full access (configured per plan)</li>
+              <li><strong>Note:</strong> Changes take effect immediately after saving</li>
+            </ul>
+          </Card>
+        </div>
       </div>
     </div>
   );

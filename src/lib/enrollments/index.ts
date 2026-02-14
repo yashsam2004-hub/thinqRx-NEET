@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getCachedEnrollment, cacheEnrollment } from "@/lib/redis/usage";
+import { canAccessPremiumContent as checkPremiumAccess } from "@/lib/plans/features";
 import type { Plan } from "@/lib/redis/rate-limit";
 
 export interface UserEnrollment {
@@ -122,15 +123,16 @@ export async function getUserPlan(
 
 /**
  * Check if user can access premium content (any paid plan)
- * Includes: plus, pro, and all exam packs
+ * Uses dynamic plan features from database
+ * Rule: All paid plans (except free) can access premium content
  */
 export async function canAccessPremiumContent(
   userId: string,
   courseId: string
 ): Promise<boolean> {
   const plan = await getUserPlan(userId, courseId);
-  // Any plan except "free" grants premium access
-  return plan !== "free";
+  // Use dynamic check from plan features
+  return checkPremiumAccess(plan);
 }
 
 /**
@@ -232,6 +234,7 @@ export async function cancelEnrollment(
 
 /**
  * Check if user needs to show upgrade prompt
+ * Now uses dynamic plan features
  */
 export async function shouldShowUpgradePrompt(
   userId: string,
@@ -242,14 +245,15 @@ export async function shouldShowUpgradePrompt(
 
   switch (feature) {
     case "full_topic_access":
-      return plan === "free";
+      // Only free users need upgrade for full access
+      return !checkPremiumAccess(plan);
     case "ai_notes":
     case "practice_test":
-      // Free users can use but with limits
+      // All users can use but free users have limits (don't prompt)
       return false;
     case "mock_test":
-      // Free users have very limited mock tests
-      return plan === "free";
+      // Free and Plus users need upgrade for mock tests
+      return plan === "free" || plan === "plus";
     default:
       return false;
   }

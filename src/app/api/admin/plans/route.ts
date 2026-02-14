@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { clearPlansCache } from '@/lib/plans/features';
 
 // Update a plan
 export async function PUT(request: NextRequest) {
@@ -46,6 +47,10 @@ export async function PUT(request: NextRequest) {
     }
 
     console.log('[Admin Plans API] Plan updated successfully:', data);
+
+    // CRITICAL: Clear the plans cache so changes take effect immediately
+    clearPlansCache();
+    console.log('[Admin Plans API] Plans cache cleared');
 
     return NextResponse.json({ 
       success: true,
@@ -105,6 +110,10 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log('[Admin Plans API] Plan status updated successfully:', data);
+
+    // CRITICAL: Clear the plans cache so changes take effect immediately
+    clearPlansCache();
+    console.log('[Admin Plans API] Plans cache cleared');
 
     return NextResponse.json({ 
       success: true,

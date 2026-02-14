@@ -5,10 +5,10 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { useAuth } from './AuthContext'; // Use AuthContext user
 
 interface SubscriptionData {
-  plan: 'Free' | 'Plus' | 'Pro';
+  plan: string; // Now accepts any plan ID (free, plus, pro, gpat_last_minute, etc.)
   status: 'active' | 'inactive' | 'expired' | 'cancelled';
   endDate: Date | null;
-  billingCycle: 'MONTHLY' | 'ANNUAL' | null;
+  billingCycle: 'MONTHLY' | 'ANNUAL' | 'ONE_TIME' | null;
 }
 
 interface SubscriptionContextType {
@@ -18,6 +18,7 @@ interface SubscriptionContextType {
   isPro: boolean;
   isPlus: boolean;
   isPlusOrHigher: boolean;
+  isPaid: boolean; // New: any paid plan (not free)
   refreshSubscription: () => Promise<void>;
 }
 
@@ -56,7 +57,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         console.error('[Subscription] Failed to fetch enrollment:', error);
         // CRITICAL: Return FREE plan instead of null to avoid blocking payment page
         return {
-          plan: 'Free' as const,
+          plan: 'free',
           status: 'inactive' as const,
           endDate: null,
           billingCycle: null,
@@ -66,7 +67,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       if (!enrollment) {
         // No enrollment = FREE user
         return {
-          plan: 'Free' as const,
+          plan: 'free',
           status: 'inactive' as const,
           endDate: null,
           billingCycle: null,
@@ -74,21 +75,14 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       }
 
       // Parse enrollment data
-      // CRITICAL: DB stores lowercase ('free','plus','pro') but context uses capitalized
-      const planRaw = (enrollment.plan || 'free').toLowerCase();
-      const planMap: Record<string, 'Free' | 'Plus' | 'Pro'> = {
-        free: 'Free',
-        plus: 'Plus',
-        pro: 'Pro',
-        PLUS: 'Plus',
-        PRO: 'Pro',
-        FREE: 'Free',
-      };
+      // Store plan ID as-is from database (no mapping needed)
+      const planId = (enrollment.plan || 'free').toLowerCase();
+      
       const subscriptionData: SubscriptionData = {
-        plan: planMap[planRaw] || 'Free',
+        plan: planId,
         status: (enrollment.status || 'inactive') as 'active' | 'inactive' | 'expired' | 'cancelled',
         endDate: enrollment.valid_until ? new Date(enrollment.valid_until) : null,
-        billingCycle: enrollment.billing_cycle as 'MONTHLY' | 'ANNUAL' | null,
+        billingCycle: enrollment.billing_cycle as 'MONTHLY' | 'ANNUAL' | 'ONE_TIME' | null,
       };
 
       // Check if subscription is expired
@@ -101,7 +95,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       console.error('[Subscription] Error fetching subscription:', error);
       // CRITICAL: Always return FREE plan on error to prevent blocking
       return {
-        plan: 'Free' as const,
+        plan: 'free',
         status: 'inactive' as const,
         endDate: null,
         billingCycle: null,
@@ -131,7 +125,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     if (!user) {
       // No user = FREE plan, stop loading immediately
       setSubscription({
-        plan: 'Free',
+        plan: 'free',
         status: 'inactive',
         endDate: null,
         billingCycle: null,
@@ -149,10 +143,10 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     });
   }, [user?.id, fetchSubscription]); // Added fetchSubscription back since it's stable with useCallback
 
-  // Helper: Check if user has any active subscription
+  // Helper: Check if user has any active subscription (any paid plan)
   const isSubscribed = React.useMemo(() => {
     // CRITICAL: Check if subscription exists before accessing properties
-    if (!subscription || subscription.plan === 'Free') return false;
+    if (!subscription || subscription.plan === 'free') return false;
     return (
       subscription.status === 'active' &&
       subscription.endDate !== null &&
@@ -160,11 +154,17 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     );
   }, [subscription]);
 
+  // Helper: Check if user has a paid plan (not free)
+  const isPaid = React.useMemo(() => {
+    if (!subscription) return false;
+    return subscription.plan !== 'free' && subscription.status === 'active';
+  }, [subscription]);
+
   // Helper: Check if user is Pro
   const isPro = React.useMemo(() => {
     if (!subscription) return false;
     return (
-      subscription.plan === 'Pro' &&
+      subscription.plan === 'pro' &&
       subscription.status === 'active' &&
       subscription.endDate !== null &&
       subscription.endDate > new Date()
@@ -175,14 +175,14 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const isPlus = React.useMemo(() => {
     if (!subscription) return false;
     return (
-      subscription.plan === 'Plus' &&
+      subscription.plan === 'plus' &&
       subscription.status === 'active' &&
       subscription.endDate !== null &&
       subscription.endDate > new Date()
     );
   }, [subscription]);
 
-  // Helper: Check if user is Plus or higher
+  // Helper: Check if user is Plus or higher (Plus or Pro)
   const isPlusOrHigher = React.useMemo(() => {
     return isPlus || isPro;
   }, [isPlus, isPro]);
@@ -194,6 +194,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     isPro,
     isPlus,
     isPlusOrHigher,
+    isPaid,
     refreshSubscription,
   };
 

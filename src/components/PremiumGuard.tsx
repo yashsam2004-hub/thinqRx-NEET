@@ -25,7 +25,8 @@ interface PremiumGuardProps {
 /**
  * Premium Content Guard
  * 
- * Wraps premium content and shows upgrade prompt for free users
+ * Wraps premium content and shows upgrade prompt for non-qualifying users
+ * Now works with any plan type (not just Plus/Pro)
  * 
  * Usage:
  * ```tsx
@@ -40,7 +41,7 @@ export function PremiumGuard({
   fallback,
   showUpgradePrompt = true,
 }: PremiumGuardProps) {
-  const { subscription, loading, isPro, isPlus, isPlusOrHigher } = useSubscription();
+  const { subscription, loading, isPro, isPlus, isPlusOrHigher, isPaid } = useSubscription();
 
   // Show loading state
   if (loading) {
@@ -55,8 +56,10 @@ export function PremiumGuard({
   let hasAccess = false;
 
   if (requiredPlan === 'Plus') {
-    hasAccess = isPlusOrHigher;
+    // Plus or any paid plan (backward compatible)
+    hasAccess = isPaid;
   } else if (requiredPlan === 'Pro') {
+    // Pro plan specifically
     hasAccess = isPro;
   }
 

@@ -7,33 +7,39 @@ import {
   redisIncr,
   redisExpire,
 } from "./client";
+import { getPlanFeatures, type PlanFeatures } from "@/lib/plans/features";
 
 /**
- * Plan-based rate limits
+ * DYNAMIC Plan-based rate limits
  * 
- * Free: Access to only free content and free practice tests
- * Plus: Access to all content and practice tests, but NO analytics or mock tests
- * Pro: Everything including mock tests and personalized analytics
+ * Limits are now fetched from the database 'plans' table features JSON.
+ * This allows admins to configure limits without code changes.
+ * 
+ * Rules:
+ * - Free: Limited access (5 notes/day, 3 tests/day, no mock tests)
+ * - Plus: Unlimited notes/tests, but NO mock tests
+ * - Pro: Everything unlimited
+ * - Exam Packs (gpat_last_minute, gpat_2027_full): As configured in DB
  */
-export const PlanLimits = {
-  free: {
-    aiNotesPerDay: 5,           // Limited AI notes
-    practiceTestsPerDay: 3,     // Limited practice tests
-    mockTestsPerMonth: 0,       // No mock tests (Pro only)
-  },
-  plus: {
-    aiNotesPerDay: -1,          // Unlimited AI notes
-    practiceTestsPerDay: -1,    // Unlimited practice tests
-    mockTestsPerMonth: 0,       // No mock tests (Pro only)
-  },
-  pro: {
-    aiNotesPerDay: -1,          // Unlimited AI notes
-    practiceTestsPerDay: -1,    // Unlimited practice tests
-    mockTestsPerMonth: -1,      // Unlimited mock tests
-  },
-} as const;
 
-export type Plan = keyof typeof PlanLimits;
+export type Plan = string; // Now accepts any plan ID from database
+
+/**
+ * Get plan limits from database features
+ */
+async function getPlanLimits(plan: Plan): Promise<{
+  aiNotesPerDay: number;
+  practiceTestsPerDay: number;
+  mockTestsPerMonth: number;
+}> {
+  const features = await getPlanFeatures(plan);
+  
+  return {
+    aiNotesPerDay: features.ai_notes_limit ?? -1,
+    practiceTestsPerDay: features.practice_tests_limit ?? -1,
+    mockTestsPerMonth: features.mock_tests_limit ?? (features.mock_tests_access ? -1 : 0),
+  };
+}
 
 /**
  * Rate limit result
@@ -69,9 +75,11 @@ export async function checkAINotesLimit(
   courseId: string,
   plan: Plan
 ): Promise<RateLimitResult> {
-  const limit = PlanLimits[plan].aiNotesPerDay;
+  // Get dynamic limits from database
+  const limits = await getPlanLimits(plan);
+  const limit = limits.aiNotesPerDay;
 
-  // Unlimited for pro plan
+  // Unlimited (-1)
   if (limit === -1) {
     return {
       allowed: true,
@@ -175,9 +183,11 @@ export async function checkPracticeTestLimit(
   courseId: string,
   plan: Plan
 ): Promise<RateLimitResult> {
-  const limit = PlanLimits[plan].practiceTestsPerDay;
+  // Get dynamic limits from database
+  const limits = await getPlanLimits(plan);
+  const limit = limits.practiceTestsPerDay;
 
-  // Unlimited for pro plan
+  // Unlimited (-1)
   if (limit === -1) {
     return {
       allowed: true,
@@ -277,9 +287,11 @@ export async function checkMockTestLimit(
   testId: string,
   plan: Plan
 ): Promise<RateLimitResult> {
-  const limit = PlanLimits[plan].mockTestsPerMonth;
+  // Get dynamic limits from database
+  const limits = await getPlanLimits(plan);
+  const limit = limits.mockTestsPerMonth;
 
-  // Unlimited for pro plan
+  // Unlimited (-1)
   if (limit === -1) {
     return {
       allowed: true,
@@ -359,13 +371,15 @@ export async function getUserUsageStats(
   practiceTests: { used: number; limit: number; remaining: number };
   mockTests: { used: number; limit: number; remaining: number };
 }> {
+  // Get dynamic limits from database
+  const limits = await getPlanLimits(plan);
+  const aiLimit = limits.aiNotesPerDay;
+  const testLimit = limits.practiceTestsPerDay;
+  const mockLimit = limits.mockTestsPerMonth;
+
   const redis = getRedisClient();
 
   if (!redis) {
-    const aiLimit = PlanLimits[plan].aiNotesPerDay;
-    const testLimit = PlanLimits[plan].practiceTestsPerDay;
-    const mockLimit = PlanLimits[plan].mockTestsPerMonth;
-
     return {
       aiNotes: { used: 0, limit: aiLimit, remaining: aiLimit === -1 ? -1 : aiLimit },
       practiceTests: { used: 0, limit: testLimit, remaining: testLimit === -1 ? -1 : testLimit },
@@ -387,10 +401,6 @@ export async function getUserUsageStats(
       redisGet<number>(testKey),
     ]);
 
-    const aiLimit = PlanLimits[plan].aiNotesPerDay;
-    const testLimit = PlanLimits[plan].practiceTestsPerDay;
-    const mockLimit = PlanLimits[plan].mockTestsPerMonth;
-
     return {
       aiNotes: {
         used: aiUsed || 0,
@@ -410,10 +420,6 @@ export async function getUserUsageStats(
     };
   } catch (error) {
     console.error("Get usage stats error:", error);
-    const aiLimit = PlanLimits[plan].aiNotesPerDay;
-    const testLimit = PlanLimits[plan].practiceTestsPerDay;
-    const mockLimit = PlanLimits[plan].mockTestsPerMonth;
-
     return {
       aiNotes: { used: 0, limit: aiLimit, remaining: aiLimit === -1 ? -1 : aiLimit },
       practiceTests: { used: 0, limit: testLimit, remaining: testLimit === -1 ? -1 : testLimit },
