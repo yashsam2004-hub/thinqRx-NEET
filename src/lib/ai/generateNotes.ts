@@ -1,6 +1,7 @@
 import { getOpenAIClient, getOpenAIModel } from "@/lib/ai/openai";
 import { buildNotesPrompt, NOTES_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import { buildMasterPrompt, MASTER_SYSTEM_PROMPT } from "@/lib/ai/masterPrompts";
+import { buildQuickRevisionPrompt, QUICK_REVISION_SYSTEM_PROMPT } from "@/lib/ai/quickRevisionPrompts";
 import { notesSchema, NotesData } from "@/lib/ai/schemas";
 import { sanitizeNotesData } from "@/lib/ai/sanitize";
 import { getChemicalStructureUrl } from "@/lib/chemistry/pubchem";
@@ -17,14 +18,14 @@ export async function generateNotes(params: {
   const model = getOpenAIModel();
   console.log("🤖 Using model:", model);
 
-  // Use new master prompt system for better subject-aware generation
-  const prompt = buildMasterPrompt({
+  // Use Quick Revision prompt system for outline-driven, GPAT-focused notes
+  const prompt = buildQuickRevisionPrompt({
     topicId: params.topicId,
     topicName: params.topicName,
     subjectName: params.subjectName,
     outline: params.outline,
   });
-  console.log("📋 Master prompt built for", params.subjectName, "with", params.outline.length, "sections");
+  console.log("📋 Quick Revision prompt built for", params.subjectName, "with", params.outline.length, "outline items");
 
   let completion;
   
@@ -35,11 +36,11 @@ export async function generateNotes(params: {
     
     // OpenAI SDK has built-in retries (maxRetries: 2) and 5-minute timeout
     // We add an additional timeout wrapper for safety (6 minutes = SDK timeout + buffer)
-    completion = await Promise.race([
+      completion = await Promise.race([
       client.chat.completions.create({
         model,
         messages: [
-          { role: "system", content: MASTER_SYSTEM_PROMPT },
+          { role: "system", content: QUICK_REVISION_SYSTEM_PROMPT },
           { role: "user", content: prompt },
         ],
         response_format: { type: "json_object" },

@@ -36,21 +36,27 @@ function FormattedText({ text }: { text: string }) {
   );
 }
 
-// Color schemes for different sections
-const sectionColors = [
-  { bg: "bg-gradient-to-br from-blue-50 to-cyan-50", border: "border-blue-200", title: "text-blue-900" },
-  { bg: "bg-gradient-to-br from-purple-50 to-pink-50", border: "border-purple-200", title: "text-purple-900" },
-  { bg: "bg-gradient-to-br from-green-50 to-emerald-50", border: "border-green-200", title: "text-green-900" },
-  { bg: "bg-gradient-to-br from-orange-50 to-amber-50", border: "border-orange-200", title: "text-orange-900" },
-  { bg: "bg-gradient-to-br from-rose-50 to-pink-50", border: "border-rose-200", title: "text-rose-900" },
-];
-
+// Clean, professional section styling for Quick Revision Notes
+// Less visual noise, better scannability
 export default function SectionRenderer({ section, index = 0 }: { section: NotesSection; index?: number }) {
-  const colorScheme = sectionColors[index % sectionColors.length];
+  // First section (title) gets special treatment
+  const isTitle = index === 0;
   
   return (
-    <Card id={section.id} className={`p-6 md:p-8 ${colorScheme.bg} border-2 ${colorScheme.border} shadow-lg hover:shadow-xl transition-shadow`}>
-      <h2 className={`text-2xl md:text-3xl font-bold ${colorScheme.title} mb-6 tracking-tight`}>
+    <Card 
+      id={section.id} 
+      className={`p-6 md:p-8 ${
+        isTitle 
+          ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-300 dark:border-blue-700' 
+          : 'bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700'
+      } shadow-sm hover:shadow-md transition-shadow`}
+    >
+      <h2 className={`text-2xl md:text-3xl font-bold ${
+        isTitle 
+          ? 'text-blue-900 dark:text-blue-100' 
+          : 'text-slate-900 dark:text-slate-100'
+      } mb-6 tracking-tight flex items-center gap-3`}>
+        {!isTitle && <span className="text-teal-600 dark:text-teal-400">📌</span>}
         {section.title}
       </h2>
       <div className="mt-6 space-y-6 max-w-4xl">

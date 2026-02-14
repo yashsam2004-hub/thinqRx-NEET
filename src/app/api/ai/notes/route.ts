@@ -192,21 +192,21 @@ export async function POST(request: Request) {
     }
   }
 
-  // Try to get outline (optional - will use default if not found)
+  // CRITICAL: Get outline from syllabus_outlines table (SINGLE SOURCE OF TRUTH)
   const outline = await getOutline(supabase, courseCode, subjectName, topic.name);
   
-  // If no outline exists, use the standardized 9-section structure
+  // If no outline exists in database, use Quick Revision default structure
   const finalOutline = outline.length > 0 ? outline : [
-    "Introduction",
-    "Core Theory",
-    "Key Concepts & Definitions",
-    "Mechanisms / Processes",
-    "Important Tables",
-    "Exam Traps & Common Mistakes",
-    "Rapid Revision Box",
-    "One-liners / Memory Facts",
+    "Exam Definition",
+    "Classification & Types",
+    "Key Mechanisms",
+    "High-Yield Comparisons",
+    "Common Exam Traps",
+    "Rapid Revision Facts",
     "GPAT-Style MCQs",
   ];
+  
+  console.log(`📋 Using ${outline.length > 0 ? 'database' : 'default'} outline with ${finalOutline.length} sections`);
 
   try {
     const data = await generateNotes({

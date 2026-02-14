@@ -44,14 +44,14 @@ export default function NotesLayout({
   const [loadingMessage, setLoadingMessage] = React.useState(0);
   const [loadingTip, setLoadingTip] = React.useState(0);
 
-  // Professional loading messages
+  // Quick Revision loading messages (outline-driven)
   const loadingMessages = [
-    { text: "Analyzing topic structure", icon: null },
-    { text: "Gathering content from knowledge base", icon: null },
-    { text: "Organizing concepts and definitions", icon: null },
-    { text: "Generating examples and applications", icon: null },
-    { text: "Adding exam-focused insights", icon: null },
-    { text: "Finalizing your study notes", icon: null },
+    { text: "Loading outline from database", icon: null },
+    { text: "Generating Quick Revision content", icon: null },
+    { text: "Adding GPAT-focused insights", icon: null },
+    { text: "Creating blue highlight cards", icon: null },
+    { text: "Building high-yield tables", icon: null },
+    { text: "Finalizing exam-ready notes", icon: null },
   ];
 
   const studyTips = [
