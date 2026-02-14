@@ -16,7 +16,26 @@ export function getOpenAIClient() {
 }
 
 export function getOpenAIModel() {
-  return env.OPENAI_MODEL ?? "gpt-4o-mini"; // Default to gpt-4o-mini if not configured
+  const model = env.OPENAI_MODEL ?? "gpt-4o-mini";
+  
+  // Validate model name
+  const validModels = [
+    "gpt-4o",
+    "gpt-4o-mini",
+    "gpt-4-turbo",
+    "gpt-4",
+    "gpt-3.5-turbo",
+    "gpt-3.5-turbo-16k"
+  ];
+  
+  if (!validModels.includes(model)) {
+    console.warn(`⚠️ Invalid OpenAI model '${model}'. Valid models: ${validModels.join(', ')}`);
+    console.warn(`⚠️ Falling back to 'gpt-4o-mini'`);
+    return "gpt-4o-mini";
+  }
+  
+  console.log(`✅ Using OpenAI model: ${model}`);
+  return model;
 }
 
 
