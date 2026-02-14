@@ -276,7 +276,8 @@ CRITICAL RULES:
 `;
 
 /**
- * Build Quick Revision prompt from outline
+ * Build streamlined Quick Revision prompt from outline
+ * OPTIMIZED: Shorter, more focused, higher success rate
  */
 export function buildQuickRevisionPrompt(params: {
   topicId: string;
@@ -286,56 +287,42 @@ export function buildQuickRevisionPrompt(params: {
 }): string {
   const { topicId, topicName, subjectName, outline } = params;
 
-  return `${QUICK_REVISION_SYSTEM_PROMPT}
+  return `You are a GPAT expert creating Quick Revision Notes.
 
-${QUICK_REVISION_STRUCTURE_RULES}
+TOPIC: ${topicName}
+SUBJECT: ${subjectName}
 
-${BLUE_CARD_GATING_RULES}
-
-${TABLE_GATING_RULES}
-
-${QUICK_REVISION_OUTPUT_TEMPLATE}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-YOUR TASK:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Subject: ${subjectName}
-Topic: ${topicName}
-
-OUTLINE (SINGLE SOURCE OF TRUTH):
+OUTLINE (follow exactly):
 ${outline.map((item, idx) => `${idx + 1}. ${item}`).join('\n')}
 
-REQUIREMENTS:
-1. Generate ONE section for EACH outline item
-2. Map outline item to appropriate block type (definition/bullets/table/highlight/mcq)
-3. Follow content length limits STRICTLY
-4. Add blue cards ONLY when outline justifies it
-5. Add tables ONLY when outline mentions comparison
-6. Every table must have "gpatNote" field
-7. Keep tone: Crisp, confident, exam-ready
+RULES:
+1. Create ONE section for EACH outline item
+2. Keep content brief, exam-focused, scannable
+3. Use blue highlight cards (style: "gpat") ONLY for key exam facts from outline
+4. Use tables ONLY for comparisons with "gpatNote" field explaining exam relevance
+5. Max 8 bullets per section, 2 lines per paragraph
+6. Include 3 MCQs at the end (Easy, Medium, Hard)
 
-VALIDATION:
-Before returning, verify:
-✓ Number of sections matches number of outline items (+1 title)
-✓ Every section maps to one outline item
-✓ No blue cards for generic content
-✓ No tables without gpatNote
-✓ No paragraph >2 lines
-✓ Total revision time ≤30 minutes
+BLOCK TYPES:
+- bullets: {"type": "bullets", "items": ["string"]}
+- highlight: {"type": "highlight", "style": "gpat|warning|info", "title": "string", "content": "string"}
+- table: {"type": "table", "headers": ["str"], "rows": [["str"]], "gpatNote": "required"}
+- definition: {"type": "definition", "term": "string", "definition": "string"}
+- mcq: {"type": "mcq", "question": "string", "options": [{"id": "A|B|C|D", "text": "str"}], "correctOptionId": "A|B|C|D", "explanation": "string"}
 
-OUTPUT FORMAT:
-Pure JSON only. No markdown, no explanations.
+OUTPUT JSON:
 {
   "topicId": "${topicId}",
   "topicName": "${topicName}",
   "subjectName": "${subjectName}",
-  "sections": [/* your sections here */]
-}
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-BEGIN GENERATION:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+  "sections": [
+    {
+      "id": "section-1",
+      "title": "[Outline item 1]",
+      "blocks": [/* appropriate blocks */]
+    }
+  ]
+}`;
 }
 
 /**

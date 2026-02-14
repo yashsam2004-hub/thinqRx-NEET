@@ -18,32 +18,53 @@ export async function generateNotes(params: {
   const model = getOpenAIModel();
   console.log("🤖 Using model:", model);
 
-  // Use Quick Revision prompt system for outline-driven, GPAT-focused notes
-  const prompt = buildQuickRevisionPrompt({
-    topicId: params.topicId,
-    topicName: params.topicName,
-    subjectName: params.subjectName,
-    outline: params.outline,
-  });
-  console.log("📋 Quick Revision prompt built for", params.subjectName, "with", params.outline.length, "outline items");
+  // Try Quick Revision first, fallback to Master if it fails
+  const useQuickRevision = true; // Feature flag for gradual rollout
+  
+  let systemPrompt: string;
+  let prompt: string;
+  
+  if (useQuickRevision) {
+    // Use Quick Revision prompt system for outline-driven, GPAT-focused notes
+    systemPrompt = QUICK_REVISION_SYSTEM_PROMPT;
+    prompt = buildQuickRevisionPrompt({
+      topicId: params.topicId,
+      topicName: params.topicName,
+      subjectName: params.subjectName,
+      outline: params.outline,
+    });
+    console.log("📋 Quick Revision prompt built for", params.subjectName, "with", params.outline.length, "outline items");
+  } else {
+    // Fallback to master prompt
+    systemPrompt = MASTER_SYSTEM_PROMPT;
+    prompt = buildMasterPrompt({
+      topicId: params.topicId,
+      topicName: params.topicName,
+      subjectName: params.subjectName,
+      outline: params.outline,
+    });
+    console.log("📋 Master prompt built for", params.subjectName, "with", params.outline.length, "sections");
+  }
 
   let completion;
   
+  
   try {
-    console.log(`🔄 Calling OpenAI API (with 5 min timeout + SDK retries)...`);
+    console.log(`🔄 Calling OpenAI API (${useQuickRevision ? 'Quick Revision' : 'Master'} mode)...`);
     console.log(`📏 Prompt size: ${prompt.length} characters`);
     console.log(`⏱️ This may take 1-3 minutes for complex topics...`);
     
     // OpenAI SDK has built-in retries (maxRetries: 2) and 5-minute timeout
     // We add an additional timeout wrapper for safety (6 minutes = SDK timeout + buffer)
-      completion = await Promise.race([
+    completion = await Promise.race([
       client.chat.completions.create({
         model,
         messages: [
-          { role: "system", content: QUICK_REVISION_SYSTEM_PROMPT },
+          { role: "system", content: systemPrompt },
           { role: "user", content: prompt },
         ],
         response_format: { type: "json_object" },
+        temperature: 0.7, // Slightly more creative for revision notes
       }),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error("Notes generation timeout (6 minutes). Topic may be too large or network may be slow.")), 360000)
@@ -54,26 +75,61 @@ export async function generateNotes(params: {
     const err = error instanceof Error ? error : new Error(String(error));
     console.error("❌ OpenAI API call failed:", err.message);
     
-    // Better error diagnostics
-    if (err.message.includes("timeout") || err.message.includes("ETIMEDOUT")) {
-      throw new Error(
-        "OpenAI API timeout. This usually indicates: (1) Network/VPN issues, (2) Firewall blocking api.openai.com, or (3) Very slow connection. Try disabling VPN or checking your network settings."
-      );
+    // If Quick Revision failed and it's not an auth/network issue, try fallback
+    if (useQuickRevision && !err.message.includes("API key") && !err.message.includes("ENOTFOUND") && !err.message.includes("fetch failed")) {
+      console.log("⚠️ Quick Revision failed, trying Master prompt as fallback...");
+      try {
+        const fallbackPrompt = buildMasterPrompt({
+          topicId: params.topicId,
+          topicName: params.topicName,
+          subjectName: params.subjectName,
+          outline: params.outline,
+        });
+        
+        completion = await Promise.race([
+          client.chat.completions.create({
+            model,
+            messages: [
+              { role: "system", content: MASTER_SYSTEM_PROMPT },
+              { role: "user", content: fallbackPrompt },
+            ],
+            response_format: { type: "json_object" },
+            temperature: 0.7,
+          }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Fallback timeout")), 360000)
+          ),
+        ]);
+        console.log("✅ Fallback to Master prompt successful");
+      } catch (fallbackError) {
+        console.error("❌ Both Quick Revision and Master prompt failed");
+        // Will throw original error below
+      }
     }
     
-    if (err.message.includes("ENOTFOUND") || err.message.includes("fetch failed")) {
-      throw new Error(
-        "Cannot reach OpenAI API (api.openai.com). Check your internet connection, firewall, or VPN settings."
-      );
+    // If still no completion after fallback attempt, throw error
+    if (!completion) {
+      // Better error diagnostics
+      if (err.message.includes("timeout") || err.message.includes("ETIMEDOUT")) {
+        throw new Error(
+          "OpenAI API timeout. This usually indicates: (1) Network/VPN issues, (2) Firewall blocking api.openai.com, or (3) Very slow connection. Try disabling VPN or checking your network settings."
+        );
+      }
+      
+      if (err.message.includes("ENOTFOUND") || err.message.includes("fetch failed")) {
+        throw new Error(
+          "Cannot reach OpenAI API (api.openai.com). Check your internet connection, firewall, or VPN settings."
+        );
+      }
+      
+      if (err.message.includes("401") || err.message.includes("Incorrect API key")) {
+        throw new Error(
+          "Invalid OpenAI API key. Please check your OPENAI_API_KEY in .env.local"
+        );
+      }
+      
+      throw new Error(`OpenAI API error: ${err.message}`);
     }
-    
-    if (err.message.includes("401") || err.message.includes("Incorrect API key")) {
-      throw new Error(
-        "Invalid OpenAI API key. Please check your OPENAI_API_KEY in .env.local"
-      );
-    }
-    
-    throw new Error(`OpenAI API error: ${err.message}`);
   }
 
   if (!completion) {

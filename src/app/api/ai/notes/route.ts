@@ -259,17 +259,33 @@ export async function POST(request: Request) {
       name: error instanceof Error ? error.name : 'Unknown',
       message: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
+      topic: topic.name,
+      subject: subjectName,
+      outlineLength: finalOutline.length,
     });
     
     const message =
       error instanceof Error ? error.message : "Failed to generate notes";
     
+    // Return more helpful error messages
+    let userMessage = "Failed to generate notes. Please try again.";
+    
+    if (message.includes("timeout")) {
+      userMessage = "Generation took too long. Try refreshing the page.";
+    } else if (message.includes("JSON")) {
+      userMessage = "Content generation issue. Please try again or contact support.";
+    } else if (message.includes("schema") || message.includes("validation")) {
+      userMessage = "Invalid content format. Please regenerate notes.";
+    } else if (message.includes("API key") || message.includes("401")) {
+      userMessage = "AI service configuration issue. Contact support.";
+    }
+    
     return NextResponse.json(
       { 
         ok: false, 
         error: "AI_GENERATION_FAILED", 
-        message,
-        details: error instanceof Error ? error.name : undefined,
+        message: userMessage,
+        technicalDetails: error instanceof Error ? error.message : undefined,
       },
       { status: 500 },
     );
