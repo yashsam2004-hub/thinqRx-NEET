@@ -13,6 +13,12 @@ export async function generateNotes(params: {
   outline: string[];
 }): Promise<NotesData> {
   console.log("📝 Starting notes generation for:", params.topicName);
+  console.log("🔍 Environment check:", {
+    hasApiKey: !!process.env.OPENAI_API_KEY,
+    apiKeyPrefix: process.env.OPENAI_API_KEY?.slice(0, 20),
+    modelEnvVar: process.env.OPENAI_MODEL,
+    nodeEnv: process.env.NODE_ENV,
+  });
   
   const client = getOpenAIClient();
   const model = getOpenAIModel();
