@@ -56,16 +56,27 @@ export async function generateNotes(params: {
     
     // OpenAI SDK has built-in retries (maxRetries: 2) and 5-minute timeout
     // We add an additional timeout wrapper for safety (6 minutes = SDK timeout + buffer)
+    
+    // GPT-5 models use max_completion_tokens, older models use max_tokens
+    const isGPT5 = model.startsWith('gpt-5');
+    const completionParams: any = {
+      model,
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt },
+      ],
+      response_format: { type: "json_object" },
+      temperature: 0.7, // Slightly more creative for revision notes
+    };
+    
+    // Add max tokens parameter based on model
+    if (isGPT5) {
+      completionParams.max_completion_tokens = 16000; // GPT-5 supports up to 128K output tokens
+    }
+    // For other models, we let OpenAI decide the output length
+    
     completion = await Promise.race([
-      client.chat.completions.create({
-        model,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: prompt },
-        ],
-        response_format: { type: "json_object" },
-        temperature: 0.7, // Slightly more creative for revision notes
-      }),
+      client.chat.completions.create(completionParams),
       new Promise<never>((_, reject) =>
         setTimeout(() => reject(new Error("Notes generation timeout (6 minutes). Topic may be too large or network may be slow.")), 360000)
       ),
@@ -120,16 +131,23 @@ export async function generateNotes(params: {
           outline: params.outline,
         });
         
+        const fallbackParams: any = {
+          model,
+          messages: [
+            { role: "system", content: MASTER_SYSTEM_PROMPT },
+            { role: "user", content: fallbackPrompt },
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.7,
+        };
+        
+        // Add appropriate max tokens for fallback
+        if (isGPT5) {
+          fallbackParams.max_completion_tokens = 16000;
+        }
+        
         completion = await Promise.race([
-          client.chat.completions.create({
-            model,
-            messages: [
-              { role: "system", content: MASTER_SYSTEM_PROMPT },
-              { role: "user", content: fallbackPrompt },
-            ],
-            response_format: { type: "json_object" },
-            temperature: 0.7,
-          }),
+          client.chat.completions.create(fallbackParams),
           new Promise<never>((_, reject) =>
             setTimeout(() => reject(new Error("Fallback timeout")), 360000)
           ),
