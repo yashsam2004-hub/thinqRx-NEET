@@ -25,7 +25,7 @@ const styleConfig = {
     icon: AlertTriangle,
     textColor: "text-orange-900 dark:text-orange-200",
   },
-  gpat: {
+  exam: {
     bgColor: "from-blue-100 to-indigo-100 dark:from-blue-950/50 dark:to-indigo-950/50",
     borderColor: "border-blue-400 dark:border-blue-700",
     iconBg: "bg-blue-600 dark:bg-blue-500",
@@ -46,32 +46,32 @@ export default function HighlightBlock({
   title,
   content,
 }: {
-  style: "info" | "tip" | "warning" | "gpat" | "clinical";
+  style: "info" | "tip" | "warning" | "exam" | "clinical";
   title: string;
   content: string;
 }) {
   const config = styleConfig[style];
   const Icon = config.icon;
 
-  // GPAT style gets special prominent treatment (Blue Cards for Quick Revision)
-  const isGpat = style === "gpat";
+  // Exam style gets special prominent treatment (Blue Cards for Quick Revision)
+  const isExam = style === "exam";
   const isWarning = style === "warning";
 
   return (
     <div 
       className={`my-5 p-5 rounded-xl border-2 ${config.borderColor} bg-gradient-to-br ${config.bgColor} ${
-        isGpat ? 'shadow-md hover:shadow-lg' : 'shadow-sm'
+        isExam ? 'shadow-md hover:shadow-lg' : 'shadow-sm'
       } transition-shadow`}
     >
       <div className="flex items-start gap-3">
-        <div className={`p-2 rounded-lg ${config.iconBg} flex-shrink-0 ${isGpat ? 'shadow-sm' : ''}`}>
+        <div className={`p-2 rounded-lg ${config.iconBg} flex-shrink-0 ${isExam ? 'shadow-sm' : ''}`}>
           <Icon className="h-5 w-5 text-white" />
         </div>
         <div className="flex-1">
-          <h4 className={`text-base font-bold ${config.textColor} mb-2 ${isGpat ? 'tracking-tight' : ''}`}>
+          <h4 className={`text-base font-bold ${config.textColor} mb-2 ${isExam ? 'tracking-tight' : ''}`}>
             {isWarning && '⚠️ '}{title}
           </h4>
-          <div className={`text-sm ${config.textColor} leading-relaxed whitespace-pre-wrap ${isGpat ? 'font-medium' : ''}`}>
+          <div className={`text-sm ${config.textColor} leading-relaxed whitespace-pre-wrap ${isExam ? 'font-medium' : ''}`}>
             {content}
           </div>
         </div>

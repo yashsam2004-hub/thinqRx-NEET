@@ -71,7 +71,7 @@ export default function AdminPage() {
   const quickActions = React.useMemo(() => [
     {
       title: "Upload Syllabus",
-      description: "Import GPAT subjects and topics via JSON",
+      description: "Import NEET subjects and topics via JSON",
       href: "/admin/syllabus",
       icon: ListTree,
       color: "bg-green-500",
@@ -173,7 +173,7 @@ export default function AdminPage() {
           <div>
             <h1 className="text-4xl font-bold text-slate-900">Admin Dashboard</h1>
             <p className="text-lg text-slate-600">
-              Manage GPAT content and platform operations
+              Manage NEET content and platform operations
             </p>
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function AdminPage() {
               <div>
                 <p className="text-sm font-medium text-blue-700">Total Topics</p>
                 <p className="text-3xl font-bold text-blue-900 mt-2">{stats?.totalTopics || 0}</p>
-                <p className="text-xs text-blue-600 mt-1">GPAT syllabus</p>
+                <p className="text-xs text-blue-600 mt-1">NEET syllabus</p>
               </div>
               <ListTree className="h-10 w-10 text-blue-600 opacity-50" />
             </div>
@@ -282,7 +282,7 @@ export default function AdminPage() {
             </div>
             <div>
               <p className="font-semibold">Upload Syllabus</p>
-              <p className="text-slate-600">Import GPAT subjects and topics via JSON in the Syllabus section</p>
+              <p className="text-slate-600">Import NEET subjects and topics via JSON in the Syllabus section</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -291,7 +291,7 @@ export default function AdminPage() {
             </div>
             <div>
               <p className="font-semibold">Configure Plans</p>
-              <p className="text-slate-600">Set up and manage all pricing plans (Free, Plus, Pro, GPAT packs)</p>
+              <p className="text-slate-600">Set up and manage all pricing plans (Free, Plus, Pro, NEET packs)</p>
             </div>
           </div>
           <div className="flex items-start gap-3">

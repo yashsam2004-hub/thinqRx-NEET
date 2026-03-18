@@ -107,7 +107,7 @@ export async function generateImprovementPlan(
   }
 }
 
-const IMPROVEMENT_PLAN_SYSTEM_PROMPT = `You are an expert GPAT (Graduate Pharmacy Aptitude Test) coach and data analyst. 
+const IMPROVEMENT_PLAN_SYSTEM_PROMPT = `You are an expert NEET UG (National Eligibility cum Entrance Test) coach and data analyst. 
 Your role is to analyze student performance data and create actionable, personalized improvement plans.
 
 Guidelines:
@@ -154,7 +154,7 @@ function buildImprovementPlanPrompt(
 ): string {
   const { overallStats, difficultyPerformance, timeVsAccuracyCorrelation } = analyticsData;
 
-  return `Analyze this GPAT student's performance and create a personalized improvement plan:
+  return `Analyze this NEET student's performance and create a personalized improvement plan:
 
 OVERALL PERFORMANCE:
 - Total Attempts: ${overallStats.totalAttempts}

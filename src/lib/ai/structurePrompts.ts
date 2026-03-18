@@ -12,7 +12,7 @@
  * 
  * This prompt analyzes existing notes and identifies where structures should be added
  */
-export const STRUCTURE_ENHANCEMENT_SYSTEM_PROMPT = `You are a STRUCTURE AUGMENTATION AGENT for pharmacy education.
+export const STRUCTURE_ENHANCEMENT_SYSTEM_PROMPT = `You are a STRUCTURE AUGMENTATION AGENT for NEET UG medical entrance education.
 
 YOUR SOLE PURPOSE:
 Add chemical structures, reaction schemes, and pharmacophore diagrams to existing notes ONLY where students naturally expect to see them.
@@ -44,23 +44,17 @@ SUBJECT-SPECIFIC GUIDELINES:
 - Aromatic compounds → aromatic ring structures
 - Stereochemistry topics → stereoisomer structures
 
-💊 MEDICINAL CHEMISTRY (VERY HIGH PRIORITY):
-- Every drug name → full structure
-- SAR discussions → parent nucleus + analogs
-- Pharmacophore models → simplified scaffold
-- Drug class prototype → representative structure
-- Structure-activity → highlight functional groups
-
-🧪 PHARMACEUTICAL CHEMISTRY:
-- All drugs mentioned → complete structure
-- Synthetic routes → multi-step reaction schemes
+🧪 CHEMISTRY (NEET UG):
+- Named reactions → reaction scheme with SMILES
+- Key compounds → complete structure
+- IUPAC nomenclature → structure with naming
 - Functional groups → structure with group highlighted
-- Chemical stability → structure showing labile groups
+- Isomers → comparative structures
 
-💉 PHARMACOLOGY:
-- Prototype drugs → structure
-- Structurally similar drugs → comparative structures
-- Stereoisomers (if clinically relevant) → both isomers
+🌿 BIOLOGY (NEET UG):
+- Biomolecules → structure where relevant (amino acids, sugars, etc.)
+- Cell organelles → diagram references
+- Metabolic pathways → key metabolite structures
 
 🌿 PHARMACOGNOSY:
 - Active constituents → chemical structure
@@ -414,6 +408,24 @@ Return ONLY valid JSON matching this exact schema.`;
  * Subject-specific structure guidelines
  */
 export const SUBJECT_STRUCTURE_GUIDELINES = {
+  'Physics': `
+PHYSICS STRUCTURE RULES:
+- All formulas → proper LaTeX notation
+- Derivations → step-by-step with clear reasoning
+- Graphs → described clearly with axes labeled
+- Ray diagrams (Optics) → described systematically
+- Circuit diagrams → show components and values
+`,
+  
+  'Chemistry': `
+CHEMISTRY STRUCTURE RULES:
+- Organic reactions → full reaction scheme with structures (SMILES)
+- Aromatic compounds → show ring with substituents
+- Named reactions → mechanism with intermediates
+- Inorganic compounds → crystal field / bonding diagrams
+- IUPAC nomenclature → always include
+`,
+  
   'Organic Chemistry': `
 ORGANIC CHEMISTRY STRUCTURE RULES:
 - Every named reaction → full reaction scheme with structures
@@ -423,38 +435,38 @@ ORGANIC CHEMISTRY STRUCTURE RULES:
 - Functional group transformations → before/after structures
 `,
   
-  'Medicinal Chemistry': `
-MEDICINAL CHEMISTRY STRUCTURE RULES (HIGHEST PRIORITY):
-- Every drug mentioned → complete structure with highlighted pharmacophore
-- SAR discussions → parent nucleus + 2-3 key analogs
-- Drug classes → prototype structure
-- Receptor binding → structure showing binding groups
-- Metabolism → parent drug + major metabolite structures
+  'Inorganic Chemistry': `
+INORGANIC CHEMISTRY STRUCTURE RULES:
+- Coordination compounds → show geometry and bonding
+- Crystal structures → unit cell descriptions
+- Hybridization → orbital diagrams
+- Periodic trends → tabular comparisons
 `,
   
-  'Pharmaceutical Chemistry': `
-PHARMACEUTICAL CHEMISTRY STRUCTURE RULES:
-- All APIs → full molecular structure
-- Synthesis routes → multi-step reaction schemes
-- Excipients (if active) → structure
-- Salt forms → show ionizable groups
-- Polymorphs → representative structure
+  'Physical Chemistry': `
+PHYSICAL CHEMISTRY STRUCTURE RULES:
+- Thermodynamic equations → proper LaTeX with units
+- Equilibrium expressions → clear formatting
+- Electrochemistry → cell notation and diagrams
+- Kinetics → rate expressions and graphs
 `,
   
-  'Pharmacology': `
-PHARMACOLOGY STRUCTURE RULES:
-- Prototype drugs → structure
-- Structure-activity → comparative structures
-- Stereoisomers (if clinically relevant) → both forms
-- Prodrugs → prodrug + active drug structures
+  'Biology - Botany': `
+BOTANY STRUCTURE RULES:
+- Cell diagrams → labeled with NCERT terminology
+- Plant anatomy → cross-section descriptions
+- Life cycles → alternation of generations clearly shown
+- Photosynthesis → light/dark reaction pathways
+- Genetics → Punnett squares and pedigree charts
 `,
   
-  'Pharmacognosy': `
-PHARMACOGNOSY STRUCTURE RULES:
-- Active constituents → structure with plant source noted
-- Alkaloids → core skeleton
-- Glycosides → aglycone + sugar
-- Marker compounds → structure
+  'Biology - Zoology': `
+ZOOLOGY STRUCTURE RULES:
+- Organ system diagrams → labeled with NCERT terminology
+- Human anatomy → clear labeling of structures
+- Reproduction → gametogenesis and embryology diagrams
+- Genetics → pedigree analysis and inheritance patterns
+- Evolution → phylogenetic descriptions
 `,
   
   'Biochemistry': `

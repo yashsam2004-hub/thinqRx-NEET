@@ -54,7 +54,7 @@ export function Navigation() {
     { href: "/", label: "Home", icon: Home },
     { href: "/pricing", label: "Pricing", icon: Tag },
     { href: "/resources", label: "Resources", icon: BookOpen },
-    { href: "/gpat", label: "About Us", icon: Info },
+    { href: "/about", label: "About Us", icon: Info },
   ];
 
   const userNavItems = [

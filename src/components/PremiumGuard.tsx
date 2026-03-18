@@ -100,7 +100,7 @@ function UpgradePrompt({ requiredPlan, currentPlan }: { requiredPlan: 'Plus' | '
   ] : [
     'Unlimited AI-powered notes',
     'Practice tests with feedback',
-    'All GPAT topics covered',
+    'All NEET topics covered',
     'Progress tracking',
   ];
 
@@ -127,7 +127,7 @@ function UpgradePrompt({ requiredPlan, currentPlan }: { requiredPlan: 'Plus' | '
 
         {/* Description */}
         <p className="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
-          Unlock premium content and supercharge your GPAT preparation with our {requiredPlan} plan
+          Unlock premium content and supercharge your NEET UG preparation with our {requiredPlan} plan
         </p>
 
         {/* Current Plan Badge (if applicable) */}

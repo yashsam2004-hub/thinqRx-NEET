@@ -1,6 +1,6 @@
 /**
  * Production-grade MCQ validation to ensure exam accuracy
- * Prevents answer-mapping bugs and ensures GPAT-level quality
+ * Prevents answer-mapping bugs and ensures NEET-level quality
  */
 
 interface MCQOption {
@@ -89,7 +89,7 @@ export function validateMCQ(mcq: MCQQuestion): ValidationResult {
     warnings.push("Duplicate or very similar option texts detected");
   }
 
-  // 9. GPAT-specific validation: Weak acid approximation check
+  // 9. NEET-specific validation: Weak acid approximation check
   if (mcq.question.toLowerCase().includes("weak acid") || 
       mcq.question.toLowerCase().includes("weak base")) {
     
@@ -109,7 +109,7 @@ export function validateMCQ(mcq: MCQQuestion): ValidationResult {
           // The correct answer should validate small x approximation
           const correctOpt = mcq.options.find(opt => opt.id === mcq.correctOptionId);
           if (correctOpt && !correctOpt.text.toLowerCase().includes("sqrt")) {
-            warnings.push("GPAT Check: For weak acid with Ka ≤ 10^-5, small x approximation should be valid");
+            warnings.push("NEET Check: For weak acid with Ka ≤ 10^-5, small x approximation should be valid");
           }
         }
       }

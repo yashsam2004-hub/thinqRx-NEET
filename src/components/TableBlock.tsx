@@ -5,12 +5,12 @@ export default function TableBlock({
   headers,
   rows,
   caption,
-  gpatNote,
+  examNote,
 }: {
   headers: string[];
   rows: string[][];
   caption?: string;
-  gpatNote?: string;
+  examNote?: string;
 }) {
   return (
     <div className="my-6">
@@ -55,11 +55,11 @@ export default function TableBlock({
         )}
       </div>
 
-      {/* Note */}
-      {gpatNote && (
+      {/* NEET Exam Note */}
+      {examNote && (
         <div className="mt-3 flex items-start gap-2 p-3 rounded bg-purple-50 border border-purple-200">
           <Target className="h-4 w-4 text-purple-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-purple-800">{gpatNote}</p>
+          <p className="text-sm text-purple-800">{examNote}</p>
         </div>
       )}
     </div>

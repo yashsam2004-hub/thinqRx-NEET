@@ -37,7 +37,7 @@ interface RazorpaySuccessResponse {
 }
 
 interface PaymentData {
-  planId: string;          // Any plan ID from the plans table (e.g. 'plus', 'pro', 'gpat_2027_full')
+  planId: string;          // Any plan ID from the plans table (e.g. 'plus', 'pro', 'neet_full')
   billingCycle: string;    // 'MONTHLY' | 'ANNUAL' | 'ONE_TIME'
   userEmail?: string;
   userName?: string;
@@ -135,8 +135,8 @@ export function useRazorpay(): UseRazorpayReturn {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'ThinqRx',
-        description: `GPAT Premium Subscription - ${data.planId} (${data.billingCycle})`,
+        name: 'NEET Prep Platform',
+        description: `NEET UG Premium Subscription - ${data.planId} (${data.billingCycle})`,
         order_id: orderData.order_id,
         prefill: {
           email: data.userEmail,

@@ -19,14 +19,14 @@ export async function GET() {
     }
     const user = session.user;
 
-    // Get GPAT course
-    const { data: gpatCourse } = await supabase
+    // Get NEET course
+    const { data: neetCourse } = await supabase
       .from("courses")
       .select("*")
-      .ilike("code", "gpat")
+      .ilike("code", "neet")
       .single();
 
-    const courseId = gpatCourse?.id;
+    const courseId = neetCourse?.id;
 
     // Get user plan
     const userPlan = courseId ? await getUserPlan(user.id, courseId) : null;
@@ -45,8 +45,8 @@ export async function GET() {
       .select("*")
       .eq("user_id", user.id);
 
-    // Get GPAT attempts
-    const { data: gpatAttempts } = await supabase
+    // Get NEET attempts
+    const { data: neetAttempts } = await supabase
       .from("user_attempts")
       .select("*")
       .eq("user_id", user.id)
@@ -73,13 +73,13 @@ export async function GET() {
           id: user.id,
           email: user.email,
         },
-        course: gpatCourse,
+        course: neetCourse,
         courseId,
         enrollment: enrollment || null,
         userPlan,
         attempts: {
           total: allAttempts?.length || 0,
-          gpatOnly: gpatAttempts?.length || 0,
+          neetOnly: neetAttempts?.length || 0,
           byKind: {
             ai_topic: allAttempts?.filter((a) => a.kind === "ai_topic").length || 0,
             mock_test: allAttempts?.filter((a) => a.kind === "mock_test").length || 0,

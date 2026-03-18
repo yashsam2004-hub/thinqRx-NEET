@@ -48,8 +48,8 @@ function getPlanIcon(planId: string) {
     'free': Sparkles,
     'plus': Zap,
     'pro': Crown,
-    'gpat_last_minute': Target,
-    'gpat_2027_full': Rocket,
+    'neet_last_minute': Target,
+    'neet_2027_full': Rocket,
   };
   return icons[planId] || Star;
 }
@@ -59,8 +59,8 @@ function getPlanGradient(planId: string) {
     'free': 'from-teal-500 to-teal-600',
     'plus': 'from-teal-500 to-cyan-500',
     'pro': 'from-amber-500 to-orange-500',
-    'gpat_last_minute': 'from-blue-500 to-indigo-500',
-    'gpat_2027_full': 'from-purple-500 to-pink-500',
+    'neet_last_minute': 'from-blue-500 to-indigo-500',
+    'neet_2027_full': 'from-purple-500 to-pink-500',
   };
   return gradients[planId] || 'from-slate-500 to-slate-600';
 }
@@ -70,8 +70,8 @@ function getPlanBgGradient(planId: string) {
     'free': 'from-teal-50 to-teal-100 dark:from-teal-950/30 dark:to-teal-900/30',
     'plus': 'from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30',
     'pro': 'from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30',
-    'gpat_last_minute': 'from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30',
-    'gpat_2027_full': 'from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30',
+    'neet_last_minute': 'from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30',
+    'neet_2027_full': 'from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30',
   };
   return bgGradients[planId] || 'from-slate-50 to-slate-100 dark:from-slate-950/30 dark:to-slate-900/30';
 }
@@ -98,7 +98,7 @@ export default async function PricingPage() {
             </span>
           </h1>
           <p className="mx-auto max-w-3xl text-xl text-slate-600 dark:text-slate-300 mb-6">
-            Select the plan that fits your preparation needs for pharmacy competitive exams.
+            Select the plan that fits your preparation needs for NEET UG exam.
           </p>
           <div className="flex items-center justify-center gap-6 text-sm text-slate-600 dark:text-slate-400">
             <div className="flex items-center gap-2">
@@ -123,7 +123,7 @@ export default async function PricingPage() {
               🎯 Exam-Focused Preparation Packs
             </h2>
             <p className="text-center text-slate-600 dark:text-slate-300 mb-8">
-              Complete preparation packages for GPAT aspirants
+              Complete preparation packages for NEET UG aspirants
             </p>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 max-w-5xl mx-auto">
               {examPacks.map((plan) => {
@@ -292,7 +292,7 @@ export default async function PricingPage() {
               Ready to Start Your Preparation?
             </h3>
             <p className="text-blue-100 mb-8 max-w-2xl mx-auto text-lg">
-              Join students preparing for pharmacy competitive exams with structured study materials and practice tests.
+              Join thousands of medical aspirants preparing for NEET UG with structured study materials and practice tests.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <PricingCTA

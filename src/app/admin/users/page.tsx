@@ -330,8 +330,8 @@ export default function AdminUsersPage() {
       'free': Sparkles,
       'plus': Zap,
       'pro': Crown,
-      'gpat_last_minute': Target,
-      'gpat_2027_full': Rocket,
+      'neet_crash_course': Target,
+      'neet_full': Rocket,
     };
     return icons[planId] || Award;
   };
@@ -362,7 +362,7 @@ export default function AdminUsersPage() {
         textColor: 'text-purple-700',
         boldColor: 'text-purple-900'
       },
-      'gpat_last_minute': { 
+      'neet_crash_course': { 
         border: 'border-2 border-indigo-200', 
         bg: 'bg-indigo-50', 
         iconBg: 'bg-indigo-100', 
@@ -370,7 +370,7 @@ export default function AdminUsersPage() {
         textColor: 'text-indigo-700',
         boldColor: 'text-indigo-900'
       },
-      'gpat_2027_full': { 
+      'neet_full': { 
         border: 'border-2 border-pink-200', 
         bg: 'bg-pink-50', 
         iconBg: 'bg-pink-100', 
@@ -397,9 +397,9 @@ export default function AdminUsersPage() {
         return "bg-blue-100 text-blue-700 border-blue-200";
       case "free":
         return "bg-slate-100 text-slate-700 border-slate-200";
-      case "gpat_last_minute":
+      case "neet_crash_course":
         return "bg-indigo-100 text-indigo-700 border-indigo-200";
-      case "gpat_2027_full":
+      case "neet_full":
         return "bg-pink-100 text-pink-700 border-pink-200";
       default:
         return "bg-gray-100 text-gray-700 border-gray-200";

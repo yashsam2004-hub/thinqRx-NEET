@@ -31,7 +31,7 @@ export async function generateNotes(params: {
   let prompt: string;
   
   if (useQuickRevision) {
-    // Use Quick Revision prompt system for outline-driven, GPAT-focused notes
+    // Use Quick Revision prompt system for outline-driven, NEET-focused notes
     systemPrompt = QUICK_REVISION_SYSTEM_PROMPT;
     prompt = buildQuickRevisionPrompt({
       topicId: params.topicId,

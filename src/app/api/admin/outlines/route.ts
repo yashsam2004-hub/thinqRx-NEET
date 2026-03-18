@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
  */
 
 const OutlineSchema = z.object({
-  course_code: z.string().min(1, "Course code is required").default("gpat"),
+  course_code: z.string().min(1, "Course code is required").default("neet"),
   subject_name: z.string().min(1, "Subject name is required"),
   topic_name: z.string().optional(), // optional for subject-level default
   outline_version: z.string().optional().default("v1"),
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     const supabase = await createSupabaseServerClient();
     const { searchParams } = new URL(request.url);
     
-    const courseCode = searchParams.get("course_code") ?? "gpat";
+    const courseCode = searchParams.get("course_code") ?? "neet";
     const subject = searchParams.get("subject");
     const topic = searchParams.get("topic");
     const includeDefault = searchParams.get("include_default") === "true";
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
     const { course_code, subject_name, topic_name, outline_version, outline, description, is_default } = parsed.data;
 
     const row = {
-      course_code: course_code || "gpat",
+      course_code: course_code || "neet",
       subject_name,
       topic_name: (topic_name && topic_name.trim()) || "_default",
       outline_version: outline_version || "v1",

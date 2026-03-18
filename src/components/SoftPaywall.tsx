@@ -37,7 +37,7 @@ const contextMessages = {
   ai_notes_limit: {
     icon: BookOpen,
     title: "You've used your free AI notes",
-    description: "Unlock unlimited AI-generated study notes for all GPAT subjects",
+    description: "Unlock unlimited AI-generated study notes for all NEET subjects",
     cta: "Upgrade to Full Prep",
     benefits: [
       "Unlimited AI notes for all 4 subjects",
@@ -49,7 +49,7 @@ const contextMessages = {
   practice_tests_limit: {
     icon: Zap,
     title: "Test limit reached",
-    description: "Get unlimited practice tests to ace GPAT exam",
+    description: "Get unlimited practice tests to ace NEET UG exam",
     cta: "Upgrade to Full Prep",
     benefits: [
       "Unlimited full-length mock tests",

@@ -53,7 +53,7 @@ const categoryConfig = {
     title: "Reference Books",
     icon: BookMarked,
     gradient: "from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700",
-    description: "Recommended textbooks to buy for GPAT preparation"
+    description: "Recommended textbooks to buy for NEET preparation"
   },
   video_lectures: {
     title: "Video Lectures",
@@ -146,7 +146,7 @@ export default function ResourcesPage() {
         <div className="mb-12 text-center">
           <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-teal-100 dark:bg-teal-950/30 text-teal-700 dark:text-teal-400 text-sm font-semibold">
             <BookOpen className="h-4 w-4" />
-            GPAT Preparation Resources
+            NEET Preparation Resources
           </div>
           <h1 className="mb-6 text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
             Study{" "}
@@ -155,7 +155,7 @@ export default function ResourcesPage() {
             </span>
           </h1>
           <p className="mx-auto max-w-3xl text-xl text-slate-600 dark:text-slate-300">
-            Curated resources to help you ace your GPAT exam - reference books, video lectures, and official links.
+            Curated resources to help you ace your NEET UG exam - reference books, video lectures, and official links.
           </p>
         </div>
 
@@ -287,7 +287,7 @@ export default function ResourcesPage() {
               Need More Help?
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
-              Explore our AI-powered study notes, practice tests, and personalized analytics to maximize your GPAT preparation.
+              Explore our AI-powered study notes, practice tests, and personalized analytics to maximize your NEET preparation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/subjects">

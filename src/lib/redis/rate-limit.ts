@@ -19,7 +19,7 @@ import { getPlanFeatures, type PlanFeatures } from "@/lib/plans/features";
  * - Free: Limited access (5 notes/day, 3 tests/day, no mock tests)
  * - Plus: Unlimited notes/tests, but NO mock tests
  * - Pro: Everything unlimited
- * - Exam Packs (gpat_last_minute, gpat_2027_full): As configured in DB
+ * - Exam Packs (neet_crash_course, neet_full): As configured in DB
  */
 
 export type Plan = string; // Now accepts any plan ID from database

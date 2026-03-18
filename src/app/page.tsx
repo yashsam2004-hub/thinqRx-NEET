@@ -30,8 +30,8 @@ export default function HomePage() {
   // Structured Data for SEO/AEO
   const organizationSchema = getOrganizationSchema();
   const webPageSchema = getWebPageSchema(
-    `${PLATFORM.brand} - AI-Powered GPAT Exam Preparation`,
-    `ThinqRx is an AI-powered exam preparation platform for GPAT (Graduate Pharmacy Aptitude Test) in India. Provides AI-generated study notes, practice tests, and performance analytics for pharmacy students.`,
+    `${PLATFORM.brand} - AI-Powered NEET UG Exam Preparation`,
+    `NEET Prep Platform is an AI-powered exam preparation platform for NEET UG (National Eligibility cum Entrance Test) in India. Provides AI-generated study notes, practice tests, and performance analytics for medical aspirants.`,
     "/"
   );
   const faqSchema = getFAQSchema(FAQ_DATA.slice(0, 8));
@@ -100,7 +100,7 @@ export default function HomePage() {
               <div className="mx-auto mb-12 flex items-center justify-center">
                 <Image
                   src="/images/Thinqr_logo.png"
-                  alt="ThinqRx Logo"
+                  alt="NEET Prep Logo"
                   width={480}
                   height={360}
                   priority
@@ -111,12 +111,12 @@ export default function HomePage() {
               {/* Main Heading */}
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-slate-900 dark:text-slate-100">
                 AI-Powered Study Platform for<br />
-                <span className="text-[#0F766E] dark:text-teal-400">GPAT Exam Preparation</span>
+                <span className="text-[#0F766E] dark:text-teal-400">NEET UG Exam Preparation</span>
               </h1>
 
               {/* Subheading */}
               <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed text-slate-600 dark:text-slate-300">
-                ThinqRx helps pharmacy students prepare for GPAT with AI-generated study notes, practice questions, and performance tracking.
+                NEET Prep Platform helps medical aspirants prepare for NEET UG with AI-generated study notes, practice questions, and performance tracking.
               </p>
 
               {/* CTA Buttons */}
@@ -146,15 +146,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* What ThinqRx Does Section */}
+        {/* What NEET Prep Does Section */}
         <section className="py-16 md:py-20 bg-[#E6F4F2] dark:bg-[#0F172A]">
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-slate-100">
-                What ThinqRx Does
+                What NEET Prep Does
               </h2>
               <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
-                A web application designed to help you prepare for the GPAT exam
+                A web application designed to help you prepare for the NEET UG exam
               </p>
             </div>
 
@@ -167,7 +167,7 @@ export default function HomePage() {
                   <div>
                     <h3 className="font-semibold mb-2 text-slate-900 dark:text-slate-100">AI-Generated Study Notes</h3>
                     <p className="text-slate-600 dark:text-slate-300">
-                      Creates topic-wise notes using AI, organized by subject according to the PCI syllabus for GPAT.
+                      Creates topic-wise notes using AI, organized by subject according to the NCERT syllabus for NEET UG.
                     </p>
                   </div>
                 </li>
@@ -217,7 +217,7 @@ export default function HomePage() {
                 Features
               </h2>
               <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
-                Study material, practice tests, and analytics for GPAT preparation
+                Study material, practice tests, and analytics for NEET UG preparation
               </p>
             </div>
 
@@ -232,7 +232,7 @@ export default function HomePage() {
                     Study Material
                   </h3>
                   <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                    AI-generated notes covering all four GPAT subjects, aligned with the PCI syllabus
+                    AI-generated notes covering all NEET UG subjects: Physics, Chemistry, and Biology (Botany & Zoology), aligned with NCERT syllabus
                   </p>
                 </div>
 
@@ -275,7 +275,7 @@ export default function HomePage() {
                     Practice Tests
                   </h3>
                   <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                    Full-length practice tests designed according to GPAT exam format
+                    Full-length practice tests designed according to NEET UG exam format
                   </p>
                 </div>
 
@@ -362,7 +362,7 @@ export default function HomePage() {
                 How It Works
               </h2>
               <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
-                Three simple steps to start your GPAT preparation
+                Three simple steps to start your NEET UG preparation
               </p>
             </div>
 
@@ -429,29 +429,29 @@ export default function HomePage() {
           <div className="mx-auto max-w-4xl px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-slate-100">
-                Who Is ThinqRx For?
+                Who Is NEET Prep For?
               </h2>
               <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
-                This platform is designed for students preparing for pharmacy entrance exams
+                This platform is designed for students preparing for NEET UG medical entrance exam
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
               <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
-                  GPAT Aspirants
+                  NEET UG Aspirants
                 </h3>
                 <p className="text-base text-slate-600 dark:text-slate-300">
-                  Students preparing for the Graduate Pharmacy Aptitude Test (GPAT) conducted by NTA.
+                  Students preparing for the National Eligibility cum Entrance Test (NEET UG) conducted by NTA.
                 </p>
               </Card>
 
               <Card className="p-6 border-2 rounded-2xl bg-white dark:bg-slate-800/50 border-[#E5E7EB] dark:border-slate-700 shadow-sm">
                 <h3 className="text-lg font-semibold mb-2 text-slate-900 dark:text-slate-100">
-                  Pharmacy Students
+                  Medical Aspirants
                 </h3>
                 <p className="text-base text-slate-600 dark:text-slate-300">
-                  B.Pharm and M.Pharm students who want to review core pharmacy subjects systematically.
+                  Students aiming for MBBS/BDS admission who want to master Physics, Chemistry, and Biology systematically.
                 </p>
               </Card>
 
@@ -469,7 +469,7 @@ export default function HomePage() {
                   Working Professionals
                 </h3>
                 <p className="text-base text-slate-600 dark:text-slate-300">
-                  Pharmacy professionals preparing for competitive exams while managing other commitments.
+                  Students preparing for medical entrance exams while managing other commitments.
                 </p>
               </Card>
             </div>
@@ -484,7 +484,7 @@ export default function HomePage() {
                 Frequently Asked Questions
               </h2>
               <p className="text-base md:text-lg max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
-                Answers to common questions about ThinqRx
+                Answers to common questions about NEET Prep
               </p>
             </div>
 
@@ -493,7 +493,7 @@ export default function HomePage() {
             <div className="mt-8 text-center">
               <p className="text-slate-600 dark:text-slate-300">
                 Need help?{" "}
-                <a href="mailto:info@thinqrx.in" className="hover:underline font-medium text-[#0F766E] dark:text-teal-400">
+                <a href="mailto:support@neetprep.com" className="hover:underline font-medium text-[#0F766E] dark:text-teal-400">
                   Contact support
                 </a>
               </p>
@@ -505,7 +505,7 @@ export default function HomePage() {
         <section className="py-16 md:py-20 bg-[#E6F4F2] dark:bg-[#0F172A]">
           <div className="mx-auto max-w-4xl px-6 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-slate-900 dark:text-slate-100">
-              Start Your GPAT Preparation
+              Start Your NEET UG Preparation
             </h2>
             <p className="text-lg md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto text-slate-600 dark:text-slate-300">
               Create a free account to access AI-generated study material and practice tests
@@ -543,9 +543,9 @@ export default function HomePage() {
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               {/* About */}
               <div>
-                <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">About ThinqRx</h3>
+                <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">About NEET Prep</h3>
                 <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-                  ThinqRx is an AI-powered exam preparation platform for GPAT and other pharmacy entrance exams in India.
+                  NEET Prep Platform is an AI-powered exam preparation platform for NEET UG medical entrance exam in India.
                 </p>
               </div>
 
@@ -554,8 +554,8 @@ export default function HomePage() {
                 <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">Contact Us</h3>
                 <ul className="space-y-2 text-sm">
                   <li>
-                    <a href="mailto:info@thinqrx.in" className="hover:underline text-slate-500 dark:text-slate-400">
-                      info@thinqrx.in
+                    <a href="mailto:support@neetprep.com" className="hover:underline text-slate-500 dark:text-slate-400">
+                      support@neetprep.com
                     </a>
                   </li>
                   <li>

@@ -27,7 +27,7 @@ export function validateMockTestData(data: any): {
   }
 
   if (!data.exam_name || typeof data.exam_name !== "string") {
-    errors.push({ field: "exam_name", message: "Exam name is required (e.g., GPAT, NIPER)" });
+    errors.push({ field: "exam_name", message: "Exam name is required (e.g., NEET_UG)" });
   }
 
   if (!data.questions || !Array.isArray(data.questions)) {

@@ -29,14 +29,14 @@ export default async function MockTestsPage() {
     redirect("/login");
   }
 
-  // Get GPAT course (default for now)
-  const { data: gpatCourse } = await supabase
+  // Get NEET course (default)
+  const { data: neetCourse } = await supabase
     .from("courses")
     .select("id")
-    .ilike("code", "gpat")
+    .ilike("code", "neet")
     .single();
 
-  const courseId = gpatCourse?.id;
+  const courseId = neetCourse?.id;
 
   // Get user's plan
   const userPlan = courseId ? await getUserPlan(user.id, courseId) : "free";
@@ -82,7 +82,7 @@ export default async function MockTestsPage() {
     // Rules:
     // - free: NO access
     // - plus: Can attempt 2 tests only (special case)
-    // - All other paid plans (pro, gpat_last_minute, gpat_2027_full, etc.): FULL access
+    // - All other paid plans (pro, neet_full, etc.): FULL access
     
     if (userPlan === "free") return false;
     
@@ -113,7 +113,7 @@ export default async function MockTestsPage() {
                 Full-Length Practice
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-slate-800 dark:text-white mb-3">
-                GPAT Practice Tests
+                NEET Practice Tests
               </h1>
               <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl">
                 Build comfort with exam format through full-length practice sessions

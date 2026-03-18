@@ -8,12 +8,12 @@ export default function FormulaBlock({
   title,
   formula,
   description,
-  gpatTip,
+  examTip,
 }: {
   title: string;
   formula: string;
   description?: string;
-  gpatTip?: string;
+  examTip?: string;
 }) {
   // Auto-convert plain text to LaTeX if needed
   const latexFormula = React.useMemo(() => {
@@ -48,11 +48,11 @@ export default function FormulaBlock({
         <p className="text-sm text-slate-700 mb-3 leading-relaxed">{description}</p>
       )}
 
-      {/* Tip */}
-      {gpatTip && (
+      {/* Exam Tip */}
+      {examTip && (
         <div className="flex items-start gap-2 p-3 rounded bg-amber-50 border border-amber-200">
           <Lightbulb className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800">{gpatTip}</p>
+          <p className="text-sm text-amber-800">{examTip}</p>
         </div>
       )}
     </div>

@@ -21,7 +21,7 @@ async function getOutline(
   subjectName: string,
   topicName: string,
 ) {
-  const code = courseCode || "gpat";
+  const code = courseCode || "neet";
 
   const { data: direct } = await supabase
     .from("syllabus_outlines")
@@ -167,7 +167,7 @@ export async function POST(request: Request) {
     .select("code")
     .eq("id", validCourseId)
     .maybeSingle();
-  const courseCode = courseRow?.code ?? "gpat";
+  const courseCode = courseRow?.code ?? "neet";
 
   if (!forceRegenerate) {
     const { data: cached } = await supabase
@@ -203,7 +203,7 @@ export async function POST(request: Request) {
     "High-Yield Comparisons",
     "Common Exam Traps",
     "Rapid Revision Facts",
-    "GPAT-Style MCQs",
+    "NEET-Style MCQs",
   ];
   
   console.log(`📋 Using ${outline.length > 0 ? 'database' : 'default'} outline with ${finalOutline.length} sections`);

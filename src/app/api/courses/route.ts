@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * GET /api/courses
- * Fetch all active courses (GPAT-only)
+ * Fetch all active courses (NEET-only)
  */
 export async function GET() {
   try {

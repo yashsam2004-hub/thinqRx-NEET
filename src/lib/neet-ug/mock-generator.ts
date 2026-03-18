@@ -1,41 +1,39 @@
 /**
- * GPAT Mock Test Generator
- * Generates GPAT-compliant mock tests with proper subject weightage
+ * NEET UG Mock Test Generator
+ * Generates NEET-compliant mock tests with proper subject weightage
  */
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
- * GPAT Official Scheme:
- * - Total Questions: 125
+ * NEET UG Official Scheme:
+ * - Total Questions: 180 (200 with internal choice, 180 to attempt)
  * - Marking: +4 correct, -1 wrong
- * - Total Marks: 500
+ * - Total Marks: 720
  * - Duration: 180 minutes (3 hours)
  * 
  * Subject Distribution:
- * - Pharmaceutical Chemistry: 38 questions
- * - Pharmaceutics: 38 questions
- * - Pharmacology: 28 questions
- * - Pharmacognosy: 10 questions
- * - Others (Pharm Math, Bio-stats, etc.): 11 questions
+ * - Physics: 45 questions
+ * - Chemistry: 45 questions
+ * - Biology (Botany): 45 questions
+ * - Biology (Zoology): 45 questions
  */
 
-export const GPAT_SCHEME = {
-  totalQuestions: 125,
+export const NEET_SCHEME = {
+  totalQuestions: 180,
   marksPerCorrect: 4,
   negativeMarks: 1,
-  totalMarks: 500,
+  totalMarks: 720,
   durationMinutes: 180,
   subjectWeightage: {
-    "Pharmaceutical Chemistry": 38,
-    "Pharmaceutics": 38,
-    "Pharmacology": 28,
-    "Pharmacognosy": 10,
-    "Others": 11,
+    "Physics": 45,
+    "Chemistry": 45,
+    "Biology - Botany": 45,
+    "Biology - Zoology": 45,
   },
 } as const;
 
-export interface GPATQuestion {
+export interface NEETQuestion {
   id: string;
   subject: string;
   topic?: string;
@@ -48,13 +46,13 @@ export interface GPATQuestion {
   order: number;
 }
 
-export interface GPATMockTest {
+export interface NEETMockTest {
   id: string;
   title: string;
   type: "mock" | "grand";
   durationMinutes: number;
   questionCount: number;
-  questions: GPATQuestion[];
+  questions: NEETQuestion[];
 }
 
 /**
@@ -72,7 +70,7 @@ function shuffleArray<T>(array: T[]): T[] {
 /**
  * Shuffle question options (except the answer)
  */
-function shuffleOptions(question: GPATQuestion): GPATQuestion {
+function shuffleOptions(question: NEETQuestion): NEETQuestion {
   const options = [...question.options];
   const answerIndex = ["A", "B", "C", "D"].indexOf(question.answerKey);
   
@@ -94,14 +92,14 @@ function shuffleOptions(question: GPATQuestion): GPATQuestion {
 }
 
 /**
- * Generate a GPAT mock test from question bank
- * Enforces GPAT subject weightage and randomizes questions
+ * Generate a NEET mock test from question bank
+ * Enforces NEET subject weightage and randomizes questions
  */
-export async function generateGPATMockTest(
+export async function generateNEETMockTest(
   testId: string,
   courseId: string,
   shuffleQuestions = true
-): Promise<GPATMockTest | null> {
+): Promise<NEETMockTest | null> {
   try {
     const supabase = await createSupabaseServerClient();
 
@@ -141,20 +139,18 @@ export async function generateGPATMockTest(
       questionsBySubject.get(subject)!.push(q);
     });
 
-    // Select questions according to GPAT weightage
+    // Select questions according to NEET weightage
     let selectedQuestions: typeof allQuestions = [];
 
-    for (const [subject, count] of Object.entries(GPAT_SCHEME.subjectWeightage)) {
+    for (const [subject, count] of Object.entries(NEET_SCHEME.subjectWeightage)) {
       const availableQuestions = questionsBySubject.get(subject) || [];
       
       if (availableQuestions.length < count) {
         console.warn(
           `Not enough questions for ${subject}. Need ${count}, have ${availableQuestions.length}`
         );
-        // Take all available
         selectedQuestions.push(...availableQuestions);
       } else {
-        // Randomly select required count
         const shuffled = shuffleQuestions 
           ? shuffleArray(availableQuestions)
           : availableQuestions;
@@ -162,9 +158,9 @@ export async function generateGPATMockTest(
       }
     }
 
-    // Ensure we have exactly 125 questions (or less if not enough in bank)
-    if (selectedQuestions.length > GPAT_SCHEME.totalQuestions) {
-      selectedQuestions = selectedQuestions.slice(0, GPAT_SCHEME.totalQuestions);
+    // Ensure we have exactly 180 questions (or less if not enough in bank)
+    if (selectedQuestions.length > NEET_SCHEME.totalQuestions) {
+      selectedQuestions = selectedQuestions.slice(0, NEET_SCHEME.totalQuestions);
     }
 
     // Shuffle question order (if enabled)
@@ -172,15 +168,15 @@ export async function generateGPATMockTest(
       selectedQuestions = shuffleArray(selectedQuestions);
     }
 
-    // Convert to GPATQuestion format and shuffle options
-    const formattedQuestions: GPATQuestion[] = selectedQuestions.map((q, index) => {
+    // Convert to NEETQuestion format and shuffle options
+    const formattedQuestions: NEETQuestion[] = selectedQuestions.map((q, index) => {
       const options = Array.isArray(q.options) 
         ? q.options 
         : typeof q.options === 'object'
           ? Object.values(q.options)
           : [];
 
-      const question: GPATQuestion = {
+      const question: NEETQuestion = {
         id: q.id,
         subject: q.subject || "Others",
         topic: q.topic || undefined,
@@ -188,12 +184,11 @@ export async function generateGPATMockTest(
         options: options as string[],
         answerKey: q.answer_key,
         explanation: q.explanation || undefined,
-        marks: q.marks || GPAT_SCHEME.marksPerCorrect,
-        negative: q.negative || GPAT_SCHEME.negativeMarks,
+        marks: q.marks || NEET_SCHEME.marksPerCorrect,
+        negative: q.negative || NEET_SCHEME.negativeMarks,
         order: index + 1,
       };
 
-      // Shuffle options for each question
       return shuffleQuestions ? shuffleOptions(question) : question;
     });
 
@@ -201,21 +196,21 @@ export async function generateGPATMockTest(
       id: testMeta.id,
       title: testMeta.title,
       type: testMeta.type,
-      durationMinutes: testMeta.duration_minutes || GPAT_SCHEME.durationMinutes,
+      durationMinutes: testMeta.duration_minutes || NEET_SCHEME.durationMinutes,
       questionCount: formattedQuestions.length,
       questions: formattedQuestions,
     };
   } catch (error) {
-    console.error("Error generating GPAT mock test:", error);
+    console.error("Error generating NEET mock test:", error);
     return null;
   }
 }
 
 /**
- * Calculate GPAT score with proper marking scheme
+ * Calculate NEET score with proper marking scheme
  */
-export function calculateGPATScore(
-  questions: GPATQuestion[],
+export function calculateNEETScore(
+  questions: NEETQuestion[],
   answers: Map<string, number | null>
 ): {
   score: number;
@@ -237,7 +232,6 @@ export function calculateGPATScore(
     const userAnswer = answers.get(question.id);
     const correctAnswerIndex = ["A", "B", "C", "D"].indexOf(question.answerKey);
 
-    // Initialize subject stats
     if (!subjectWise[question.subject]) {
       subjectWise[question.subject] = { correct: 0, incorrect: 0, unattempted: 0 };
     }
@@ -256,7 +250,7 @@ export function calculateGPATScore(
     }
   });
 
-  const maxScore = questions.length * GPAT_SCHEME.marksPerCorrect;
+  const maxScore = questions.length * NEET_SCHEME.marksPerCorrect;
   const percentage = maxScore > 0 ? (score / maxScore) * 100 : 0;
 
   return {
@@ -271,9 +265,9 @@ export function calculateGPATScore(
 }
 
 /**
- * Validate if question bank meets GPAT requirements
+ * Validate if question bank meets NEET requirements
  */
-export async function validateGPATQuestionBank(
+export async function validateNEETQuestionBank(
   testId: string
 ): Promise<{
   valid: boolean;
@@ -304,8 +298,8 @@ export async function validateGPATQuestionBank(
       subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
     });
 
-    // Validate against GPAT scheme
-    for (const [subject, required] of Object.entries(GPAT_SCHEME.subjectWeightage)) {
+    // Validate against NEET scheme
+    for (const [subject, required] of Object.entries(NEET_SCHEME.subjectWeightage)) {
       const available = subjectCounts[subject] || 0;
       
       if (available < required) {
@@ -320,9 +314,9 @@ export async function validateGPATQuestionBank(
     }
 
     const totalQuestions = Object.values(subjectCounts).reduce((a, b) => a + b, 0);
-    if (totalQuestions < GPAT_SCHEME.totalQuestions) {
+    if (totalQuestions < NEET_SCHEME.totalQuestions) {
       errors.push(
-        `Total questions (${totalQuestions}) less than required (${GPAT_SCHEME.totalQuestions})`
+        `Total questions (${totalQuestions}) less than required (${NEET_SCHEME.totalQuestions})`
       );
     }
 

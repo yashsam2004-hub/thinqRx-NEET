@@ -373,7 +373,7 @@ export function calculateMockTestAnalytics(attempts: UserAttempt[]): MockTestAna
   const performances: MockTestPerformance[] = mockTestAttempts.map((attempt) => {
     const metadata = attempt.responsesJson.metadata;
     const testTitle = (attempt.responsesJson as any).test_title || "Mock Test";
-    const examType = (attempt.responsesJson as any).exam_type || "GPAT";
+    const examType = (attempt.responsesJson as any).exam_type || "NEET_UG";
     const subjectWisePerformance = (attempt.responsesJson as any).subject_wise_performance || [];
 
     const accuracy = metadata.accuracy || 

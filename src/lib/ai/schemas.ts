@@ -13,7 +13,7 @@ export const notesBlockSchema = z.discriminatedUnion("type", [
     headers: z.array(z.string().min(1)).min(1),
     rows: z.array(z.array(z.string().min(1)).min(1)).min(1),
     caption: z.string().optional(),
-    gpatNote: z.string().optional(), // GPAT exam focus note
+    examNote: z.string().optional(), // NEET exam focus note
   }),
   z.object({
     type: z.literal("chemicals"),
@@ -45,13 +45,13 @@ export const notesBlockSchema = z.discriminatedUnion("type", [
     title: z.string().min(1),
     description: z.string().optional(),
   }),
-  // NEW: Formula block for GPAT equations
+  // Formula block for NEET equations
   z.object({
     type: z.literal("formula"),
     title: z.string().min(1),
     formula: z.string().min(1),
     description: z.string().optional(),
-    gpatTip: z.string().optional(),
+    examTip: z.string().optional(),
   }),
   // Figure block removed - no image generation system available
   // Kept in schema for backwards compatibility but will be skipped during rendering
@@ -78,10 +78,10 @@ export const notesBlockSchema = z.discriminatedUnion("type", [
     structureVariant: z.enum(["handwritten", "textbook"]).optional(), // Visual style
     enhancement_type: z.literal("STRUCTURE_AUGMENTATION").optional(), // Tag for structure enhancements
   }),
-  // NEW: Highlight box (Why this matters, GPAT focus, Key concept)
+  // Highlight box (Why this matters, NEET focus, Key concept)
   z.object({
     type: z.literal("highlight"),
-    style: z.enum(["info", "tip", "warning", "gpat", "clinical"]),
+    style: z.enum(["info", "tip", "warning", "exam", "clinical"]),
     title: z.string().min(1),
     content: z.string().min(1),
   }),
@@ -98,7 +98,7 @@ export const notesBlockSchema = z.discriminatedUnion("type", [
     title: z.string().optional(),
     description: z.string().optional(),
     caption: z.string().optional(),
-    gpatAngle: z.array(z.string()).optional(),
+    examAngle: z.array(z.string()).optional(),
     keyRecall: z.array(z.string()).optional(),
     svgAsset: z.string().optional(),
   }),

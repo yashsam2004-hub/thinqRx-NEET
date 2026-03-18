@@ -413,7 +413,7 @@ export default function AdminPlansPage() {
                               } 
                             })}
                             className="mt-2"
-                            placeholder="e.g., Students with 2-3 months left for GPAT"
+                            placeholder="e.g., Students with 2-3 months left for NEET UG"
                           />
                           <p className="text-xs text-slate-500 mt-1">
                             Shows as "✅ Best for: [your text]" on pricing cards

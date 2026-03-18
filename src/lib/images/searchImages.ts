@@ -34,7 +34,7 @@ export async function searchWikimediaImages(
 
     const response = await fetch(apiUrl.toString(), {
       headers: {
-        "User-Agent": "ThinqRx/1.0 (Educational Platform)",
+        "User-Agent": "NEETPrep/1.0 (Educational Platform)",
       },
     });
 

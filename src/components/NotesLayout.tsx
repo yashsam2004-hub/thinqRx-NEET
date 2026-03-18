@@ -48,7 +48,7 @@ export default function NotesLayout({
   const loadingMessages = [
     { text: "Loading outline from database", icon: null },
     { text: "Generating Quick Revision content", icon: null },
-    { text: "Adding GPAT-focused insights", icon: null },
+    { text: "Adding NEET-focused insights", icon: null },
     { text: "Creating blue highlight cards", icon: null },
     { text: "Building high-yield tables", icon: null },
     { text: "Finalizing exam-ready notes", icon: null },
@@ -393,7 +393,7 @@ export default function NotesLayout({
                     Premium Content
                   </h2>
                   <p className="text-center text-teal-50 dark:text-teal-100 text-lg max-w-2xl mx-auto">
-                    Unlock unlimited AI-powered study notes and ace your GPAT exam
+                    Unlock unlimited AI-powered study notes and ace your NEET UG exam
                   </p>
                 </div>
 

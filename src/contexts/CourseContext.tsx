@@ -66,7 +66,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Initialize course from localStorage or default to GPAT with timeout
+  // Initialize course from localStorage or default to NEET with timeout
   useEffect(() => {
     const initializeCourse = async () => {
       setIsLoading(true);
@@ -92,9 +92,9 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
 
         let selected = courses.find((c: Course) => c.id === storedCourseId);
         
-        // Default to GPAT if no stored course or stored course not found
+        // Default to NEET if no stored course or stored course not found
         if (!selected) {
-          selected = courses.find((c: Course) => c.code === "gpat") || courses[0];
+          selected = courses.find((c: Course) => c.code === "neet") || courses[0];
         }
 
         if (selected) {

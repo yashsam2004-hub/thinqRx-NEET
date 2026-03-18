@@ -161,16 +161,16 @@ export async function POST(request: Request) {
       console.warn("Mock test upload warnings:", validation.warnings);
     }
 
-    // Get GPAT course (default for now)
+    // Get NEET course (default)
     const { data: gpatCourse } = await supabase
       .from("courses")
       .select("id")
-      .ilike("code", "gpat")
+      .ilike("code", "neet")
       .single();
 
     if (!gpatCourse) {
       return NextResponse.json(
-        { ok: false, message: "GPAT course not found" },
+        { ok: false, message: "NEET course not found" },
         { status: 404 }
       );
     }
@@ -184,7 +184,7 @@ export async function POST(request: Request) {
       .from("mock_tests")
       .insert({
         course_id: gpatCourse.id,
-        exam_type: testData.exam_name || "GPAT",
+        exam_type: testData.exam_name || "NEET_UG",
         title: testData.test_name,
         description: testData.description,
         questions_json: { questions: testData.questions }, // Only store questions array in the expected format

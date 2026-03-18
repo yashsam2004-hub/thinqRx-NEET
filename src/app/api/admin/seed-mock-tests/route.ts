@@ -23,18 +23,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Forbidden: Admin access required" }, { status: 403 });
   }
 
-  // Get GPAT course
-  const { data: gpatCourse } = await supabase
+  // Get NEET course
+  const { data: neetCourse } = await supabase
     .from("courses")
     .select("id")
-    .ilike("code", "gpat")
+    .ilike("code", "neet")
     .single();
 
-  if (!gpatCourse) {
-    return NextResponse.json({ error: "GPAT course not found" }, { status: 404 });
+  if (!neetCourse) {
+    return NextResponse.json({ error: "NEET course not found" }, { status: 404 });
   }
 
-  const courseId = gpatCourse.id;
+  const courseId = neetCourse.id;
 
   // Generate 15 mock tests with variations
   const generateMockTest = (testNumber: number) => {
@@ -103,9 +103,9 @@ export async function POST(request: NextRequest) {
 
     return {
       course_id: courseId,
-      exam_type: "GPAT",
-      title: `GPAT Mock Test - Test ${testNumber}`,
-      description: `Full-length practice test ${testNumber} covering all GPAT subjects with comprehensive questions`,
+      exam_type: "NEET_UG",
+      title: `NEET Mock Test - Test ${testNumber}`,
+      description: `Full-length practice test ${testNumber} covering all NEET subjects with comprehensive questions`,
       duration_minutes: 180,
       questions_json: { questions: baseQuestions },
       total_questions: 5,
@@ -133,9 +133,9 @@ export async function POST(request: NextRequest) {
   const mockTests = [
     {
       course_id: courseId,
-      exam_type: "GPAT",
-      title: "GPAT Mock Test 2026 - Test 1",
-      description: "Full-length practice test covering all GPAT subjects with comprehensive questions",
+      exam_type: "NEET_UG",
+      title: "NEET Mock Test 2026 - Test 1",
+      description: "Full-length practice test covering all NEET subjects with comprehensive questions",
       duration_minutes: 180,
       questions_json: {
         questions: [
@@ -244,8 +244,8 @@ export async function POST(request: NextRequest) {
     },
     {
       course_id: courseId,
-      exam_type: "GPAT",
-      title: "GPAT Mock Test 2026 - Test 2",
+      exam_type: "NEET_UG",
+      title: "NEET Mock Test 2026 - Test 2",
       description: "Comprehensive practice test with focus on advanced concepts",
       duration_minutes: 180,
       questions_json: {
@@ -287,7 +287,7 @@ export async function POST(request: NextRequest) {
           {
             question_id: "Q3",
             subject: "Pharmaceutics",
-            topic: "Biopharmaceutics",
+            topic: "Thermodynamics",
             difficulty: "Medium",
             question_text: "<p>The bioavailability of a drug is defined as:</p>",
             options: {
@@ -355,9 +355,9 @@ export async function POST(request: NextRequest) {
     },
     {
       course_id: courseId,
-      exam_type: "GPAT",
-      title: "GPAT Mock Test 2026 - Test 3",
-      description: "Practice test emphasizing clinical pharmacy and pharmacotherapeutics",
+      exam_type: "NEET_UG",
+      title: "NEET Mock Test 2026 - Test 3",
+      description: "Practice test emphasizing Physics, Chemistry, and Biology",
       duration_minutes: 180,
       questions_json: {
         questions: [

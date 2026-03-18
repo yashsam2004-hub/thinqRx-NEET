@@ -28,13 +28,13 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = React.useState("");
 
   // Data
-  const [gpatCourseId, setGpatCourseId] = React.useState<string>("");
+  const [courseId, setCourseId] = React.useState<string>("");
 
   // Loading states
   const [loading, setLoading] = React.useState(false);
   const [loadingData, setLoadingData] = React.useState(true);
 
-  // Fetch GPAT course ID
+  // Fetch NEET course ID
   React.useEffect(() => {
     async function fetchData() {
       try {
@@ -48,7 +48,7 @@ export default function SignupPage() {
           .single();
 
         if (coursesData) {
-          setGpatCourseId(coursesData.id);
+          setCourseId(coursesData.id);
         }
       } catch (error) {
         console.error("Error fetching course:", error);
@@ -79,7 +79,7 @@ export default function SignupPage() {
       return;
     }
 
-    if (!gpatCourseId) {
+    if (!courseId) {
       toast.error("Course not available. Please try again later.");
       return;
     }
@@ -93,7 +93,7 @@ export default function SignupPage() {
           email,
           password,
           name,
-          courseId: gpatCourseId,
+          courseId: courseId,
           plan: "free",
           billingCycle: "monthly",
         }),
@@ -175,7 +175,7 @@ export default function SignupPage() {
             Create Your Account
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Start preparing for GPAT with ThinqRx - it's free
+            Start preparing for NEET UG - it's free
           </p>
         </div>
 

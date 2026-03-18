@@ -79,8 +79,8 @@ export function generateCourseMetadata(courseName: string, year: string): Metada
       `${courseName} mock test`,
       `${courseName} study material`,
       "AI learning platform",
-      "pharmacy entrance exam",
-      "GPAT coaching",
+      "medical entrance exam",
+      "NEET coaching",
     ],
     canonical: `/courses/${courseName.toLowerCase()}`,
   });

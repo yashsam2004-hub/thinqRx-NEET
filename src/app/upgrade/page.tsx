@@ -31,9 +31,9 @@ function getPlanIcon(planId: string) {
       return <Crown className="h-6 w-6" />;
     case "plus":
       return <Zap className="h-6 w-6" />;
-    case "gpat_2027_full":
+    case "neet_full":
       return <Rocket className="h-6 w-6" />;
-    case "gpat_last_minute":
+    case "neet_crash_course":
       return <Target className="h-6 w-6" />;
     default:
       return <Star className="h-6 w-6" />;
@@ -45,7 +45,7 @@ function getPlanBorder(planId: string, selected: boolean) {
   switch (planId) {
     case "pro":
       return "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-lg ring-2 ring-amber-200 dark:ring-amber-800";
-    case "gpat_2027_full":
+    case "neet_full":
       return "border-purple-500 bg-purple-50/50 dark:bg-purple-950/20 shadow-lg ring-2 ring-purple-200 dark:ring-purple-800";
     default:
       return "border-teal-500 bg-teal-50/50 dark:bg-teal-950/20 shadow-lg ring-2 ring-teal-200 dark:ring-teal-800";
@@ -198,7 +198,7 @@ export default function UpgradePage() {
               Upgrade Your Plan
             </h1>
             <p className="text-lg text-slate-600 dark:text-slate-300 mb-4">
-              Choose a plan to supercharge your GPAT preparation
+              Choose a plan to supercharge your NEET UG preparation
             </p>
             {currentPlan !== "free" && (
               <Badge className="bg-teal-100 dark:bg-teal-950/50 text-teal-700 dark:text-teal-300 border-0">
@@ -427,7 +427,7 @@ export default function UpgradePage() {
                   <Link href="/pricing">
                     <Button variant="outline" size="sm">Compare Plans</Button>
                   </Link>
-                  <a href="mailto:info@thinqrx.in">
+                  <a href="mailto:support@neetprep.com">
                     <Button variant="outline" size="sm">Contact Support</Button>
                   </a>
                 </div>

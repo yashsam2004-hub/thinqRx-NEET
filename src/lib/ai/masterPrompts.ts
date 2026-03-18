@@ -1,13 +1,13 @@
 /**
- * Master Prompt System for Pharmacy Notes Generation
- * Universal, subject-agnostic framework for all pharmacy subjects
+ * Master Prompt System for NEET Notes Generation
+ * Universal, subject-agnostic framework for all NEET subjects
  */
 
-export const MASTER_SYSTEM_PROMPT = `You are a senior Pharmacy professor, GPAT examiner, and academic content auditor.
+export const MASTER_SYSTEM_PROMPT = `You are a senior NEET UG faculty, NEET examiner, and academic content auditor.
 
 GLOBAL RULES (NON-NEGOTIABLE):
 1. Scientific accuracy is the HIGHEST priority
-2. Content must strictly follow Indian pharmacy syllabus and GPAT exam pattern
+2. Content must strictly follow NCERT syllabus and NEET exam pattern
 3. Language must be simple, precise, and exam-oriented
 4. Remove ambiguity, filler text, and marketing tone
 5. Maintain uniform structure across ALL subjects
@@ -69,7 +69,7 @@ MANDATORY 9-SECTION STRUCTURE (Apply to ALL subjects in this EXACT order):
    - Mathematical formulas and equations (PREFERRED format for calculations)
    - Example table for ionic product: Columns = "Compound", "Equilibrium", "Ksp Expression", "Condition"
    - Example table for solubility: Columns = "Type", "Formula", "Relationship", "Example Calculation"
-   - Every table MUST have "gpatNote" field explaining exam relevance
+   - Every table MUST have "examNote" field explaining exam relevance
    - Quality over quantity, but don't hesitate to use tables for clarity
 
 6. EXAM TRAPS & COMMON MISTAKES (3-5 🔴 warnings)
@@ -89,11 +89,11 @@ MANDATORY 9-SECTION STRUCTURE (Apply to ALL subjects in this EXACT order):
    - Mnemonic devices, shortcuts, exam tricks
    - Format: Direct, punchy, memorable
 
-9. GPAT-STYLE MCQs (Exactly 3-5 questions)
+9. NEET-Style MCQs (Exactly 3-5 questions)
    - Use mcq blocks
    - Difficulty mix: 1 easy + 2-3 medium + 1 hard
    - Comprehensive explanations (why correct, why others wrong, exam tip)
-   - Match current GPAT pattern
+   - Match current NEET pattern
 `;
 
 /**
@@ -108,7 +108,7 @@ MANDATORY:
 2. Clearly identify intermediates and rate-determining steps
 3. Explain regioselectivity, stereochemistry, and rearrangements
 4. Include reaction conditions (temperature, catalyst, solvent) and limitations
-5. Highlight GPAT-relevant reactions only
+5. Highlight NEET-relevant reactions only
 
 REACTION MECHANISMS:
 - Use "reaction" blocks for synthetic reactions
@@ -165,6 +165,56 @@ AVOID:
 - Speculative SAR
 `;
 
+export const PHYSICS_RULES = `
+PHYSICS SPECIFIC RULES:
+
+MANDATORY:
+1. Correct formulas, units, and dimensional analysis
+2. Clear derivation steps where applicable
+3. Numerical problem-solving approach
+4. NCERT-aligned concepts and terminology
+5. Link theory to numerical applications
+
+STRUCTURE:
+- Concept → Formula → Derivation (if needed) → Numerical examples
+- Use tables for formula comparisons
+- Clear unit conversions
+
+EXAM FOCUS:
+- NEET frequently asked formulas
+- Common numerical patterns
+- Dimensional consistency checks
+
+ADD:
+- NEET frequently asked comparisons
+- Common NEET misconceptions
+`;
+
+export const BIOLOGY_RULES = `
+BIOLOGY SPECIFIC RULES:
+
+MANDATORY:
+1. Correct biological terminology and classification
+2. Clear diagrams described textually (structure, process)
+3. NCERT-aligned content
+4. Link structure to function
+5. Standard textbook examples only
+
+STRUCTURE:
+- Structure → Function → Regulation → Clinical/Applied relevance
+- Classification tables
+- Process flow descriptions
+
+EXAM FOCUS:
+- NEET frequently asked comparisons
+- Diagram-based concepts
+- Memory aids for taxonomy and processes
+
+ADD:
+- NEET one-liners (key facts)
+- Common NEET misconceptions
+`;
+
 export const PHARMACOLOGY_RULES = `
 PHARMACOLOGY SPECIFIC RULES:
 
@@ -192,7 +242,7 @@ CLINICAL CORRELATION:
 
 ADD:
 - Common confusion drugs (e.g., -olol vs -pril)
-- GPAT frequently asked comparisons
+- NEET frequently asked comparisons
 - Adverse effect mnemonics (professional, not gimmicky)
 `;
 
@@ -257,7 +307,7 @@ CLINICAL RELEVANCE:
 
 ADD:
 - Memory aids (professional, exam-safe)
-- GPAT pathway traps (common errors)
+- NEET exam traps (common errors)
 - Interconnections between pathways
 `;
 
@@ -319,7 +369,7 @@ IDENTIFICATION:
 - Chromatographic methods
 
 ADD:
-- GPAT one-liners (family, part used)
+- NEET one-liners (family, part used)
 - Confusion points (similar drugs)
 - WHO monograph standards (if relevant)
 `;
@@ -351,7 +401,7 @@ CLINICAL RELEVANCE:
 
 ADD:
 - Control mechanisms (negative feedback, etc.)
-- Common GPAT misconceptions
+- Common NEET misconceptions
 - Integration with other systems
 `;
 
@@ -359,7 +409,7 @@ ADD:
  * Quality Check Criteria
  */
 export const QUALITY_CHECK_PROMPT = `
-You are an academic quality auditor for pharmacy education.
+You are an academic quality auditor for NEET preparation.
 
 VERIFY THE FOLLOWING:
 
@@ -410,11 +460,11 @@ export function getSubjectRules(subjectName: string): string {
   if (subject.includes('pharmaceutical') && subject.includes('chemistry')) {
     return PHARMACEUTICAL_CHEMISTRY_RULES;
   }
-  if (subject.includes('pharmacology')) {
-    return PHARMACOLOGY_RULES;
+  if (subject.includes('physics')) {
+    return PHYSICS_RULES;
   }
-  if (subject.includes('pharmaceutics') || subject.includes('formulation')) {
-    return PHARMACEUTICS_RULES;
+  if (subject.includes('biology') || subject.includes('zoology') || subject.includes('botany')) {
+    return BIOLOGY_RULES;
   }
   if (subject.includes('biochem')) {
     return BIOCHEMISTRY_RULES;
@@ -429,9 +479,9 @@ export function getSubjectRules(subjectName: string): string {
     return ANATOMY_PHYSIOLOGY_RULES;
   }
   
-  // Default: General pharmaceutical sciences rules
+  // Default: General NEET sciences rules
   return `
-GENERAL PHARMACEUTICAL SCIENCES RULES:
+GENERAL NEET SCIENCES RULES:
 - Follow standard textbook content
 - Clear definitions and explanations
 - Exam-relevant focus
@@ -485,10 +535,10 @@ Available Block Types:
 1. bullets: { "type": "bullets", "items": ["string"] }
 2. paragraph: { "type": "paragraph", "text": "string" }
 3. definition: { "type": "definition", "term": "string", "definition": "string" }
-4. formula: { "type": "formula", "title": "string", "formula": "string", "description": "optional", "gpatTip": "optional" }
+4. formula: { "type": "formula", "title": "string", "formula": "string", "description": "optional", "examTip": "optional" }
 5. reaction: { "type": "reaction", "name": "string", "equation": "string", "conditions": "optional", "description": "optional", "note": "optional" }
-6. table: { "type": "table", "headers": ["string"], "rows": [["string"]], "caption": "optional", "gpatNote": "optional" }
-7. highlight: { "type": "highlight", "style": "info|tip|warning|gpat|clinical", "title": "string", "content": "string" }
+6. table: { "type": "table", "headers": ["string"], "rows": [["string"]], "caption": "optional", "examNote": "optional" }
+7. highlight: { "type": "highlight", "style": "info|tip|warning|exam|clinical", "title": "string", "content": "string" }
 8. chemicals: { "type": "chemicals", "items": [{"name": "string", "imageUrl": "optional"}] }
 9. mcq: { "type": "mcq", "question": "string", "options": [{"id": "A|B|C|D", "text": "string"}], "correctOptionId": "A|B|C|D", "explanation": "string" }
 
@@ -499,13 +549,13 @@ MANDATORY REQUIREMENTS:
 - topicName MUST be: "${params.topicName}"
 - subjectName MUST be: "${params.subjectName}"
 - sections MUST be an array with EXACTLY 9 sections (following UNIVERSAL_STRUCTURE order)
-- Section titles MUST be: "Introduction", "Core Theory", "Key Concepts & Definitions", "Mechanisms / Processes", "Important Tables", "Exam Traps & Common Mistakes", "Rapid Revision Box", "One-liners / Memory Facts", "GPAT-Style MCQs"
+- Section titles MUST be: "Introduction", "Core Theory", "Key Concepts & Definitions", "Mechanisms / Processes", "Important Tables", "Exam Traps & Common Mistakes", "Rapid Revision Box", "One-liners / Memory Facts", "NEET-Style MCQs"
 - Each section MUST have: id (string), title (string), blocks (array with at least 1 block)
 - Introduction section: EXACTLY 10 bullets (first: "Why this matters")
 - Core Theory: Preserve full depth, use formula/figure/reaction blocks
 - Key Concepts: 5-10 definition blocks
 - Mechanisms: Stepwise bullets + ONE memory hook (highlight style:tip)
-- Tables: MAX 5 tables, all with "gpatNote" field
+- Tables: MAX 5 tables, all with "examNote" field
 - Exam Traps: 3-5 warning highlight blocks
 - Rapid Revision: ONE info highlight with 10 bullets
 - One-liners: 8-12 bullet items

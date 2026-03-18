@@ -39,7 +39,7 @@ export default function ImageBlock({
           </div>
         )}
         <p className="mt-4 text-xs text-center text-slate-500">
-          (Visual representation simplified for GPAT understanding)
+          (Visual representation simplified for NEET understanding)
         </p>
       </div>
     );

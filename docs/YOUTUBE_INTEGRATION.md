@@ -1,7 +1,7 @@
 # 📺 YouTube Integration Guide
 
 ## Overview
-This guide explains how to integrate YouTube videos into ThinqRx notes for enhanced learning experience.
+This guide explains how to integrate YouTube videos into NEET Prep notes for enhanced learning experience.
 
 ---
 
@@ -92,8 +92,8 @@ Update `src/lib/ai/generateNotes.ts` to include video suggestions:
 // After generating notes, search for relevant videos
 const videoQueries = [
   `${topicName} ${subjectName} tutorial`,
-  `${topicName} GPAT preparation`,
-  `${topicName} pharmacy explained`,
+  `${topicName} NEET UG preparation`,
+  `${topicName} NCERT explained`,
 ];
 
 const videos: VideoResult[] = [];
@@ -124,7 +124,7 @@ Prioritize videos from trusted pharmacy education channels:
 
 ```typescript
 const TRUSTED_CHANNELS = [
-  "UCJ3vGO4z8N0qI5XmE7V7qYA", // Example: Pharmacy education channel
+  "UCJ3vGO4z8N0qI5XmE7V7qYA", // Example: NEET education channel
   // Add more trusted channel IDs
 ];
 
@@ -161,10 +161,10 @@ const filteredVideos = results.filter(video =>
 ```typescript
 // Good queries
 const queries = [
-  `${topicName} GPAT pharmacy`, // GPAT context
+  `${topicName} NEET UG`, // NEET context
   `${topicName} ${subjectName} tutorial`, // Subject context
-  `${topicName} mechanism explained`, // Conceptual
-  `${topicName} pharmaceutical chemistry`, // Domain-specific
+  `${topicName} concept explained`, // Conceptual
+  `${topicName} NCERT Class 11 12`, // Domain-specific
 ];
 
 // Filter criteria
@@ -192,9 +192,9 @@ function calculateRelevanceScore(video: VideoResult, topic: string): number {
   const eduKeywords = ["tutorial", "explained", "lecture", "course", "lesson"];
   if (eduKeywords.some(kw => video.title.toLowerCase().includes(kw))) score += 2;
   
-  // GPAT/Pharmacy keywords
-  const pharmaKeywords = ["gpat", "pharmacy", "pharmaceutical", "medicinal"];
-  if (pharmaKeywords.some(kw => video.title.toLowerCase().includes(kw))) score += 3;
+  // NEET/Medical keywords
+  const neetKeywords = ["neet", "ncert", "medical", "biology", "physics", "chemistry"];
+  if (neetKeywords.some(kw => video.title.toLowerCase().includes(kw))) score += 3;
   
   // Channel credibility (if from trusted channels)
   if (TRUSTED_CHANNELS.includes(video.channelId)) score += 5;
@@ -224,7 +224,7 @@ Before going live with YouTube integration:
 1. I'll implement the video search function
 2. Integrate it into notes generation
 3. Add automatic video suggestions for all topics
-4. Enable video recommendations based on GPAT curriculum
+4. Enable video recommendations based on NEET UG curriculum
 
 **For now:**
 - VideoBlock is ready and can manually embed videos

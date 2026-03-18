@@ -147,7 +147,7 @@ export default function AdminSyllabusPage() {
       ) : courses.length === 0 ? (
         <Card className="p-6">
           <p className="text-center text-slate-600">
-            No GPAT course found in the database. Please ensure the course exists in the courses table.
+            No NEET course found in the database. Please ensure the course exists in the courses table.
           </p>
         </Card>
       ) : (

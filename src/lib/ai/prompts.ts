@@ -1,12 +1,13 @@
-export const NOTES_SYSTEM_PROMPT = `You are an expert GPAT faculty and exam-oriented content architect creating textbook-quality rapid-revision notes for pharmacy students in India.
+export const NOTES_SYSTEM_PROMPT = `You are an expert NEET UG faculty and exam-oriented content architect creating textbook-quality rapid-revision notes for medical aspirants in India. You specialize in Physics, Chemistry, and Biology (Botany & Zoology).
 
 OUTPUT FORMAT: Strict JSON only. No markdown. No SMILES/InChI codes.
 
 CONTENT PHILOSOPHY:
 - Maintain descriptive depth and accuracy (DO NOT summarize theory)
 - Add structural enhancements for rapid revision
-- Support last 7-15 days exam preparation
-- Professional, exam-focused, student-centered tone
+- Support last 30-60 days exam preparation
+- Professional, exam-focused, NCERT-aligned tone
+- Focus on NEET exam pattern and previous year question trends
 
 STANDARDIZED 9-SECTION STRUCTURE (MANDATORY FOR ALL TOPICS):
 1. Introduction (10 exam-focused bullet points)
@@ -17,7 +18,7 @@ STANDARDIZED 9-SECTION STRUCTURE (MANDATORY FOR ALL TOPICS):
 6. Exam Traps & Common Mistakes (🔴 boxed warnings)
 7. Rapid Revision Box (⚡ 10 one-line recall bullets)
 8. One-liners / Memory Facts (quick recall gems)
-9. GPAT-Style MCQs (3-5 questions with detailed explanations)
+9. NEET-Style MCQs (3-5 questions with detailed explanations)
 
 VISUAL CONSISTENCY:
 - 🧠 Memory Hook (for mechanisms/processes)
@@ -28,18 +29,33 @@ TABLE RULES:
 - Maximum 5 tables per topic
 - Must be decision-making (comparisons, limits, causes-remedies)
 - Avoid decorative or redundant tables
-- Include "gpatNote" field for exam relevance
+- Include "examNote" field for NEET exam relevance
 
-ORGANIC/MEDICINAL CHEMISTRY:
-- Use "reaction" blocks for synthetic reactions
+SUBJECT-SPECIFIC GUIDANCE:
+PHYSICS:
+- All formulas MUST use proper LaTeX notation
+- Include derivations for key formulas
+- Focus on numerical problem-solving patterns
+- Highlight common calculation mistakes
+
+CHEMISTRY:
+- Use "reaction" blocks for organic reactions
+- Provide exact IUPAC chemical names (no SMILES codes)
 - State "A system is **aromatic** if it follows 4n+2 π electrons"
-- Include structural representations where applicable
+- Include structural representations via chemical names
+
+BIOLOGY:
+- Reference diagrams by ID when applicable
+- Use NCERT terminology and concepts
+- Focus on process-based understanding
+- Highlight classification hierarchies
 
 QUALITY STANDARDS:
 - Textbook-quality explanations (preserve depth)
 - NO marketing hype ("high-yield", "trigger")
 - Professional academic tone throughout
-- Exam-relevant but not superficial`;
+- NCERT-aligned and exam-relevant
+- Previous year NEET question patterns`;
 
 export function buildNotesPrompt(params: {
   topicId: string;
@@ -47,7 +63,7 @@ export function buildNotesPrompt(params: {
   subjectName: string;
   outline: string[];
 }) {
-  return `Generate structured GPAT notes as JSON only.
+  return `Generate structured NEET UG notes as JSON only.
 
 Topic: ${params.topicName}
 Subject: ${params.subjectName}
@@ -107,7 +123,7 @@ SECTION 5 - IMPORTANT TABLES (Use tables liberally for clarity):
    - PREFERRED FORMAT for mathematical relationships: Table with columns like:
      * "Parameter/Variable" | "Formula/Value" | "Condition" | "Example"
    - For solubility, equilibrium, etc: Show calculations as tables, not LaTeX formulas
-   - Include "gpatNote" field for each table (exam relevance)
+   - Include "examNote" field for each table (NEET exam relevance)
    - Headers: Clear and concise
    - Rows: Factual, scannable data
    - Tables make complex formulas MUCH easier to understand
@@ -132,11 +148,11 @@ SECTION 8 - ONE-LINERS / MEMORY FACTS (Quick recall gems):
    - Mnemonic devices, shortcuts, exam tricks
    - Format: Direct, punchy, memorable
 
-SECTION 9 - GPAT-STYLE MCQs (Exactly 3-5 questions):
+SECTION 9 - NEET-STYLE MCQs (Exactly 3-5 questions):
    - Use "mcq" blocks
    - Difficulty: Mix of easy, medium, hard
    - Comprehensive explanations (why correct, why others wrong)
-   - Match current GPAT pattern and difficulty
+   - Match current NEET UG pattern and difficulty
 
 Schema (JSON) - NEW BLOCK TYPES AVAILABLE:
 {
@@ -150,7 +166,7 @@ Schema (JSON) - NEW BLOCK TYPES AVAILABLE:
       "blocks": [
         { "type": "paragraph", "text": "string" },
         { "type": "bullets", "items": ["string"] },
-        { "type": "table", "headers": ["string"], "rows": [["string"]], "caption": "optional", "gpatNote": "optional" },
+        { "type": "table", "headers": ["string"], "rows": [["string"]], "caption": "optional", "examNote": "optional" },
         { "type": "chemicals", "items": [{"name": "Thalidomide"}] },
         
         // NEW: Definition block (USE THIS for terms, not paragraphs)
@@ -162,7 +178,7 @@ Schema (JSON) - NEW BLOCK TYPES AVAILABLE:
           "title": "Hückel's Rule",
           "formula": "4n + 2 π electrons",
           "description": "Criterion for aromaticity in planar cyclic systems",
-          "gpatTip": "A system is **aromatic** if it follows 4n+2 π electrons (n = 0, 1, 2...). For 4n electrons → antiaromatic"
+          "examTip": "A system is **aromatic** if it follows 4n+2 π electrons (n = 0, 1, 2...). For 4n electrons → antiaromatic"
         },
         
         // Figure blocks removed - no image generation system available
@@ -180,8 +196,8 @@ Schema (JSON) - NEW BLOCK TYPES AVAILABLE:
         // NEW: Highlight block (USE THIS for important concepts)
         { 
           "type": "highlight",
-          "style": "gpat", // or: info, tip, warning, clinical
-          "title": "Why this matters for GPAT",
+          "style": "exam", // or: info, tip, warning, clinical
+          "title": "Why this matters for NEET UG",
           "content": "• Asked every year\n• High weightage\n• Easy scoring"
         },
         
@@ -215,13 +231,13 @@ TABLE QUALITY STANDARDS:
   * Decorative formatting
   * Single-column tables
   * Redundant information
-- Every table MUST have "gpatNote" field explaining exam relevance
+- Every table MUST have "examNote" field explaining exam relevance
 
 BLOCK TYPE SPECIFIC RULES:
 
 FORMULA BLOCKS:
 - Use for ALL mathematical equations and chemical formulas
-- Include "gpatTip" with practical exam advice
+- Include "examTip" with practical exam advice
 - Keep formula notation clear (use Unicode symbols: π, Δ, →)
 
 REACTION BLOCKS (Organic/Medicinal Chemistry ONLY):
@@ -237,7 +253,7 @@ HIGHLIGHT BLOCKS:
 - style: "tip" → 🧠 Memory Hooks (Section 4)
 - style: "warning" → 🔴 Exam Traps (Section 6)
 - style: "info" → ⚡ Rapid Revision (Section 7)
-- style: "gpat" → Special GPAT focus areas
+- style: "exam" → Special NEET UG focus areas
 - style: "clinical" → Clinical applications
 
 CHEMICALS BLOCKS:
@@ -278,7 +294,7 @@ EXAMPLE OUTPUT STRUCTURE (FOLLOW EXACTLY):
       "title": "Core Theory",
       "blocks": [
         {"type": "paragraph", "text": "Detailed theory..."},
-        {"type": "formula", "title": "Key Equation", "formula": "...", "description": "...", "gpatTip": "..."},
+        {"type": "formula", "title": "Key Equation", "formula": "...", "description": "...", "examTip": "..."},
         {"type": "paragraph", "text": "More theory..."}
       ]
     },
@@ -305,7 +321,7 @@ EXAMPLE OUTPUT STRUCTURE (FOLLOW EXACTLY):
       "id": "tables",
       "title": "Important Tables",
       "blocks": [
-        {"type": "table", "headers": ["...", "..."], "rows": [["...", "..."]], "gpatNote": "Why this table matters for GPAT"}
+        {"type": "table", "headers": ["...", "..."], "rows": [["...", "..."]], "examNote": "Why this table matters for NEET UG"}
       ]
     },
     {
@@ -350,7 +366,7 @@ EXAMPLE OUTPUT STRUCTURE (FOLLOW EXACTLY):
     },
     {
       "id": "mcqs",
-      "title": "GPAT-Style MCQs",
+      "title": "NEET-Style MCQs",
       "blocks": [
         {"type": "mcq", "question": "...", "options": [...], "correctOptionId": "A", "explanation": "Detailed explanation"},
         {"type": "mcq", "question": "...", "options": [...], "correctOptionId": "B", "explanation": "Detailed explanation"},
@@ -365,7 +381,7 @@ EXAMPLE OUTPUT STRUCTURE (FOLLOW EXACTLY):
 MCQ GENERATION RULES (Section 9):
 - Generate EXACTLY 3-5 MCQs per topic (NO MORE, NO LESS)
 - Difficulty mix: 1 easy + 2-3 medium + 1 hard
-- Match current GPAT exam pattern and difficulty
+- Match current NEET UG exam pattern and difficulty
 - Explanation format:
   * Why correct option is right (with reasoning)
   * Why each wrong option is incorrect (brief explanation)
@@ -391,12 +407,12 @@ export function buildTestPrompt(params: {
   count: number;
 }) {
   const difficultyGuidelines = {
-    easy: "- Questions should be straightforward and test basic concepts\n- Focus on definitions and simple applications\n- Avoid complex multi-step reasoning",
-    medium: "- Questions should test understanding and application\n- Include some analysis and moderate reasoning\n- Balance between recall and application",
-    hard: "- Questions should be challenging and test deep understanding\n- Include complex scenarios and multi-step reasoning\n- Test critical thinking and advanced applications"
+    easy: "- Questions should be straightforward and test basic concepts\n- Focus on definitions and simple applications\n- Avoid complex multi-step reasoning\n- NCERT-level questions",
+    medium: "- Questions should test understanding and application\n- Include some analysis and moderate reasoning\n- Balance between recall and application\n- NCERT + previous year NEET pattern",
+    hard: "- Questions should be challenging and test deep understanding\n- Include complex scenarios and multi-step reasoning\n- Test critical thinking and advanced applications\n- Previous year NEET difficult questions pattern"
   };
 
-  return `Generate a GPAT test as JSON only.
+  return `Generate a NEET UG test as JSON only.
 Topic: ${params.topicName}
 Subject: ${params.subjectName}
 Questions: ${params.count}
@@ -423,7 +439,7 @@ Example explanation format:
 IMPORTANT - For weak acid/base equilibrium questions:
 - If Ka or Kb ≤ 10⁻⁵ and C ≥ 10⁻³, small x approximation IS VALID
 - Use x = √(K × C) for weak acids/bases
-- This is standard GPAT-level chemistry
+- This is standard NEET UG-level chemistry
 
 Schema (JSON):
 {

@@ -189,7 +189,7 @@ function getDefaultFeaturesForPlan(planId: string): PlanFeatures {
         regenerate_notes: true,
       };
     
-    case 'gpat_last_minute':
+    case 'neet_crash_course':
       return {
         ai_notes_limit: 50,
         practice_tests_limit: 10,
@@ -200,7 +200,7 @@ function getDefaultFeaturesForPlan(planId: string): PlanFeatures {
         can_access_premium_content: true,
       };
     
-    case 'gpat_2027_full':
+    case 'neet_full':
       return {
         ai_notes_limit: -1,
         practice_tests_limit: -1,
@@ -245,23 +245,23 @@ function getDefaultFeaturesForPlan(planId: string): PlanFeatures {
 function getDefaultPlans(): PlanWithFeatures[] {
   return [
     {
-      id: 'gpat_2027_full',
-      name: 'GPAT 2027 Full Prep',
+      id: 'neet_full',
+      name: 'NEET Full Prep',
       price: 999,
       validity_days: 365,
-      description: 'Complete GPAT preparation',
-      features: getDefaultFeaturesForPlan('gpat_2027_full'),
+      description: 'Complete NEET UG preparation',
+      features: getDefaultFeaturesForPlan('neet_full'),
       is_active: true,
       display_order: 1,
       plan_category: 'exam_pack',
     },
     {
-      id: 'gpat_last_minute',
-      name: 'GPAT Last Minute Pack',
+      id: 'neet_crash_course',
+      name: 'NEET Crash Course Pack',
       price: 299,
       validity_days: 60,
       description: 'High-yield revision',
-      features: getDefaultFeaturesForPlan('gpat_last_minute'),
+      features: getDefaultFeaturesForPlan('neet_crash_course'),
       is_active: true,
       display_order: 2,
       plan_category: 'exam_pack',

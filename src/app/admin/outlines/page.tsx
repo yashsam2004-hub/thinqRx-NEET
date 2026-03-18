@@ -21,7 +21,7 @@ const DEFAULT_OUTLINE = `[
 ]`;
 
 export default function AdminOutlinesPage() {
-  const [courseCode, setCourseCode] = React.useState("gpat");
+  const [courseCode, setCourseCode] = React.useState("neet");
   const [outlineVersion, setOutlineVersion] = React.useState("v1");
   const [subjectName, setSubjectName] = React.useState("");
   const [topicName, setTopicName] = React.useState("");
@@ -57,7 +57,7 @@ export default function AdminOutlinesPage() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          course_code: courseCode || "gpat",
+          course_code: courseCode || "neet",
           outline_version: outlineVersion || "v1",
           subject_name: subjectName,
           topic_name: topicName.trim() || "_default",
@@ -104,7 +104,7 @@ export default function AdminOutlinesPage() {
                 {courses.map((c) => (
                   <SelectItem key={c.id} value={c.code}>{c.name} ({c.code})</SelectItem>
                 ))}
-                {courses.length === 0 && <SelectItem value="gpat">GPAT (gpat)</SelectItem>}
+                {courses.length === 0 && <SelectItem value="neet">NEET (neet)</SelectItem>}
               </SelectContent>
             </Select>
           </div>

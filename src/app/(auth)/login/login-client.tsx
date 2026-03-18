@@ -92,7 +92,7 @@ export function LoginClient() {
       if (!response.ok) {
         // Handle device limit error specifically
         if (data.error === 'device_limit_exceeded') {
-          toast.error(data.message || 'Maximum 2 devices allowed. Please contact support at info@thinqrx.in to reset your devices.', { 
+          toast.error(data.message || 'Maximum 2 devices allowed. Please contact support at support@neetprep.com to reset your devices.', { 
             duration: 10000 
           });
         } else {
@@ -140,7 +140,7 @@ export function LoginClient() {
             Welcome Back
           </h1>
           <p className="text-sm text-slate-600 dark:text-slate-300 text-center">
-            Sign in to your ThinqRx account
+            Sign in to your NEET Prep account
           </p>
         </div>
 

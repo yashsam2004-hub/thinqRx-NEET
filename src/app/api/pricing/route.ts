@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const courseCode = searchParams.get("course") || "gpat"; // Default to GPAT
+    const courseCode = searchParams.get("course") || "neet"; // Default to NEET
 
     const supabase = await createSupabaseServerClient();
 

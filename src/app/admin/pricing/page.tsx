@@ -50,7 +50,7 @@ export default function AdminPricingRedirect() {
           <ul className="text-left text-sm text-teal-800 dark:text-teal-300 space-y-2">
             <li className="flex items-start gap-2">
               <ArrowRight className="h-4 w-4 mt-0.5 flex-shrink-0" />
-              <span>Manage all 5 plans (Free, Plus, Pro, GPAT Last Minute, GPAT 2027 Full Prep)</span>
+              <span>Manage all 5 plans (Free, Plus, Pro, NEET Crash Course, NEET Full Prep)</span>
             </li>
             <li className="flex items-start gap-2">
               <ArrowRight className="h-4 w-4 mt-0.5 flex-shrink-0" />

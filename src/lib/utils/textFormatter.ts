@@ -3,7 +3,7 @@
  * Automatically bolds important terms and improves formatting
  */
 
-// Common pharmacy/chemistry terms to bold
+// Common medical/science terms to bold
 const IMPORTANT_TERMS = [
   // Equilibrium terms
   "equilibrium", "equilibria", "Le Chatelier", "reaction quotient", "equilibrium constant",
@@ -20,8 +20,8 @@ const IMPORTANT_TERMS = [
   // General important terms
   "IMPORTANT", "NOTE", "KEY POINT", "REMEMBER", "CAUTION", "WARNING",
   
-  // Pharmacy specific
-  "GPAT", "drug", "pharmaceutical", "formulation", "bioavailability",
+  // Medical/science specific
+  "NEET", "drug", "medical", "formulation", "bioavailability",
   "pharmacokinetics", "pharmacodynamics", "therapeutic", "dosage"
 ];
 

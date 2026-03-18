@@ -272,8 +272,13 @@ notes-private/
 *.err
 
 # ============================================
-# PROJECT-SPECIFIC (PharmCards)
+# PROJECT-SPECIFIC (NEET Prep Platform)
 # ============================================
+
+# Private reference materials (.pmd files)
+/private/
+/private/reference-materials/
+*.pmd
 
 # Mock test uploads (if sensitive)
 # /mock-tests-uploads/
@@ -291,6 +296,9 @@ user-exports/
 
 # Email templates with credentials
 email-config-private.*
+
+# Biology diagrams (before they're finalized)
+# /public/biology-diagrams/draft/
 
 # ============================================
 # END OF .gitignore

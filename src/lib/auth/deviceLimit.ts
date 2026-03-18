@@ -80,7 +80,7 @@ export async function checkDeviceLimit(userId: string): Promise<DeviceLimitResul
     return {
       allowed: false,
       deviceCount,
-      message: `Maximum ${MAX_DEVICES} devices allowed. Please contact support at info@thinqrx.in to reset your devices.`
+      message: `Maximum ${MAX_DEVICES} devices allowed. Please contact support at support@neetprep.com to reset your devices.`
     };
   }
   

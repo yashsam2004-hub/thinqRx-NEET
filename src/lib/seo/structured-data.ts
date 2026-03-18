@@ -5,7 +5,7 @@
 
 import { PLATFORM } from "@/config/platform";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://thinqrx.com";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3001";
 
 export interface Organization {
   "@context": "https://schema.org";
@@ -29,11 +29,8 @@ export function getOrganizationSchema(): Organization {
     name: PLATFORM.brand,
     url: BASE_URL,
     logo: `${BASE_URL}/logo.png`,
-    description: `${PLATFORM.tagline}. Platform for pharmacy competitive exams in ${PLATFORM.country} operated by ${PLATFORM.company}`,
-    sameAs: [
-      "https://twitter.com/ThinqRxApp",
-      "https://linkedin.com/company/thinqrx",
-    ],
+    description: `${PLATFORM.tagline}. Platform for NEET UG medical entrance exam in ${PLATFORM.country} operated by ${PLATFORM.company}`,
+    sameAs: [],
     contactPoint: {
       "@type": "ContactPoint",
       email: PLATFORM.contact.email,

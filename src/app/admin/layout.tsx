@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "Admin Panel - ThinqRx",
-  description: "Admin panel for managing GPAT syllabus, outlines, pricing, coupons, and users",
+  title: "Admin Panel - NEET Prep",
+  description: "Admin panel for managing NEET UG syllabus, outlines, pricing, coupons, and users",
 };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -56,7 +56,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <div className="sticky top-0 flex h-screen flex-col">
           <div className="border-b border-sky-300 p-6 bg-gradient-to-r from-sky-500 to-sky-600 shadow-lg">
             <Link href="/dashboard" className="text-2xl font-bold text-white">
-              ThinqRx
+              NEET Prep
             </Link>
             <p className="mt-1 text-sm text-sky-100">Admin Panel</p>
           </div>

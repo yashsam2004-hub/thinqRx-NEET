@@ -113,7 +113,7 @@ export async function setCachedContent(
  * 
  * Usage:
  * const content = await withAICache(
- *   { contentType: 'note', exam: 'GPAT', subject: 'Pharmacology', topic: 'ANS' },
+ *   { contentType: 'note', exam: 'NEET', subject: 'Physics', topic: 'ANS' },
  *   async () => {
  *     return await callOpenAI(...);
  *   }

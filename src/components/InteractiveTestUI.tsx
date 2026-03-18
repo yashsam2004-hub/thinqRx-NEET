@@ -139,7 +139,7 @@ export default function InteractiveTestUI({
         const correct = score;
         const totalQuestions = testData.questions.length;
         const incorrect = totalQuestions - correct;
-        const calculatedScore = (correct * 4) - incorrect; // GPAT marking: +4 correct, -1 wrong
+        const calculatedScore = (correct * 4) - incorrect; // NEET marking: +4 correct, -1 wrong
         
         console.log("[InteractiveTestUI] Saving test attempt:", {
           topicId,

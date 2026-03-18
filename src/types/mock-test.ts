@@ -1,9 +1,9 @@
 /**
- * ThinqRx Mock Test System - Type Definitions
- * Matches real CBT exam structure (Digialm / TCS iON style)
+ * NEET Prep Platform Mock Test System - Type Definitions
+ * Matches real CBT exam structure (NTA / NEET style)
  */
 
-export type ExamType = "GPAT" | "NIPER" | "PHARMACIST" | "OTHER";
+export type ExamType = "NEET_UG" | "NEET_PG" | "AIIMS" | "OTHER";
 export type QuestionDifficulty = "Easy" | "Medium" | "Difficult";
 export type QuestionStatus = "not_visited" | "not_answered" | "answered" | "marked_for_review" | "answered_and_marked";
 

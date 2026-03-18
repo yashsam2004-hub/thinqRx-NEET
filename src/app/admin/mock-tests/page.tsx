@@ -178,8 +178,8 @@ export default function AdminMockTestsPage() {
             <p>Upload mock tests as JSON files with the following structure:</p>
             <pre className="bg-white p-4 rounded-lg border border-slate-200 overflow-x-auto text-xs">
 {`{
-  "exam_name": "GPAT",
-  "test_name": "GPAT Mock Test 1",
+  "exam_name": "NEET_UG",
+  "test_name": "NEET Mock Test 1",
   "description": "Full-length practice test",
   "total_questions": 125,
   "total_marks": 500,

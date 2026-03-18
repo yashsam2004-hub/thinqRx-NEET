@@ -5,7 +5,7 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { useAuth } from './AuthContext'; // Use AuthContext user
 
 interface SubscriptionData {
-  plan: string; // Now accepts any plan ID (free, plus, pro, gpat_last_minute, etc.)
+  plan: string; // Now accepts any plan ID (free, plus, pro, neet_full, etc.)
   status: 'active' | 'inactive' | 'expired' | 'cancelled';
   endDate: Date | null;
   billingCycle: 'MONTHLY' | 'ANNUAL' | 'ONE_TIME' | null;

@@ -263,7 +263,7 @@ export default function AdminResourcesPage() {
               <Input
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g., NTA GPAT Official Website"
+                placeholder="e.g., NTA NEET Official Website"
               />
             </div>
 

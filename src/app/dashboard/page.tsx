@@ -565,14 +565,14 @@ export default async function DashboardPage() {
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Need help?{" "}
               <a 
-                href="mailto:info@thinqrx.in" 
+                href="mailto:support@neetprep.com" 
                 className="font-medium text-teal-600 dark:text-teal-400 hover:underline"
               >
-                info@thinqrx.in
+                support@neetprep.com
               </a>
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
-              © {new Date().getFullYear()} ThinqRx. All rights reserved.
+              © {new Date().getFullYear()} NEET Prep Platform. All rights reserved.
             </p>
           </div>
         </div>

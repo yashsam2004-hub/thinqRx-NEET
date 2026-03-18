@@ -18,14 +18,14 @@ export async function GET() {
     }
     const user = session.user;
 
-    // Get GPAT course
-    const { data: gpatCourse } = await supabase
+    // Get NEET course
+    const { data: neetCourse } = await supabase
       .from("courses")
       .select("id")
-      .ilike("code", "gpat")
+      .ilike("code", "neet")
       .single();
 
-    const courseId = gpatCourse?.id;
+    const courseId = neetCourse?.id;
     if (!courseId) {
       throw ApiError.notFound("Course not found");
     }

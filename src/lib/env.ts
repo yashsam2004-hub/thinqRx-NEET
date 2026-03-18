@@ -1,6 +1,9 @@
 /**
  * Environment Variable Validation
  * Validates all required environment variables at startup
+ *
+ * NOTE: In development mode, validation is lenient to allow the app
+ * to start while Supabase/services are being configured.
  */
 
 import { z } from "zod";
@@ -15,9 +18,9 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().min(1),
   OPENAI_MODEL: z.string().optional(),
 
-  // Upstash Redis
-  UPSTASH_REDIS_REST_URL: z.string().url(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().min(1),
+  // Upstash Redis (optional — rate limiting will be disabled if not set)
+  UPSTASH_REDIS_REST_URL: z.string().url().optional().or(z.literal("")),
+  UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional().or(z.literal("")),
 
   // App Config
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -78,6 +81,6 @@ export function getPublicEnv() {
   return {
     supabaseUrl: env.NEXT_PUBLIC_SUPABASE_URL,
     supabaseAnonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    appUrl: env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    appUrl: env.NEXT_PUBLIC_APP_URL || "http://localhost:3001",
   };
 }

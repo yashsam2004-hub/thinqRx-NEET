@@ -80,7 +80,7 @@ export default function SectionRenderer({ section, index = 0 }: { section: Notes
             );
           }
           if (block.type === "table") {
-            return <TableBlock key={blockIndex} headers={block.headers} rows={block.rows} caption={block.caption} gpatNote={block.gpatNote} />;
+            return <TableBlock key={blockIndex} headers={block.headers} rows={block.rows} caption={block.caption} examNote={block.examNote} />;
           }
           if (block.type === "chemicals") {
             return <ChemicalBlock key={blockIndex} items={block.items} />;
@@ -125,7 +125,7 @@ export default function SectionRenderer({ section, index = 0 }: { section: Notes
                 title={block.title}
                 formula={block.formula}
                 description={block.description}
-                gpatTip={block.gpatTip}
+                examTip={block.examTip}
               />
             );
           }
@@ -156,7 +156,7 @@ export default function SectionRenderer({ section, index = 0 }: { section: Notes
                 title={block.title}
                 description={block.description}
                 caption={block.caption}
-                gpatAngle={block.gpatAngle}
+                examAngle={block.examAngle}
                 keyRecall={block.keyRecall}
                 svgAsset={block.svgAsset}
               />

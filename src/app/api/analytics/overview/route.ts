@@ -20,14 +20,14 @@ export async function GET() {
     }
     const user = session.user;
 
-    // Get GPAT course (default for now)
-    const { data: gpatCourse, error: courseError } = await supabase
+    // Get NEET course (default)
+    const { data: neetCourse, error: courseError } = await supabase
       .from("courses")
       .select("id, code, name")
-      .ilike("code", "gpat")
+      .ilike("code", "neet")
       .single();
 
-    const courseId = gpatCourse?.id;
+    const courseId = neetCourse?.id;
     if (!courseId) {
       throw ApiError.notFound("Course not found");
     }
@@ -51,7 +51,7 @@ export async function GET() {
       );
     }
 
-    // Fetch user attempts for GPAT course
+    // Fetch user attempts for NEET course
     const { data: attempts, error: attemptsError } = await supabase
       .from("user_attempts")
       .select("*")

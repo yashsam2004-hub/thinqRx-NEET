@@ -14,14 +14,14 @@ export default async function StudyPlanPage() {
     redirect("/login");
   }
 
-  // Get GPAT course (default for now)
-  const { data: gpatCourse } = await supabase
+  // Get NEET course (default)
+  const { data: neetCourse } = await supabase
     .from("courses")
     .select("id")
-    .ilike("code", "gpat")
+    .ilike("code", "neet")
     .single();
 
-  const courseId = gpatCourse?.id;
+  const courseId = neetCourse?.id;
 
   // Get user's plan
   const userPlan = courseId ? await getUserPlan(user.id, courseId) : "free";

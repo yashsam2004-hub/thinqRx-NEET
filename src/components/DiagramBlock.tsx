@@ -125,7 +125,7 @@ const DiagramSVGs = {
         Concept Diagram
       </text>
       <text x="200" y="180" textAnchor="middle" fontSize="12" fill="#94A3B8">
-        (Visual representation for GPAT understanding)
+        (Visual representation for NEET understanding)
       </text>
     </svg>
   ),
@@ -136,7 +136,7 @@ export default function DiagramBlock({
   title,
   description,
   caption,
-  gpatAngle,
+  examAngle,
   keyRecall,
   svgAsset,
 }: {
@@ -144,7 +144,7 @@ export default function DiagramBlock({
   title?: string;
   description?: string;
   caption?: string;
-  gpatAngle?: string[];
+  examAngle?: string[];
   keyRecall?: string[];
   svgAsset?: string;
 }) {
@@ -168,12 +168,12 @@ export default function DiagramBlock({
         <p className="text-sm text-slate-700 leading-relaxed">{description}</p>
       </div>
 
-      {/* GPAT Exam Angle */}
-      {gpatAngle && gpatAngle.length > 0 && (
+      {/* NEET Exam Angle */}
+      {examAngle && examAngle.length > 0 && (
         <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
-          <p className="text-xs font-bold text-amber-900 mb-2">🎯 GPAT Exam Angle:</p>
+          <p className="text-xs font-bold text-amber-900 mb-2">🎯 NEET Exam Angle:</p>
           <ul className="space-y-1">
-            {gpatAngle.map((point, idx) => (
+            {examAngle.map((point, idx) => (
               <li key={idx} className="text-sm text-amber-800 flex items-start gap-2">
                 <span className="text-amber-600 flex-shrink-0">•</span>
                 <span>{point}</span>
@@ -236,9 +236,9 @@ export default function DiagramBlock({
         <p className="text-xs text-center text-slate-500 italic">{caption}</p>
       )}
 
-      {/* GPAT Understanding Note */}
+      {/* NEET Understanding Note */}
       <p className="mt-3 text-xs text-center text-slate-500">
-        (Visual representation simplified for GPAT understanding)
+        (Visual representation simplified for NEET understanding)
       </p>
     </div>
   );
