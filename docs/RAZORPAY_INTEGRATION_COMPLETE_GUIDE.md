@@ -498,7 +498,7 @@ const handlePayment = async () => {
       key: orderData.keyId,
       amount: orderData.amount,
       currency: orderData.currency,
-      name: "ThinqRx - PharmCards",
+      name: "SynoRx - PharmCards",
       description: `${selectedPlan.toUpperCase()} Plan - ${billingCycle === "monthly" ? "Monthly" : "Annual"}`,
       image: "/images/Thinqr_logo.png",
       order_id: orderData.orderId,
@@ -730,7 +730,7 @@ export default async function PaymentFailurePage() {
 
         <div className="mt-8 pt-6 border-t border-slate-200">
           <p className="text-sm text-slate-600">
-            Need help? Contact support at <span className="font-semibold">support@thinqrx.com</span>
+            Need help? Contact support at <span className="font-semibold">support@SynoRx.com</span>
           </p>
         </div>
       </Card>

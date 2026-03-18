@@ -1,4 +1,4 @@
-# 🚀 ThinqRx Deployment Checklist
+# 🚀 SynoRx Deployment Checklist
 
 ## ✅ Recently Completed
 
@@ -70,7 +70,7 @@ Run in Supabase SQL Editor:
 1. **Razorpay Dashboard** → Settings → Webhooks
 2. Create new webhook:
    ```
-   URL: https://www.thinqrx.in/api/webhooks/razorpay
+   URL: https://www.SynoRx.in/api/webhooks/razorpay
    
    Events:
    ☑️ payment.captured

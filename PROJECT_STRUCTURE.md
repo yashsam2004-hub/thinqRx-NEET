@@ -1,6 +1,6 @@
-# 🏗️ ThinqRx - Project Structure & Architecture
+# 🏗️ SynoRx - Project Structure & Architecture
 
-**Comprehensive technical guide to the ThinqRx platform codebase**
+**Comprehensive technical guide to the SynoRx platform codebase**
 
 ---
 
@@ -23,7 +23,7 @@
 
 ## 🎯 Overview
 
-ThinqRx is a full-stack EdTech platform built with:
+SynoRx is a full-stack EdTech platform built with:
 - **Frontend**: Next.js 15 (App Router) + React 19 + TypeScript
 - **Backend**: Next.js API Routes + Supabase (PostgreSQL)
 - **AI**: OpenAI GPT-4 for content generation
@@ -1577,7 +1577,7 @@ import Image from 'next/image';
 
 <Image
   src="/images/logo.png"
-  alt="ThinqRx"
+  alt="SynoRx"
   width={200}
   height={60}
   priority // Load immediately

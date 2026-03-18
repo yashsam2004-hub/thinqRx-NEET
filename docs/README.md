@@ -1,6 +1,6 @@
-# 📚 ThinqRx Documentation
+# 📚 SynoRx Documentation
 
-**Comprehensive documentation for the ThinqRx platform**
+**Comprehensive documentation for the SynoRx platform**
 
 ---
 
@@ -132,8 +132,8 @@ Pre-deployment checklist:
 - Questions? Contact the dev team
 
 ### Technical Support
-- **Students**: support@thinqrx.com
-- **Developers**: dev@thinqrx.com
+- **Students**: support@SynoRx.com
+- **Developers**: dev@SynoRx.com
 - **GitHub Issues**: For bugs and feature requests
 
 ---

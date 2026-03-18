@@ -113,7 +113,7 @@ if (!razorpay_signature) {
 
 ### **Test Case: QR/UPI Payment**
 
-1. Go to https://www.thinqrx.in/upgrade
+1. Go to https://www.SynoRx.in/upgrade
 2. Select any plan
 3. Click "Proceed to Payment"
 4. Choose UPI → QR Code
@@ -127,7 +127,7 @@ if (!razorpay_signature) {
 
 ### **Test Case: Card Payment**
 
-1. Go to https://www.thinqrx.in/upgrade
+1. Go to https://www.SynoRx.in/upgrade
 2. Select any plan
 3. Click "Proceed to Payment"
 4. Choose Card payment

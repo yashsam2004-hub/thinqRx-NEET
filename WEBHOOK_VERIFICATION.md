@@ -5,7 +5,7 @@
 Based on your screenshot, the webhook is properly configured:
 
 ```
-URL: https://www.thinqrx.in/api/webhooks/razorpay
+URL: https://www.SynoRx.in/api/webhooks/razorpay
 Status: Enabled ✅
 Events: 41 events registered
 ```
@@ -67,13 +67,13 @@ All standard Razorpay events are enabled, which is good for comprehensive tracki
 ### **Landing Page Footer:** ✅ Correct
 ```
 Location: Bottom of homepage
-Display: info@thinqrx.in (clickable mailto link)
+Display: info@SynoRx.in (clickable mailto link)
 ```
 
 ### **Dashboard Footer:** ✅ Added
 ```
 Location: Bottom of dashboard page
-Display: "Need help? info@thinqrx.in" (clickable mailto link)
+Display: "Need help? info@SynoRx.in" (clickable mailto link)
 ```
 
 ### **Other Locations:**
@@ -88,7 +88,7 @@ Display: "Need help? info@thinqrx.in" (clickable mailto link)
 
 ### Summary:
 1. ✅ **Webhook**: Enabled and receiving events
-2. ✅ **Email Display**: `info@thinqrx.in` shown correctly everywhere
+2. ✅ **Email Display**: `info@SynoRx.in` shown correctly everywhere
 3. ✅ **Dashboard Footer**: Support email added at bottom
 4. ✅ **Landing Page Footer**: Support email already present
 
@@ -96,7 +96,7 @@ Display: "Need help? info@thinqrx.in" (clickable mailto link)
 
 ## 🧪 Quick Test Checklist:
 
-- [ ] Visit landing page → Scroll to footer → See "info@thinqrx.in"
+- [ ] Visit landing page → Scroll to footer → See "info@SynoRx.in"
 - [ ] Login to dashboard → Scroll to bottom → See support email
 - [ ] Make a test payment → Check Razorpay webhook logs
 - [ ] Verify payment updates in database automatically
@@ -105,7 +105,7 @@ Display: "Need help? info@thinqrx.in" (clickable mailto link)
 
 ## 📞 Support Contact
 
-**Email:** info@thinqrx.in  
+**Email:** info@SynoRx.in  
 **Display:** Correctly shown on all pages ✅  
 **Webhook:** Properly configured and active ✅
 

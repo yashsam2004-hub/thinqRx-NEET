@@ -22,7 +22,7 @@
 
 ## 🎯 Overview
 
-The ThinqRx app now has a **complete, production-grade Razorpay payment integration** that:
+The SynoRx app now has a **complete, production-grade Razorpay payment integration** that:
 
 - ✅ Creates Razorpay orders server-side
 - ✅ Opens Razorpay checkout modal client-side
@@ -330,7 +330,7 @@ import { PremiumGuard } from '@/components/PremiumGuard';
 - [ ] Verify response contains `order_id`
 
 #### ✅ Razorpay Modal
-- [ ] Modal opens with ThinqRx branding
+- [ ] Modal opens with SynoRx branding
 - [ ] Shows correct amount
 - [ ] Shows plan details
 - [ ] Theme color is teal (#0AA89E)

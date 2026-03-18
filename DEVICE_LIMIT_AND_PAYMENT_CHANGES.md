@@ -27,7 +27,7 @@ Count = 2 (limit reached)
 ↓
 ❌ Login blocked
 ↓
-User sees: "Maximum 2 devices allowed. Contact support at info@thinqrx.in"
+User sees: "Maximum 2 devices allowed. Contact support at info@SynoRx.in"
 ```
 
 ### Technical Implementation:
@@ -302,7 +302,7 @@ ORDER BY p.created_at DESC;
    - Confirmation: Yes/No dialog
 
 2. **Updated Email**
-   - All support links now use: `info@thinqrx.in`
+   - All support links now use: `info@SynoRx.in`
    - Landing page, upgrade page, error messages
 
 ---
@@ -359,7 +359,7 @@ User sees correct validity in dashboard
 ### Login Error (3rd device):
 ```
 ❌ Maximum 2 devices allowed. 
-Please contact support at info@thinqrx.in to reset your devices.
+Please contact support at info@SynoRx.in to reset your devices.
 ```
 
 ### Payment Summary:

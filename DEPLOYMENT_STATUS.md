@@ -22,7 +22,7 @@ Vercel deployment typically takes:
 
 ### **Option 1: Check Vercel Dashboard**
 1. Go to https://vercel.com/dashboard
-2. Find your project (ThinqRx)
+2. Find your project (SynoRx)
 3. Look for latest deployment
 4. Status should show: ✅ **Ready**
 

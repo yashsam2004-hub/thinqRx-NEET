@@ -1,6 +1,6 @@
 # Performance Optimization Guide
 
-This document outlines performance optimization strategies for ThinqRx.
+This document outlines performance optimization strategies for SynoRx.
 
 ## ✅ Implemented Optimizations
 
@@ -116,7 +116,7 @@ const AdminPanel = dynamic(() => import('@/app/admin/layout'), {
 // Use Next.js Image with proper sizing
 <Image
   src="/images/logo.png"
-  alt="ThinqRx"
+  alt="SynoRx"
   width={200}
   height={50}
   priority // For above-the-fold images
@@ -267,7 +267,7 @@ const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL;
 // Serve images from CDN
 <Image
   src={`${CDN_URL}/images/logo.png`}
-  alt="ThinqRx"
+  alt="SynoRx"
 />
 ```
 

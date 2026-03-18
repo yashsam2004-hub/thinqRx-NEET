@@ -25,7 +25,7 @@ Supabase Dashboard → Settings → Usage
 Supabase Dashboard → Authentication → URL Configuration
 
 Site URL (MUST match your deployment):
-https://thinqrx.app
+https://SynoRx.app
 
 OR if using Vercel preview:
 https://your-project.vercel.app
@@ -34,10 +34,10 @@ https://your-project.vercel.app
 ### Step 4: Add ALL Redirect URLs
 ```
 Redirect URLs (add ALL of these):
-https://thinqrx.app/**
-https://thinqrx.app/dashboard
-https://thinqrx.app/verify-email
-https://thinqrx.app/auth/callback
+https://SynoRx.app/**
+https://SynoRx.app/dashboard
+https://SynoRx.app/verify-email
+https://SynoRx.app/auth/callback
 http://localhost:3000/**
 http://localhost:3000/dashboard
 http://localhost:3000/verify-email
@@ -63,7 +63,7 @@ SMTP Port: 587
 SMTP User: apikey
 SMTP Pass: <Your SendGrid API Key>
 Sender Email: noreply@yourdomain.com
-Sender Name: ThinqRx
+Sender Name: SynoRx
 ```
 
 ### Option B: AWS SES
@@ -74,7 +74,7 @@ SMTP Port: 587
 SMTP User: <Your AWS SES SMTP Username>
 SMTP Pass: <Your AWS SES SMTP Password>
 Sender Email: noreply@yourdomain.com (must be verified)
-Sender Name: ThinqRx
+Sender Name: SynoRx
 ```
 
 ### Option C: Gmail (Testing Only - Not for Production)
@@ -85,7 +85,7 @@ SMTP Port: 587
 SMTP User: your-email@gmail.com
 SMTP Pass: <App Password - NOT your Gmail password>
 Sender Email: your-email@gmail.com
-Sender Name: ThinqRx
+Sender Name: SynoRx
 ```
 
 **Note**: Enable 2FA and create App Password in Google Account settings.

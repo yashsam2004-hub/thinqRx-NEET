@@ -2,7 +2,7 @@
 
 ## How to Use
 
-1. Open your **cloned project** (not the original ThinqRx) in Cursor
+1. Open your **cloned project** (not the original SynoRx) in Cursor
 2. Replace ALL `[bracketed values]` below with your actual exam details
 3. Copy everything inside the PROMPT section
 4. Paste into Cursor chat in **Agent mode**
@@ -15,7 +15,7 @@
 
 ---
 
-I am cloning this codebase to create a new exam preparation platform. Replace ALL references to "GPAT" and "ThinqRx" with a new exam and brand. Here are the details:
+I am cloning this codebase to create a new exam preparation platform. Replace ALL references to "GPAT" and "SynoRx" with a new exam and brand. Here are the details:
 
 **New Exam Details:**
 - Exam Name: [NEET PG]
@@ -163,9 +163,9 @@ I am cloning this codebase to create a new exam preparation platform. Replace AL
     - `src/app/resources/page.tsx` — "GPAT Preparation Resources"
     - `src/app/study-plan/page.tsx` — course lookup
     - `src/app/(auth)/signup/page.tsx` — rename `gpatCourseId` → `examCourseId`, update text
-    - `src/app/privacy/page.tsx` — replace all GPAT and ThinqRx references
-    - `src/app/terms/page.tsx` — replace all GPAT and ThinqRx references
-    - `src/app/refund/page.tsx` — replace all GPAT and ThinqRx references
+    - `src/app/privacy/page.tsx` — replace all GPAT and SynoRx references
+    - `src/app/terms/page.tsx` — replace all GPAT and SynoRx references
+    - `src/app/refund/page.tsx` — replace all GPAT and SynoRx references
     - `src/app/sitemap.ts` — update `/gpat` route
 
 **PART F: Admin Pages**
@@ -218,10 +218,10 @@ I am cloning this codebase to create a new exam preparation platform. Replace AL
 23. After ALL changes, run `npx tsc --noEmit` to verify no TypeScript errors.
 24. Fix any broken imports (especially `@/lib/gpat/` → `@/lib/exam/` rename).
 25. Search the entire `src/` folder for any remaining "GPAT" or "gpat" strings (case-insensitive). Replace any that were missed.
-26. Search for any remaining "ThinqRx" or "thinqrx" or "Thinqr" strings and replace with the new brand/company name.
+26. Search for any remaining "SynoRx" or "SynoRx" or "Thinqr" strings and replace with the new brand/company name.
 27. Do NOT modify `.md` documentation files in the project root — those are non-functional.
 
-Do NOT skip any file. Do NOT leave any "GPAT" string in the `src/` directory. Commit when done with message: "Replace GPAT/ThinqRx with [Exam Name]/[Brand Name]".
+Do NOT skip any file. Do NOT leave any "GPAT" string in the `src/` directory. Commit when done with message: "Replace GPAT/SynoRx with [Exam Name]/[Brand Name]".
 
 ---
 

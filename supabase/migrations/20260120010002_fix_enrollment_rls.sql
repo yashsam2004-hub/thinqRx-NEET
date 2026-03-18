@@ -57,7 +57,7 @@ BEGIN
 
     -- If user already has an active enrollment, prevent new one
     IF v_enrollment_count > 0 THEN
-      RAISE EXCEPTION 'User can only have one active course enrollment. Email support@thinqrx.com to change courses.';
+      RAISE EXCEPTION 'User can only have one active course enrollment. Email support@SynoRx.com to change courses.';
     END IF;
   END IF;
 

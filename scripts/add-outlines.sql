@@ -1,4 +1,4 @@
--- Add Default Outlines for ThinqRx v2
+-- Add Default Outlines for SynoRx v2
 -- Run this in Supabase SQL Editor after running quick-setup.sql
 
 -- Check if syllabus_outlines table exists, if not create it

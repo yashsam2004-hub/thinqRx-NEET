@@ -1,4 +1,4 @@
-# ThinqRx - AI Cost Reduction & Monetization Implementation Guide
+# SynoRx - AI Cost Reduction & Monetization Implementation Guide
 
 This guide covers three major improvements implemented in three clean layers.
 

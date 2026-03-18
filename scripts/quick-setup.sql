@@ -1,4 +1,4 @@
--- Quick Setup Script for ThinqRx v2
+-- Quick Setup Script for SynoRx v2
 -- Run this in Supabase SQL Editor to setup admin and syllabus
 
 -- Step 1: Set multiple users as admin

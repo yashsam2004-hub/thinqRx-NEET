@@ -37,7 +37,7 @@ git init
 
 1. Copy `env.example` from this Clone folder into your new project root as `.env.local`
 2. Fill in ALL values from your new Supabase project and other services
-3. **CRITICAL:** Ensure the Supabase URL/keys point to your NEW project, not the old ThinqRx one
+3. **CRITICAL:** Ensure the Supabase URL/keys point to your NEW project, not the old SynoRx one
 
 ---
 

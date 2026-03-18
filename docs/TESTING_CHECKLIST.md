@@ -1,6 +1,6 @@
 # Testing Checklist
 
-Comprehensive testing checklist for ThinqRx before production launch.
+Comprehensive testing checklist for SynoRx before production launch.
 
 ## 🔐 Authentication Tests
 

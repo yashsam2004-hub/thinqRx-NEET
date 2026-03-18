@@ -1,6 +1,6 @@
 # Security Audit Checklist
 
-This document outlines the security measures implemented in ThinqRx and provides a checklist for ongoing security audits.
+This document outlines the security measures implemented in SynoRx and provides a checklist for ongoing security audits.
 
 ## ✅ Authentication & Authorization
 
@@ -172,7 +172,7 @@ Before each major release:
 
 ## Security Contacts
 
-- **Security Issues**: security@thinqrx.com
+- **Security Issues**: security@SynoRx.com
 - **Supabase Support**: https://supabase.com/support
 - **Razorpay Support**: support@razorpay.com
 - **Upstash Support**: support@upstash.com

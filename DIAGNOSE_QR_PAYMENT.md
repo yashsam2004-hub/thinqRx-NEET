@@ -10,14 +10,14 @@ Razorpay needs to send a webhook to your server when payment is captured.
 
 **Check:**
 - Go to Razorpay Dashboard → Settings → Webhooks
-- Verify webhook URL is set to: `https://www.thinqrx.in/api/webhooks/razorpay`
+- Verify webhook URL is set to: `https://www.SynoRx.in/api/webhooks/razorpay`
 - Verify these events are enabled:
   - ✅ `payment.captured`
   - ✅ `payment.failed`
   - ✅ `order.paid`
 
 **Fix:**
-1. Add webhook URL: `https://www.thinqrx.in/api/webhooks/razorpay`
+1. Add webhook URL: `https://www.SynoRx.in/api/webhooks/razorpay`
 2. Copy the **Webhook Secret** shown
 3. Add to Vercel environment variables:
    - Name: `RAZORPAY_WEBHOOK_SECRET`
@@ -213,4 +213,4 @@ If issue persists, collect:
 4. Timestamp of payment
 5. Screenshot of Razorpay payment details
 
-Send to: info@thinqrx.in
+Send to: info@SynoRx.in

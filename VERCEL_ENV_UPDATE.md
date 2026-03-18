@@ -14,7 +14,7 @@ The `OPENAI_MODEL` environment variable is set to `gpt-5-mini`, which **doesn't 
 
 ### Option 1: Via Vercel Dashboard (Recommended)
 1. Go to https://vercel.com/dashboard
-2. Select your project (`pharmcards` or `thinqrx`)
+2. Select your project (`pharmcards` or `SynoRx`)
 3. Click **Settings** → **Environment Variables**
 4. Find `OPENAI_MODEL`
 5. Click **Edit**

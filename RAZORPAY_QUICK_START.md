@@ -6,7 +6,7 @@
 
 ## 🎯 Overview
 
-Your ThinqRx app now has **complete Razorpay payment integration**. This guide will help you test it locally and deploy to production.
+Your SynoRx app now has **complete Razorpay payment integration**. This guide will help you test it locally and deploy to production.
 
 ---
 
@@ -267,6 +267,6 @@ That's it! Your payment system is:
 
 ---
 
-**Built with ❤️ for ThinqRx**
+**Built with ❤️ for SynoRx**
 
 Last Updated: February 2, 2026

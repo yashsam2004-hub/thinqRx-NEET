@@ -1,6 +1,6 @@
 # Exam Platform — Clone & Setup Kit
 
-This folder contains everything you need to clone the ThinqRx codebase and launch a new exam preparation website for any competitive exam.
+This folder contains everything you need to clone the SynoRx codebase and launch a new exam preparation website for any competitive exam.
 
 ---
 
@@ -47,7 +47,7 @@ Create accounts and get credentials for:
 
 Copy `env.example` from this folder into your new project root as `.env.local` and fill in all values from Step 2.
 
-**IMPORTANT:** Make sure `.env.local` points to your NEW Supabase project, not the old ThinqRx one.
+**IMPORTANT:** Make sure `.env.local` points to your NEW Supabase project, not the old SynoRx one.
 
 ### Step 4: Run the Cursor Prompt
 

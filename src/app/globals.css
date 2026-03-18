@@ -1,5 +1,5 @@
 /* 
- * ThinqRx Global Styles
+ * SynoRx Global Styles
  * Version: 2.1.0 (Dark Mode Text Visibility Fix)
  * Last Updated: 2026-02-10
  * CACHE BUST: v2-dark-mode-force
@@ -55,7 +55,7 @@
 
 :root {
   /* ========================================
-     THINQRX PREMIUM DESIGN SYSTEM
+     SynoRx PREMIUM DESIGN SYSTEM
      Light Mode Theme Tokens
   ======================================== */
   
@@ -161,7 +161,7 @@
 
 .dark {
   /* ========================================
-     THINQRX PREMIUM DESIGN SYSTEM
+     SynoRx PREMIUM DESIGN SYSTEM
      Dark Mode Theme Tokens (Layered, Not Pure Black)
   ======================================== */
   
@@ -393,7 +393,7 @@
 }
 
 /* ========================================
-   THINQRX PREMIUM UTILITY CLASSES
+   SynoRx PREMIUM UTILITY CLASSES
 ======================================== */
 
 /* === Premium Card Styles === */

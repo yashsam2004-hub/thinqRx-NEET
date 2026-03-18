@@ -42,7 +42,7 @@ This application now requires email verification for all users before they can a
 2. Customize the **Confirm signup** template:
 
 ```html
-<h2>Welcome to ThinqRx!</h2>
+<h2>Welcome to SynoRx!</h2>
 <p>Thank you for signing up. Please verify your email address to get started.</p>
 <p>
   <a href="{{ .ConfirmationURL }}">Verify Email</a>
@@ -50,7 +50,7 @@ This application now requires email verification for all users before they can a
 <p>Or copy and paste this link:</p>
 <p>{{ .ConfirmationURL }}</p>
 <p>This link expires in 24 hours.</p>
-<p>If you didn't sign up for ThinqRx, you can safely ignore this email.</p>
+<p>If you didn't sign up for SynoRx, you can safely ignore this email.</p>
 ```
 
 ### Step 3: Set Redirect URLs
@@ -76,7 +76,7 @@ By default, Supabase sends emails from their server. For production, configure y
    - **SMTP User**: `apikey`
    - **SMTP Password**: Your SendGrid API key
    - **Sender Email**: `noreply@yourdomain.com`
-   - **Sender Name**: `ThinqRx`
+   - **Sender Name**: `SynoRx`
 
 ## User Flow
 

@@ -1,6 +1,6 @@
 # Deployment Guide
 
-Complete guide to deploying ThinqRx to production.
+Complete guide to deploying SynoRx to production.
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ Run all migrations in **production** Supabase:
 -- Set admin users
 UPDATE profiles
 SET role = 'admin'
-WHERE email IN ('admin@thinqrx.com', 'support@thinqrx.com');
+WHERE email IN ('admin@SynoRx.com', 'support@SynoRx.com');
 
 -- Verify courses are created
 SELECT * FROM courses WHERE is_active = true;
@@ -177,10 +177,10 @@ npm start
 2. **Build and Deploy**
    ```bash
    # Build image
-   docker build -t thinqrx:latest .
+   docker build -t SynoRx:latest .
    
    # Run container
-   docker run -p 3000:3000 --env-file .env.production thinqrx:latest
+   docker run -p 3000:3000 --env-file .env.production SynoRx:latest
    ```
 
 3. **Set up Nginx Reverse Proxy**
@@ -354,7 +354,7 @@ If deployment fails:
 
 ### Support Channels
 
-- Email: support@thinqrx.com
+- Email: support@SynoRx.com
 - WhatsApp: +91-XXXXXXXXXX
 - Chat: (integrate Tawk.to or similar)
 

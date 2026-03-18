@@ -190,7 +190,7 @@ Payment 3:
 
 ### **Immediate:**
 1. Clear browser cache and reload admin panel
-2. Go to: https://www.thinqrx.in/admin/payments
+2. Go to: https://www.SynoRx.in/admin/payments
 3. Set filter to "All Statuses"
 4. You should see ALL 9 payment records from your screenshot
 

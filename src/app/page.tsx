@@ -99,7 +99,7 @@ export default function HomePage() {
               {/* Logo */}
               <div className="mx-auto mb-12 flex items-center justify-center">
                 <Image
-                  src="/images/Thinqr_logo(1).png"
+                  src="/images/SynoRx-Logo.png"
                   alt="NEET Prep Logo"
                   width={480}
                   height={360}
@@ -615,7 +615,7 @@ export default function HomePage() {
             {/* Copyright and Company */}
             <div className="text-center">
               <p className="text-sm mb-1 text-slate-500 dark:text-slate-400">
-                &copy; 2026 Thinqr (OPC) Pvt Ltd. All rights reserved.
+                &copy; 2026 SynoRx (OPC) Pvt Ltd. All rights reserved.
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Registered in India

@@ -186,7 +186,7 @@ If no outline exists in database, system uses:
 - Can locate any fact in <5 seconds
 - Feels like handwritten topper notes
 - Zero "why is this here?" moments
-- Trust ThinqRx for last-month prep
+- Trust SynoRx for last-month prep
 
 ## Files Modified
 
@@ -276,7 +276,7 @@ If no outline exists in database, system uses:
 1. **Consistency**: Every topic follows same structure (outline-driven)
 2. **Relevance**: Zero generic or cross-topic content
 3. **Scannability**: Students find facts in <5 seconds
-4. **Trust**: Students rely on ThinqRx for final-month prep
+4. **Trust**: Students rely on SynoRx for final-month prep
 5. **Maintainability**: Change outline → content updates automatically
 
 ## Future Improvements

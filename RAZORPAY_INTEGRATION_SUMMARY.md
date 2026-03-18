@@ -434,11 +434,11 @@ This integration is **production-ready** and follows **industry best practices**
 
 ---
 
-**Built with ❤️ for ThinqRx**
+**Built with ❤️ for SynoRx**
 
 **Implementation Date**: February 2, 2026  
 **Developer**: Claude (Anthropic)  
-**Project**: ThinqRx GPAT Preparation Platform
+**Project**: SynoRx GPAT Preparation Platform
 
 ---
 

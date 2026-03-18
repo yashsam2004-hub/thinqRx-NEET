@@ -1,5 +1,5 @@
 -- ========================================
--- ThinqRx: Complete Database Setup
+-- SynoRx: Complete Database Setup
 -- Run this entire file in Supabase SQL Editor
 -- ========================================
 

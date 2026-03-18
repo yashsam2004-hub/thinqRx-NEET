@@ -229,7 +229,7 @@ Before returning notes, verify:
 - ✅ No "why is this here?" moments
 - ✅ Notes feel tight, intentional, confident
 - ✅ Can locate facts in <5 seconds
-- ✅ Trust ThinqRx for final-month prep
+- ✅ Trust SynoRx for final-month prep
 
 ### Technical Architecture:
 - ✅ `syllabus_outlines` is single source of truth
@@ -374,8 +374,8 @@ Orange Cards: ["β-blockers contraindicated in asthma"]
 
 ## Final Notes
 
-This transformation converts ThinqRx from a generic notes platform to a **specialized Quick Revision system** for GPAT aspirants. The outline-driven approach ensures every piece of content is intentional, relevant, and exam-ready.
+This transformation converts SynoRx from a generic notes platform to a **specialized Quick Revision system** for GPAT aspirants. The outline-driven approach ensures every piece of content is intentional, relevant, and exam-ready.
 
 **Key Achievement**: Blue cards no longer show irrelevant content like HLB formulas in drug topics. Every card answers: "Will this help me answer a GPAT MCQ?"
 
-Students can now trust ThinqRx for their final 3-4 months of preparation, knowing every note is tight, scannable, and focused on what matters for the exam.
+Students can now trust SynoRx for their final 3-4 months of preparation, knowing every note is tight, scannable, and focused on what matters for the exam.

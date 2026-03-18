@@ -45,7 +45,7 @@ Even with auto-polling, webhooks are ESSENTIAL for:
 
 3. **Configure Webhook**
    ```
-   Webhook URL: https://www.thinqrx.in/api/webhooks/razorpay
+   Webhook URL: https://www.SynoRx.in/api/webhooks/razorpay
    
    Active Events (select these 3):
    ✅ payment.captured
@@ -57,7 +57,7 @@ Even with auto-polling, webhooks are ESSENTIAL for:
 
 4. **Save Secret to Vercel**
    - Copy the webhook secret from Razorpay
-   - Go to Vercel → thinqrx → Settings → Environment Variables
+   - Go to Vercel → SynoRx → Settings → Environment Variables
    - Add new variable:
      ```
      Name: RAZORPAY_WEBHOOK_SECRET
@@ -73,7 +73,7 @@ Even with auto-polling, webhooks are ESSENTIAL for:
 ## 🧪 Test the Fix
 
 ### Test Case 1: New QR Payment (Auto-Polling)
-1. Go to https://www.thinqrx.in/upgrade
+1. Go to https://www.SynoRx.in/upgrade
 2. Select a plan
 3. Click "Proceed to Payment"
 4. Choose UPI → QR Code
@@ -191,7 +191,7 @@ Check:
 3. Supabase logs for database errors
 4. Browser console for frontend errors
 
-**Contact for help:** info@thinqrx.in
+**Contact for help:** info@SynoRx.in
 
 ---
 

@@ -1,6 +1,6 @@
 -- ================================================
 -- PERFORMANCE OPTIMIZATION INDEXES
--- For PharmCards / ThinqRx Platform
+-- For PharmCards / SynoRx Platform
 -- Date: February 2, 2026
 -- ================================================
 
