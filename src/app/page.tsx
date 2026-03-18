@@ -99,7 +99,7 @@ export default function HomePage() {
               {/* Logo */}
               <div className="mx-auto mb-12 flex items-center justify-center">
                 <Image
-                  src="/images/Thinqr_logo.png"
+                  src="/images/Thinqr_logo(1).png"
                   alt="NEET Prep Logo"
                   width={480}
                   height={360}
