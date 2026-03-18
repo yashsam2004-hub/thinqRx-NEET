@@ -306,7 +306,7 @@ pharmcards/
 │
 ├── public/                           # Static assets
 │   ├── images/
-│   │   ├── Thinqr_logo.png           # Main logo
+│   │   ├── SynoRx-Logo.png           # Main logo
 │   │   └── ...
 │   └── favicon.ico
 │

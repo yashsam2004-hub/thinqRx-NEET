@@ -500,7 +500,7 @@ const handlePayment = async () => {
       currency: orderData.currency,
       name: "SynoRx - PharmCards",
       description: `${selectedPlan.toUpperCase()} Plan - ${billingCycle === "monthly" ? "Monthly" : "Annual"}`,
-      image: "/images/Thinqr_logo.png",
+      image: "/images/SynoRx-Logo.png",
       order_id: orderData.orderId,
       prefill: {
         name: user?.email?.split("@")[0] || "",
