@@ -28,7 +28,7 @@ export function getOrganizationSchema(): Organization {
     "@type": "Organization",
     name: PLATFORM.brand,
     url: BASE_URL,
-    logo: `${BASE_URL}/logo.png`,
+    logo: `${BASE_URL}/SynoRx-Logo.png`,
     description: `${PLATFORM.tagline}. Platform for NEET UG medical entrance exam in ${PLATFORM.country} operated by ${PLATFORM.company}`,
     sameAs: [],
     contactPoint: {

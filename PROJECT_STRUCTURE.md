@@ -1576,7 +1576,7 @@ export async function GET() {
 import Image from 'next/image';
 
 <Image
-  src="/images/logo.png"
+  src="/images/SynoRx-Logo.png"
   alt="SynoRx"
   width={200}
   height={60}

@@ -97,7 +97,7 @@ export function Navigation() {
         {/* ── Logo ─────────────────────────────────────────── */}
         <Link href={logoHref} className="flex items-center flex-shrink-0">
           <Image
-            src="/images/Thinqr_logo.png"
+            src="/images/SynoRx-Logo.png"
             alt={`${PLATFORM.brand} Logo`}
             width={180}
             height={180}

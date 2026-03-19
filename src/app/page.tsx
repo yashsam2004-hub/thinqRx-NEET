@@ -98,14 +98,14 @@ export default function HomePage() {
             <div className="text-center">
               {/* Logo */}
               <div className="mx-auto mb-12 flex items-center justify-center">
-                <Image
-                  src="/images/SynoRx-Logo.png"
-                  alt="NEET Prep Logo"
-                  width={480}
-                  height={360}
-                  priority
-                  className="object-contain h-64 w-auto"
-                />
+              <Image
+  src="/images/SynoRx-Logo.png"
+  alt="SynoRx Logo"
+  width={300}
+  height={150}
+  priority
+  className="object-contain"
+/>
               </div>
 
               {/* Main Heading */}

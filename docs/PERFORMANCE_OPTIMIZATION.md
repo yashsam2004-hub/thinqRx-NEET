@@ -115,7 +115,7 @@ const AdminPanel = dynamic(() => import('@/app/admin/layout'), {
 ```typescript
 // Use Next.js Image with proper sizing
 <Image
-  src="/images/logo.png"
+  src="/images/SynoRx-Logo.png"
   alt="SynoRx"
   width={200}
   height={50}
@@ -266,7 +266,7 @@ const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL;
 
 // Serve images from CDN
 <Image
-  src={`${CDN_URL}/images/logo.png`}
+  src={`${CDN_URL}/images/SynoRx-Logo.png`}
   alt="SynoRx"
 />
 ```
