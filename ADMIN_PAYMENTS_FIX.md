@@ -140,7 +140,7 @@ In your screenshot, you had:
 - Hover: Highlighted row
 
 ### **2. Better Typography**
-- Bold amounts in green (₹)
+- Bold amounts in orange (₹)
 - Color-coded status badges
 - Monospace font for IDs
 - Clear date/time formatting

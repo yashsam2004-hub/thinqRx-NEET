@@ -59,7 +59,7 @@ Previously added (from earlier fix):
 - Plan cards (Plus): `dark:bg-teal-950/30 dark:border-slate-700`
 - Plan cards (Pro): `dark:bg-amber-950/30 dark:border-slate-700`
 - Badges: `dark:bg-slate-700 dark:text-slate-200`, `dark:bg-teal-900/50 dark:text-teal-300`, `dark:bg-amber-900/50 dark:text-amber-300`
-- Billing cycle cards: `dark:bg-teal-950/30 dark:border-slate-700`, `dark:bg-green-950/30 dark:border-slate-700`
+- Billing cycle cards: `dark:bg-teal-950/30 dark:border-slate-700`, `dark:bgorange-950/30 dark:border-slate-700`
 - All borders: `dark:border-slate-700`
 - Loading card: `dark:bg-slate-800/50 dark:border-slate-700`
 

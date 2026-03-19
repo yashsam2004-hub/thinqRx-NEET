@@ -615,7 +615,7 @@ export default function HomePage() {
             {/* Copyright and Company */}
             <div className="text-center">
               <p className="text-sm mb-1 text-slate-500 dark:text-slate-400">
-                &copy; 2026 SynoRx (OPC) Pvt Ltd. All rights reserved.
+                &copy; 2026 Synergypress. All rights reserved.
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Registered in India
